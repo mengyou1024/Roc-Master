@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Window size="200,200" alpha="127">
+	<VerticalLayout>
+		<GifAnim height="200" width="200" bkimage="Theme\Gif\Loading.gif" autosize="true" autoplay="true" />
+	</VerticalLayout>
+</Window>

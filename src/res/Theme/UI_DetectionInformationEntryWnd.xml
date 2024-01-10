@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Window size="960,820" caption="5,5,5,34" >
+	<Font name="楷体" size="14" default="true" />
+	<Font name="楷体" size="18" />
+	<Font name="楷体" size="24" />
+	<Font name="楷体" size="32" />
+	<Font name="楷体" size="14" bold="true" />
+	<Font name="楷体" size="18" bold="true" />
+	<Font name="楷体" size="24" bold="true" />
+	<Font name="楷体" size="40" bold="true" />
+
+	<Default name="VScrollBar" value="button1normalimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='0,90,16,106' mask='#FFFF00FF'&quot; button1hotimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='18,90,34,106' mask='#FFFF00FF'&quot; button1pushedimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='36,90,52,106' mask='#FFFF00FF'&quot; button1disabledimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='54,90,70,106' mask='#FFFF00FF'&quot; button2normalimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='0,108,16,124' mask='#FFFF00FF'&quot; button2hotimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='18,108,34,124' mask='#FFFF00FF'&quot; button2pushedimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='36,108,52,124' mask='#FFFF00FF'&quot; button2disabledimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='54,108,70,124' mask='#FFFF00FF'&quot; thumbnormalimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='0,126,16,142' corner='2,2,2,2' mask='#FFFF00FF'&quot; thumbhotimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='18,126,34,142' corner='2,2,2,2' mask='#FFFF00FF'&quot; thumbpushedimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='36,126,52,142' corner='2,2,2,2' mask='#FFFF00FF'&quot; thumbdisabledimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='54,126,70,142' corner='2,2,2,2' mask='#FFFF00FF'&quot; railnormalimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='0,144,16,160' corner='2,2,2,2' mask='#FFFF00FF'&quot; railhotimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='18,144,34,160' corner='2,2,2,2' mask='#FFFF00FF'&quot; railpushedimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='36,144,52,160' corner='2,2,2,2' mask='#FFFF00FF'&quot; raildisabledimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='54,144,70,160' corner='2,2,2,2' mask='#FFFF00FF'&quot; bknormalimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='0,162,16,178' corner='2,2,2,2' mask='#FFFF00FF'&quot; bkhotimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='18,162,34,178' corner='2,2,2,2' mask='#FFFF00FF'&quot; bkpushedimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='36,162,52,178' corner='2,2,2,2' mask='#FFFF00FF'&quot; bkdisabledimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='54,162,70,178' corner='2,2,2,2' mask='#FFFF00FF'&quot; " />
+	<Default name="HScrollBar" value="button1normalimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='0,0,16,16' mask='#FFFF00FF'&quot; button1hotimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='18,0,34,16' mask='#FFFF00FF'&quot; button1pushedimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='36,0,52,16' mask='#FFFF00FF'&quot; button1disabledimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='54,0,70,16' mask='#FFFF00FF'&quot; button2normalimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='0,18,16,34' mask='#FFFF00FF'&quot; button2hotimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='18,18,34,34' mask='#FFFF00FF'&quot; button2pushedimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='36,18,52,34' mask='#FFFF00FF'&quot; button2disabledimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='54,18,70,34' mask='#FFFF00FF'&quot; thumbnormalimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='0,36,16,52' corner='2,2,2,2' mask='#FFFF00FF'&quot; thumbhotimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='18,36,34,52' corner='2,2,2,2' mask='#FFFF00FF'&quot; thumbpushedimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='36,36,52,52' corner='2,2,2,2' mask='#FFFF00FF'&quot; thumbdisabledimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='54,36,70,52' corner='2,2,2,2' mask='#FFFF00FF'&quot; railnormalimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='0,54,16,70' corner='2,2,2,2' mask='#FFFF00FF'&quot; railhotimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='18,54,34,70' corner='2,2,2,2' mask='#FFFF00FF'&quot; railpushedimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='36,54,52,70' corner='2,2,2,2' mask='#FFFF00FF'&quot; raildisabledimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='54,54,70,70' corner='2,2,2,2' mask='#FFFF00FF'&quot; bknormalimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='0,72,16,88' corner='2,2,2,2' mask='#FFFF00FF'&quot; bkhotimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='18,72,34,88' corner='2,2,2,2' mask='#FFFF00FF'&quot; bkpushedimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='36,72,52,88' corner='2,2,2,2' mask='#FFFF00FF'&quot; bkdisabledimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='54,72,70,88' corner='2,2,2,2' mask='#FFFF00FF'&quot; " />
+	<Default name="Button" value="align=&quot;center&quot; valign=&quot;center&quot; bkcolor=&quot;0xFFEEEEEE&quot; hotbkcolor=&quot;0xFF1874CD&quot;" />
+	<Default shared="true" name="Option" value="height=&quot;30&quot;  valign=&quot;center&quot; textpadding=&quot;18,2,0,0&quot; selectedimage=&quot;file='Theme\Check\RadioBtnSel.png' source='0,0,13,13' dest='0,9,14,23'&quot; normalimage=&quot;file='Theme\Check\RadioBtnNon.png' source='0,0,13,13' dest='0,9,14,23'&quot;" />
+
+	<VerticalLayout bkcolor="0xFFFEFEFE" bordersize="1" bordercolor="0xFFDDDDDD">
+		<HorizontalLayout height="34">
+			<Label text="信息录入" font="0" bkimage="file='Theme\Button\union.png' dest='2,2,34,34'" textpadding="34,0,0,0" align="left" valign="center" />
+			<HorizontalLayout visible="true" width="95">
+				<Button float="true" pos="57,0,0,0" name="closebtn" tooltip="关闭" width="39" height="19" bkcolor="" normalimage="Theme\Button\btn_close_normal.png" hotimage="Theme\Button\btn_close_highlight.png" pushedimage="Theme\Button\btn_close_down.png" />
+			</HorizontalLayout>
+		</HorizontalLayout>
+		<VerticalLayout bkimage="Theme\Line\v_line.png" height="1" />
+		<VerticalLayout inset="10,15,10,10">
+			<HorizontalLayout>
+				<HorizontalLayout width="560" inset="10,10,10,10">
+					<VerticalLayout bkimage="file='Theme\Button\bkimage.png' corner='3,3,3,3'" inset="10,15,10,10" childalign="center" childvalign="center">
+						<HorizontalLayout inset="10,10,10,10">
+							<VerticalLayout bkimage="file='Theme\Button\bkimage.png' corner='3,3,3,3'" inset="10,15,10,10" childalign="center" childvalign="center">
+								<VerticalLayout>
+									<HorizontalLayout>
+										<HorizontalLayout height="32">
+											<Label text="客户" width="90" />
+											<Edit name="Editcustomer" width="120" height="32" bordersize="1" bordercolor="0x7F7F7F7F" />
+										</HorizontalLayout>
+										<HorizontalLayout width="20" />
+										<HorizontalLayout height="32">
+											<Label text="客户合同号" width="90" />
+											<Edit name="EditcustomerContractNumber" width="120" height="32" bordersize="1" bordercolor="0x7F7F7F7F" />
+										</HorizontalLayout>
+									</HorizontalLayout>
+									<HorizontalLayout>
+										<HorizontalLayout height="32">
+											<Label text="工作令" width="90" />
+											<Edit name="EditworkOrder" width="120" height="32" bordersize="1" bordercolor="0x7F7F7F7F" />
+										</HorizontalLayout>
+										<HorizontalLayout width="20" />
+										<HorizontalLayout height="32">
+											<Label text="报告编号" width="90" />
+											<Edit name="EditreportNumber" width="120" height="32" bordersize="1" bordercolor="0x7F7F7F7F" />
+										</HorizontalLayout>
+									</HorizontalLayout>
+								</VerticalLayout>
+							</VerticalLayout>
+							<Label text="基本信息" float="true" pos="20,0,0,0" bkcolor="0xFFFEFEFE" width="60" height="20" />
+						</HorizontalLayout>
+						<HorizontalLayout inset="10,10,10,10">
+							<VerticalLayout bkimage="file='Theme\Button\bkimage.png' corner='3,3,3,3'" inset="10,15,10,10" childalign="center" childvalign="center">
+								<VerticalLayout>
+									<HorizontalLayout>
+										<HorizontalLayout height="32">
+											<Label text="描述" width="90" />
+											<Edit name="Editdescription" width="120" height="32" bordersize="1" bordercolor="0x7F7F7F7F" />
+										</HorizontalLayout>
+										<HorizontalLayout width="20" />
+										<HorizontalLayout height="32">
+											<Label text="材质标准" width="90" />
+											<Edit name="EditmaterialStandards" width="120" height="32" bordersize="1" bordercolor="0x7F7F7F7F" />
+										</HorizontalLayout>
+									</HorizontalLayout>
+									<HorizontalLayout>
+										<HorizontalLayout height="32">
+											<Label text="表面状态" width="90" />
+											<Edit name="EditsurfaceStates" width="120" height="32" bordersize="1" bordercolor="0x7F7F7F7F" />
+										</HorizontalLayout>
+										<HorizontalLayout width="20" />
+										<HorizontalLayout height="32">
+											<Label text="检测区域" width="90" />
+											<Edit name="EditsurveyedArea" width="120" height="32" bordersize="1" bordercolor="0x7F7F7F7F" />
+										</HorizontalLayout>
+									</HorizontalLayout>
+									<HorizontalLayout>
+										<HorizontalLayout height="32">
+											<Label text="厚度" width="90" />
+											<Edit name="Editthickness" width="120" height="32" bordersize="1" bordercolor="0x7F7F7F7F" />
+										</HorizontalLayout>
+										<HorizontalLayout width="20" />
+										<HorizontalLayout height="32">
+											<Label text="保留" width="90" />
+											<Edit name="" width="120" height="32" bordersize="1" bordercolor="0x7F7F7F7F" />
+										</HorizontalLayout>
+									</HorizontalLayout>
+								</VerticalLayout>
+							</VerticalLayout>
+							<Label text="工件" float="true" pos="20,0,0,0" bkcolor="0xFFFEFEFE" width="30" height="20" />
+						</HorizontalLayout>
+						<HorizontalLayout inset="10,10,10,10">
+							<VerticalLayout bkimage="file='Theme\Button\bkimage.png' corner='3,3,3,3'" inset="10,15,10,10" childalign="center" childvalign="center">
+								<VerticalLayout>
+									<HorizontalLayout>
+										<HorizontalLayout height="32">
+											<Label text="设备型号" width="90" />
+											<Edit name="EditunitType" width="120" height="32" bordersize="1" bordercolor="0x7F7F7F7F" />
+										</HorizontalLayout>
+										<HorizontalLayout width="20" />
+										<HorizontalLayout height="32">
+											<Label text="探头型号" width="90" />
+											<Edit name="EditprobeType" width="120" height="32" bordersize="1" bordercolor="0x7F7F7F7F" />
+										</HorizontalLayout>
+									</HorizontalLayout>
+									<HorizontalLayout>
+										<HorizontalLayout height="32">
+											<Label text="参考试块" width="90" />
+											<Edit name="EditreferenceBlock" width="120" height="32" bordersize="1" bordercolor="0x7F7F7F7F" />
+										</HorizontalLayout>
+										<HorizontalLayout width="20" />
+										<HorizontalLayout height="32">
+											<Label text="波形" width="90" />
+											<Edit name="Editwaveform" width="120" height="32" bordersize="1" bordercolor="0x7F7F7F7F" />
+										</HorizontalLayout>
+									</HorizontalLayout>
+									<HorizontalLayout>
+										<HorizontalLayout height="32">
+											<Label text="扫描灵敏度" width="90" />
+											<Edit name="EditscanningSensitivity" width="120" height="32" bordersize="1" bordercolor="0x7F7F7F7F" />
+										</HorizontalLayout>
+										<HorizontalLayout width="20" />
+										<HorizontalLayout height="32">
+											<Label text="耦合剂" width="90" />
+											<Edit name="EditcouplingAgent" width="120" height="32" bordersize="1" bordercolor="0x7F7F7F7F" />
+										</HorizontalLayout>
+									</HorizontalLayout>
+								</VerticalLayout>
+							</VerticalLayout>
+							<Label text="器材及参数" float="true" pos="20,0,0,0" bkcolor="0xFFFEFEFE" width="75" height="20" />
+						</HorizontalLayout>
+						<HorizontalLayout inset="10,10,10,10">
+							<VerticalLayout bkimage="file='Theme\Button\bkimage.png' corner='3,3,3,3'" inset="10,15,10,10" childalign="center" childvalign="center">
+								<VerticalLayout>
+									<HorizontalLayout>
+										<HorizontalLayout height="32">
+											<Label text="执行标准" width="90" />
+											<Edit name="EditexecutiveStandard" width="120" height="32" bordersize="1" bordercolor="0x7F7F7F7F" />
+										</HorizontalLayout>
+										<HorizontalLayout width="20" />
+										<HorizontalLayout height="32">
+											<Label text="验收标准" width="90" />
+											<Edit name="EditacceptanceStandard" width="120" height="32" bordersize="1" bordercolor="0x7F7F7F7F" />
+										</HorizontalLayout>
+									</HorizontalLayout>
+									<HorizontalLayout>
+										<HorizontalLayout height="32">
+											<Label text="检测比例" width="90" />
+											<Edit name="EditdetectRatio" width="120" height="32" bordersize="1" bordercolor="0x7F7F7F7F" />
+										</HorizontalLayout>
+										<HorizontalLayout width="20" />
+										<HorizontalLayout height="32">
+											<Label text="检测工艺编号" width="90" />
+											<Edit name="EditdetectProcessNumber" width="120" height="32" bordersize="1" bordercolor="0x7F7F7F7F" />
+										</HorizontalLayout>
+									</HorizontalLayout>
+								</VerticalLayout>
+							</VerticalLayout>
+							<Label text="探头型号" float="true" pos="20,0,0,0" bkcolor="0xFFFEFEFE" width="60" height="20" />
+						</HorizontalLayout>
+					</VerticalLayout>
+					<Label text="管理信息" float="true" pos="20,0,0,0" bkcolor="0xFFFEFEFE" width="60" height="20" />
+				</HorizontalLayout>
+				<VerticalLayout>
+					<HorizontalLayout inset="10,10,10,10">
+						<VerticalLayout bkimage="file='Theme\Button\bkimage.png' corner='3,3,3,3'" inset="10,15,10,10" childalign="center" childvalign="center">
+							<HorizontalLayout>
+								<HorizontalLayout width="20" />
+								<List name="ListUserList" itemalign="center" inset="1,1,1,1" bordersize="1" bordercolor="0x7F7F7F7F" bkcolor="#FFFFFFFF" itemtextpadding="5,0,0,0" itemtextcolor="#FF000000" itembkcolor="#FFFFFFFF" itemselectedtextcolor="#FF000000" itemselectedbkcolor="#FFC1E3FF" itemhottextcolor="#FF000000" itemhotbkcolor="#FFE9F5FF" itemdisabledtextcolor="#FFCCCCCC" itemdisabledbkcolor="#FFFFFFFF" vscrollbar="true" hscrollbar="true" >
+									<ListHeader bkimage="Theme\List\list_header_bg.png" visible="false" >
+										<ListHeaderItem text="NAME" width="150" height="40" minwidth="16" sepwidth="1" align="center" hotimage="Theme\List\list_header_hot.png" pushedimage="Theme\List\list_header_pushed.png" sepimage="Theme\List\list_header_sep.png" />
+									</ListHeader>
+								</List>
+								<HorizontalLayout width="20" />
+								<VerticalLayout width="120">
+									<VerticalLayout />
+									<VerticalLayout  height="160" >
+										<Edit name="EditUserAdd" height="32" bordersize="1" bordercolor="0x7F7F7F7F"/>
+										<HorizontalLayout height="20" />
+										<Button name="BtnUserAdd" text="添加" width="80" height="32" />
+										<HorizontalLayout height="20" />
+										<Button name="BtnUserDel" text="删除" width="80" height="32" />
+									</VerticalLayout>
+									<VerticalLayout />
+								</VerticalLayout>
+								<HorizontalLayout width="20" />
+							</HorizontalLayout>
+						</VerticalLayout>
+						<Label text="检测人员管理" float="true" pos="20,0,0,0" bkcolor="0xFFFEFEFE" width="90" height="20" />
+					</HorizontalLayout>
+					<HorizontalLayout inset="10,10,10,10">
+						<VerticalLayout bkimage="file='Theme\Button\bkimage.png' corner='3,3,3,3'" inset="10,15,10,10" childalign="center" childvalign="center">
+							<HorizontalLayout>
+								<HorizontalLayout width="20" />
+								<List name="ListJobGroupList" itemalign="center" inset="1,1,1,1" bordersize="1" bordercolor="0x7F7F7F7F" bkcolor="#FFFFFFFF" itemtextpadding="5,0,0,0" itemtextcolor="#FF000000" itembkcolor="#FFFFFFFF" itemselectedtextcolor="#FF000000" itemselectedbkcolor="#FFC1E3FF" itemhottextcolor="#FF000000" itemhotbkcolor="#FFE9F5FF" itemdisabledtextcolor="#FFCCCCCC" itemdisabledbkcolor="#FFFFFFFF" vscrollbar="true" hscrollbar="true" >
+									<ListHeader bkimage="Theme\List\list_header_bg.png" visible="false" >
+										<ListHeaderItem text="NAME" width="150" height="40" minwidth="16" sepwidth="1" align="center" hotimage="Theme\List\list_header_hot.png" pushedimage="Theme\List\list_header_pushed.png" sepimage="Theme\List\list_header_sep.png" />
+									</ListHeader>
+								</List>
+								<HorizontalLayout width="20" />
+								<VerticalLayout width="120">
+									<VerticalLayout />
+									<VerticalLayout height="160" >
+										<Edit name="EditJobGroupAdd" height="32" bordersize="1" bordercolor="0x7F7F7F7F"/>
+										<HorizontalLayout height="20" />
+										<Button name="BtnJobGroupAdd" text="添加" width="80" height="32" />
+										<HorizontalLayout height="20" />
+										<Button name="BtnJobGroupDel" text="删除" width="80" height="32" />
+									</VerticalLayout>
+									<VerticalLayout />
+								</VerticalLayout>
+								<HorizontalLayout width="20" />
+							</HorizontalLayout>
+						</VerticalLayout>
+						<Label text="班组管理" float="true" pos="20,0,0,0" bkcolor="0xFFFEFEFE" width="60" height="20" />
+					</HorizontalLayout>
+				</VerticalLayout>
+			</HorizontalLayout>
+			<HorizontalLayout height="20" />
+			<HorizontalLayout height="32">
+				<Label />
+				<Button name="BtnOK" text="确认" width="80" height="32" />
+				<Label />
+			</HorizontalLayout>
+			<HorizontalLayout height="40" />
+		</VerticalLayout>
+	</VerticalLayout>
+</Window>

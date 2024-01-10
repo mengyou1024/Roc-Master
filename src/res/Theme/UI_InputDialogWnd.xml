@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Window size="240,160">
+	<Font name="楷体" size="14" default="true" />
+	<Font name="楷体" size="18" />
+	<Font name="楷体" size="24" />
+	<Font name="楷体" size="32" />
+	<Font name="楷体" size="14" bold="true" />
+	<Font name="楷体" size="18" bold="true" />
+	<Font name="楷体" size="24" bold="true" />
+	<Font name="楷体" size="40" bold="true" />
+
+	<Default name="Button" value="align=&quot;center&quot; valign=&quot;center&quot; bkcolor=&quot;0xFFEEEEEE&quot; hotbkcolor=&quot;0xFF1874CD&quot;" />
+	<VerticalLayout bkcolor="0xFFFEFEFE" bordersize="1" bordercolor="0xFFDDDDDD">
+		<HorizontalLayout width="20" />
+		<HorizontalLayout>
+			<Label />
+			<Edit name="Edit" width="120" height="32" bordersize="1" bordercolor="0x7F7F7F7F" />
+			<Label />
+		</HorizontalLayout>
+		<HorizontalLayout width="20" />
+		<HorizontalLayout>
+			<Label />
+			<Button name="IDOK" text="确定" width="80" height="32" />
+			<HorizontalLayout width="32" />
+			<Button name="IDCANCEL" text="取消" width="80" height="32" />
+			<Label />
+		</HorizontalLayout>
+		<Label />
+	</VerticalLayout>
+</Window>

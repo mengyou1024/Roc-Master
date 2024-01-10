@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Window size="1700,960" caption="5,5,5,34" sizebox="10,10,10,10" mininfo="1700, 960" >
+	<Font name="楷体" size="14" default="true" />
+	<Font name="楷体" size="18" />
+	<Font name="楷体" size="24" />
+	<Font name="楷体" size="32" />
+	<Font name="楷体" size="14" bold="true" />
+	<Font name="楷体" size="18" bold="true" />
+	<Font name="楷体" size="24" bold="true" />
+	<Font name="楷体" size="40" bold="true" />
+
+	<Default name="VScrollBar" value="button1normalimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='0,90,16,106' mask='#FFFF00FF'&quot; button1hotimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='18,90,34,106' mask='#FFFF00FF'&quot; button1pushedimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='36,90,52,106' mask='#FFFF00FF'&quot; button1disabledimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='54,90,70,106' mask='#FFFF00FF'&quot; button2normalimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='0,108,16,124' mask='#FFFF00FF'&quot; button2hotimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='18,108,34,124' mask='#FFFF00FF'&quot; button2pushedimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='36,108,52,124' mask='#FFFF00FF'&quot; button2disabledimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='54,108,70,124' mask='#FFFF00FF'&quot; thumbnormalimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='0,126,16,142' corner='2,2,2,2' mask='#FFFF00FF'&quot; thumbhotimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='18,126,34,142' corner='2,2,2,2' mask='#FFFF00FF'&quot; thumbpushedimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='36,126,52,142' corner='2,2,2,2' mask='#FFFF00FF'&quot; thumbdisabledimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='54,126,70,142' corner='2,2,2,2' mask='#FFFF00FF'&quot; railnormalimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='0,144,16,160' corner='2,2,2,2' mask='#FFFF00FF'&quot; railhotimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='18,144,34,160' corner='2,2,2,2' mask='#FFFF00FF'&quot; railpushedimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='36,144,52,160' corner='2,2,2,2' mask='#FFFF00FF'&quot; raildisabledimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='54,144,70,160' corner='2,2,2,2' mask='#FFFF00FF'&quot; bknormalimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='0,162,16,178' corner='2,2,2,2' mask='#FFFF00FF'&quot; bkhotimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='18,162,34,178' corner='2,2,2,2' mask='#FFFF00FF'&quot; bkpushedimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='36,162,52,178' corner='2,2,2,2' mask='#FFFF00FF'&quot; bkdisabledimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='54,162,70,178' corner='2,2,2,2' mask='#FFFF00FF'&quot; " />
+	<Default name="HScrollBar" value="button1normalimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='0,0,16,16' mask='#FFFF00FF'&quot; button1hotimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='18,0,34,16' mask='#FFFF00FF'&quot; button1pushedimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='36,0,52,16' mask='#FFFF00FF'&quot; button1disabledimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='54,0,70,16' mask='#FFFF00FF'&quot; button2normalimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='0,18,16,34' mask='#FFFF00FF'&quot; button2hotimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='18,18,34,34' mask='#FFFF00FF'&quot; button2pushedimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='36,18,52,34' mask='#FFFF00FF'&quot; button2disabledimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='54,18,70,34' mask='#FFFF00FF'&quot; thumbnormalimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='0,36,16,52' corner='2,2,2,2' mask='#FFFF00FF'&quot; thumbhotimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='18,36,34,52' corner='2,2,2,2' mask='#FFFF00FF'&quot; thumbpushedimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='36,36,52,52' corner='2,2,2,2' mask='#FFFF00FF'&quot; thumbdisabledimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='54,36,70,52' corner='2,2,2,2' mask='#FFFF00FF'&quot; railnormalimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='0,54,16,70' corner='2,2,2,2' mask='#FFFF00FF'&quot; railhotimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='18,54,34,70' corner='2,2,2,2' mask='#FFFF00FF'&quot; railpushedimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='36,54,52,70' corner='2,2,2,2' mask='#FFFF00FF'&quot; raildisabledimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='54,54,70,70' corner='2,2,2,2' mask='#FFFF00FF'&quot; bknormalimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='0,72,16,88' corner='2,2,2,2' mask='#FFFF00FF'&quot; bkhotimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='18,72,34,88' corner='2,2,2,2' mask='#FFFF00FF'&quot; bkpushedimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='36,72,52,88' corner='2,2,2,2' mask='#FFFF00FF'&quot; bkdisabledimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='54,72,70,88' corner='2,2,2,2' mask='#FFFF00FF'&quot; " />
+	<Default name="Button" value="align=&quot;center&quot; valign=&quot;center&quot; bkcolor=&quot;0xFFEEEEEE&quot; hotbkcolor=&quot;0xFF1874CD&quot;" />
+	<Default shared="true" name="Option" value="height=&quot;30&quot;  valign=&quot;center&quot; textpadding=&quot;18,2,0,0&quot; selectedimage=&quot;file='Theme\Check\RadioBtnSel.png' source='0,0,13,13' dest='0,9,14,23'&quot; normalimage=&quot;file='Theme\Check\RadioBtnNon.png' source='0,0,13,13' dest='0,9,14,23'&quot;" />
+
+	<VerticalLayout bkcolor="0xFFFEFEFE" bordersize="1" bordercolor="0xFFDDDDDD">
+		<HorizontalLayout height="34">
+			<Label text="" font="0" bkimage="file='Theme\Button\union.png' dest='2,2,34,34'" textpadding="34,0,0,0" align="left" valign="center" />
+			<HorizontalLayout height="34" float="true" pos="34,1,1060,34" align="center">
+				<HorizontalLayout>
+					<Button name="BtnSelectGroup0" width="120" height="33" text="分层" bkcolor="0xFF339933" />
+					<Button name="BtnSelectGroup3" width="120" height="33" text="测厚" bkcolor="0xFF339933" />
+					<Button name="BtnSelectGroup1" width="120" height="33" text="纵向" />
+					<Button name="BtnSelectGroup2" width="120" height="33" text="横向" />
+					<HorizontalLayout width="50" />
+					<Button name="BtnScanMode" width="120" height="33" text="扫查模式" bkcolor="0xFF339933" />
+					<Button name="BtnReviewMode" width="120" height="33" text="回放模式" />
+					<HorizontalLayout width="50" />
+					<HorizontalLayout width="240" name="LayoutReviewExt" visible="false" >
+						<Button name="BtnDetectInformation" width="120" height="33" text="探伤信息" bkcolor="0xFFEEEEEE" />
+						<Button name="BtnExportReport" width="120" height="33" text="报表导出" />
+					</HorizontalLayout>
+				</HorizontalLayout>
+			</HorizontalLayout>
+			<HorizontalLayout visible="true" width="95">
+				<Button float="true" pos="0,0,0,0" name="minbtn" tooltip="最小化" width="28" height="19" bkcolor="" normalimage="Theme\Button\btn_mini_normal.png" hotimage="Theme\Button\btn_mini_highlight.png" pushedimage="Theme\Button\btn_mini_down.png" />
+				<Button float="true" pos="29,0,0,0" name="maxbtn" tooltip="最大化" width="28" height="19" bkcolor="" normalimage="Theme\Button\btn_max_normal.png" hotimage="Theme\Button\btn_max_highlight.png" pushedimage="Theme\Button\btn_max_down.png" />
+				<Button float="true" pos="29,0,0,0" name="restorebtn" tooltip="还原" visible="false" width="28" bkcolor="" height="19" normalimage="Theme\Button\btn_restore_normal.png" hotimage="Theme\Button\btn_restore_highlight.png" pushedimage="Theme\Button\btn_restore_down.png" />
+				<Button float="true" pos="57,0,0,0" name="closebtn" tooltip="关闭" width="39" height="19" bkcolor="" normalimage="Theme\Button\btn_close_normal.png" hotimage="Theme\Button\btn_close_highlight.png" pushedimage="Theme\Button\btn_close_down.png" />
+			</HorizontalLayout>
+		</HorizontalLayout>
+		<VerticalLayout bkimage="Theme\Line\v_line.png" height="1" />
+		<VerticalLayout name="LayoutUserArea" inset="10,15,10,10">
+			<HorizontalLayout name="LayoutFunctionButton" height="32">
+				<Label />
+				<Button name="BtnUISetting" text="设置" width="100" font="5" />
+				<VerticalLayout width="1" bkimage="Theme\list\list_header_sep.png" />
+				<Button name="BtnUIAutoScan" text="自动检测" width="100" font="5" />
+				<VerticalLayout width="1" bkimage="Theme\list\list_header_sep.png" />
+				<Button name="BtnUIParamManagement" text="参数管理" width="100" font="5" />
+				<VerticalLayout width="1" bkimage="Theme\list\list_header_sep.png" />
+				<Button name="BtnUIHardPort" text="硬件接口" width="100" font="5" />
+				<VerticalLayout width="1" bkimage="Theme\list\list_header_sep.png" />
+				<Button name="BtnUIInformationEntry" text="信息录入" width="100" font="5" />
+				<VerticalLayout width="1" bkimage="Theme\list\list_header_sep.png" />
+				<!-- <Button name="BtnUIFunction" text="功能" width="100" font="5" />
+				<VerticalLayout width="1" bkimage="Theme\list\list_header_sep.png" /> -->
+				<Button name="BtnUIAmpMemory" text="峰值记忆" width="100" font="5" />
+				<VerticalLayout width="1" bkimage="Theme\list\list_header_sep.png" />
+				<Button name="BtnUIFreeze" text="波形冻结" width="100" font="5" />
+				<VerticalLayout width="1" bkimage="Theme\list\list_header_sep.png" />
+				<Button name="BtnUIAmpTrace" text="追踪使能" width="100" font="5" />
+				<VerticalLayout width="1" bkimage="Theme\list\list_header_sep.png" />
+				<Button name="BtnUIAutoGain" text="自动增益" width="100" font="5" />
+				<VerticalLayout width="1" bkimage="Theme\list\list_header_sep.png" />
+				<Button name="BtnUIAbout" text="关于软件" width="100" font="5" />
+				<Label />
+			</HorizontalLayout>
+			<HorizontalLayout inset="10,10,10,10">
+				<WindowUI name="WndOpenGL_ASCAN" bkcolor="0xFF000000" />
+			</HorizontalLayout>
+			<HorizontalLayout name="LayoutParamSetting" height="72" inset="20,3,20,3">
+				<HorizontalLayout height="60" bkimage="file='Theme\Button\bkimage.png' corner='3,3,3,3'" inset="10,15,10,10">
+					<HorizontalLayout>
+						<Label />
+						<HorizontalLayout width="450" height="30" bkimage="file='Theme\Button\bkimage.png' corner='3,3,3,3'">
+							<HorizontalLayout width="20" />
+							<Option name="OptConfigType" group="config" userdata="0" text="声程范围" width="72" selected="true" />
+							<HorizontalLayout width="20" />
+							<Option name="OptConfigType" group="config" userdata="1" text="增益" width="45" />
+							<HorizontalLayout width="20" />
+							<Option name="OptConfigType" group="config" userdata="2" width="72" text="波门起点" />
+							<HorizontalLayout width="20" />
+							<Option name="OptConfigType" group="config" userdata="3" width="72" text="波门宽度" />
+							<HorizontalLayout width="20" />
+							<Option name="OptConfigType" group="config" userdata="4" width="72" text="波门高度" />
+							<HorizontalLayout width="20" />
+						</HorizontalLayout>
+						<HorizontalLayout width="20" />
+						<HorizontalLayout width="280" bkimage="file='Theme\Button\bkimage.png' corner='3,3,3,3'" height="30">
+							<HorizontalLayout width="20" />
+							<Option name="OptGateType" group="gate" text="波门A" width="60" userdata="0" selected="true" />
+							<HorizontalLayout width="20" />
+							<Option name="OptGateType" group="gate" text="波门B" width="60" userdata="1" />
+							<HorizontalLayout width="20" />
+							<HorizontalLayout name="LayoutGateType" >
+								<Option name="OptGateType" width="90" group="gate" text="扫查波门" userdata="2" />
+							</HorizontalLayout>
+							<HorizontalLayout width="20" />
+						</HorizontalLayout>
+						<HorizontalLayout width="20" />
+						<HorizontalLayout bkimage="Theme\Line\h_line.png" width="1" />
+						<HorizontalLayout width="20" />
+						<Label text="设置参数:" width="80" align="center" />
+						<HorizontalLayout width="5" />
+						<Slider width="240" name="SliderConfig" height="32" sendmove="true" bkimage="file='Theme\Slider\SliderBack.png'" min="0" max="100" value="0" hor="true" thumbimage="file='Theme\Slider\thumbimg.png'" thumbsize="24,24" />
+						<HorizontalLayout width="20" />
+						<Edit name="EditConfig" text="0" width="100" height="28" textext="mm" bordersize="1" bordercolor="0x7F7F7F7F" />
+						<HorizontalLayout width="20" />
+						<HorizontalLayout bkimage="Theme\Line\h_line.png" width="1" />
+						<HorizontalLayout width="20" />
+						<Label text="通道选择:" width="80" align="center" />
+						<HorizontalLayout width="5" />
+						<Option name="OptChannel0" group="channel" text="1" userdata="0" width="30" selected="true" />
+						<HorizontalLayout width="20" />
+						<Option name="OptChannel1" group="channel" text="2" userdata="1" width="30" />
+						<HorizontalLayout width="20" />
+						<Option name="OptChannel2" group="channel" text="3" userdata="2" width="30" />
+						<HorizontalLayout width="20" />
+						<Option name="OptChannel3" group="channel" text="4" userdata="3" width="30" />
+						<Label />
+					</HorizontalLayout>
+				</HorizontalLayout>
+			</HorizontalLayout>
+			<HorizontalLayout name="LayoutCScanSelect" height="38" inset="20,3,20,3" visible="false">
+				<HorizontalLayout />
+				<Button align="center" name="BtnCScanSelect" userdata="-1" width="32" height="32" bkimage="Theme\Button\plc_left_normal.jpg" hotimage="Theme\Button\plc_left_hot.jpg" />
+				<HorizontalLayout width="20" />
+				<Edit width="240" name="EditCScanSelect" align="center" height="32"  />
+				<HorizontalLayout width="20" />
+				<Button align="center" name="BtnCScanSelect" userdata="1" width="32" height="32" bkimage="Theme\Button\plc_right_normal.jpg" hotimage="Theme\Button\plc_right_hot.jpg" />
+				<HorizontalLayout width="200" />
+				<Button align="center" name="BtnCScanIndexSelect" userdata="-1" width="32" height="32" bkimage="Theme\Button\plc_left_normal.jpg" hotimage="Theme\Button\plc_left_hot.jpg" />
+				<HorizontalLayout width="20" />
+				<Edit width="240" name="EditCScanIndexSelect" align="center" height="32"  />
+				<HorizontalLayout width="20" />
+				<Button align="center" name="BtnCScanIndexSelect" userdata="1" width="32" height="32" bkimage="Theme\Button\plc_right_normal.jpg" hotimage="Theme\Button\plc_right_hot.jpg" />
+				<HorizontalLayout />
+			</HorizontalLayout>
+			<HorizontalLayout inset="10,10,10,10">
+				<WindowUI name="WndOpenGL_CSCAN" bkcolor="0xFF000000" />
+			</HorizontalLayout>
+		</VerticalLayout>
+	</VerticalLayout>
+</Window>

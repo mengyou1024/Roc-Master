@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Window size="1280,790" caption="5,5,5,34">
+	<Font name="楷体" size="14" default="true" />
+	<Font name="楷体" size="18" />
+	<Font name="楷体" size="24" />
+	<Font name="楷体" size="32" />
+	<Font name="楷体" size="14" bold="true" />
+	<Font name="楷体" size="18" bold="true" />
+	<Font name="楷体" size="24" bold="true" />
+	<Font name="楷体" size="40" bold="true" />
+
+	<Default name="通道设置" value="button1normalimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='0,90,16,106' mask='#FFFF00FF'&quot; button1hotimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='18,90,34,106' mask='#FFFF00FF'&quot; button1pushedimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='36,90,52,106' mask='#FFFF00FF'&quot; button1disabledimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='54,90,70,106' mask='#FFFF00FF'&quot; button2normalimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='0,108,16,124' mask='#FFFF00FF'&quot; button2hotimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='18,108,34,124' mask='#FFFF00FF'&quot; button2pushedimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='36,108,52,124' mask='#FFFF00FF'&quot; button2disabledimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='54,108,70,124' mask='#FFFF00FF'&quot; thumbnormalimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='0,126,16,142' corner='2,2,2,2' mask='#FFFF00FF'&quot; thumbhotimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='18,126,34,142' corner='2,2,2,2' mask='#FFFF00FF'&quot; thumbpushedimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='36,126,52,142' corner='2,2,2,2' mask='#FFFF00FF'&quot; thumbdisabledimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='54,126,70,142' corner='2,2,2,2' mask='#FFFF00FF'&quot; railnormalimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='0,144,16,160' corner='2,2,2,2' mask='#FFFF00FF'&quot; railhotimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='18,144,34,160' corner='2,2,2,2' mask='#FFFF00FF'&quot; railpushedimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='36,144,52,160' corner='2,2,2,2' mask='#FFFF00FF'&quot; raildisabledimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='54,144,70,160' corner='2,2,2,2' mask='#FFFF00FF'&quot; bknormalimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='0,162,16,178' corner='2,2,2,2' mask='#FFFF00FF'&quot; bkhotimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='18,162,34,178' corner='2,2,2,2' mask='#FFFF00FF'&quot; bkpushedimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='36,162,52,178' corner='2,2,2,2' mask='#FFFF00FF'&quot; bkdisabledimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='54,162,70,178' corner='2,2,2,2' mask='#FFFF00FF'&quot; " />
+	<Default name="HScrollBar" value="button1normalimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='0,0,16,16' mask='#FFFF00FF'&quot; button1hotimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='18,0,34,16' mask='#FFFF00FF'&quot; button1pushedimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='36,0,52,16' mask='#FFFF00FF'&quot; button1disabledimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='54,0,70,16' mask='#FFFF00FF'&quot; button2normalimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='0,18,16,34' mask='#FFFF00FF'&quot; button2hotimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='18,18,34,34' mask='#FFFF00FF'&quot; button2pushedimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='36,18,52,34' mask='#FFFF00FF'&quot; button2disabledimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='54,18,70,34' mask='#FFFF00FF'&quot; thumbnormalimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='0,36,16,52' corner='2,2,2,2' mask='#FFFF00FF'&quot; thumbhotimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='18,36,34,52' corner='2,2,2,2' mask='#FFFF00FF'&quot; thumbpushedimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='36,36,52,52' corner='2,2,2,2' mask='#FFFF00FF'&quot; thumbdisabledimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='54,36,70,52' corner='2,2,2,2' mask='#FFFF00FF'&quot; railnormalimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='0,54,16,70' corner='2,2,2,2' mask='#FFFF00FF'&quot; railhotimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='18,54,34,70' corner='2,2,2,2' mask='#FFFF00FF'&quot; railpushedimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='36,54,52,70' corner='2,2,2,2' mask='#FFFF00FF'&quot; raildisabledimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='54,54,70,70' corner='2,2,2,2' mask='#FFFF00FF'&quot; bknormalimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='0,72,16,88' corner='2,2,2,2' mask='#FFFF00FF'&quot; bkhotimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='18,72,34,88' corner='2,2,2,2' mask='#FFFF00FF'&quot; bkpushedimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='36,72,52,88' corner='2,2,2,2' mask='#FFFF00FF'&quot; bkdisabledimage=&quot;file='Theme\Scrollbar\scrollbar.bmp' source='54,72,70,88' corner='2,2,2,2' mask='#FFFF00FF'&quot; " />
+	<Default name="Button" value="align=&quot;center&quot; valign=&quot;center&quot; bkcolor=&quot;0xFFEEEEEE&quot; hotbkcolor=&quot;0xFF1874CD&quot;" />
+	<Default shared="true" name="Option" value="height=&quot;30&quot;  valign=&quot;center&quot; textpadding=&quot;18,2,0,0&quot; selectedimage=&quot;file='Theme\Check\RadioBtnSel.png' source='0,0,13,13' dest='0,9,14,23'&quot; normalimage=&quot;file='Theme\Check\RadioBtnNon.png' source='0,0,13,13' dest='0,9,14,23'&quot;" />
+
+	<VerticalLayout bkcolor="0xFFFEFEFE" bordersize="1" bordercolor="0xFFDDDDDD">
+		<HorizontalLayout height="34">
+			<Label text="通道设置" font="0" bkimage="file='Theme\Button\union.png' dest='2,2,34,34'" textpadding="34,0,0,0" align="left" valign="center" />
+			<HorizontalLayout visible="true" width="95">
+				<Button float="true" pos="57,0,0,0" name="closebtn" tooltip="关闭" width="39" height="19" bkcolor="" normalimage="Theme\Button\btn_close_normal.png" hotimage="Theme\Button\btn_close_highlight.png" pushedimage="Theme\Button\btn_close_down.png" />
+			</HorizontalLayout>
+		</HorizontalLayout>
+		<VerticalLayout bkimage="Theme\Line\v_line.png" height="1" />
+		<HorizontalLayout inset="10,15,10,10">
+			<WindowUI name="WndOpenGL" bkcolor="0xFF000000" />
+			<VerticalLayout width="10" />
+			<VerticalLayout width="340">
+				<VerticalLayout />
+				<VerticalLayout width="340" height="200" inset="10,10,10,10">
+					<VerticalLayout bkimage="file='Theme\Button\bkimage.png' corner='3,3,3,3'" inset="10,15,10,10">
+						<HorizontalLayout height="5" />
+						<HorizontalLayout height="32">
+							<Label />
+							<Label text="重复频率" width="60" />
+							<HorizontalLayout width="20" />
+							<Edit name="EditFrequency" textvalitor="\d+\.?\d{0,2}" modenumber="true" numberminmax="50,10000" wheelstep="10" width="120" bordersize="1" bordercolor="0x7F7F7F7F" height="28" />
+							<Label />
+						</HorizontalLayout>
+						<HorizontalLayout height="5" />
+						<HorizontalLayout height="32">
+							<Label />
+							<Label text="发射电压" width="60" />
+							<HorizontalLayout width="20" />
+							<Combo name="ComboVoltage" width="120" textpadding="4,1,1,1" normalimage="file='Theme\Combo\combo.png' source='0,0,100,22' corner='2,2,20,18'" hotimage="file='Theme\Combo\combo.png' source='0,22,100,44' corner='2,2,22,18'" pushedimage="file='Theme\Combo\combo.png' source='0,44,100,66' corner='2,2,22,18'" dropboxsize="0, 400">
+								<ListLabelElement text="50V" selected="true" height="32" />
+								<ListLabelElement text="100V" height="32" />
+								<ListLabelElement text="200V" height="32" />
+								<ListLabelElement text="260V" height="32" />
+							</Combo>
+							<Label />
+						</HorizontalLayout>
+						<HorizontalLayout height="5" />
+						<HorizontalLayout height="32">
+							<Label />
+							<Label text="通道标志" width="60" />
+							<HorizontalLayout width="20" />
+							<Edit name="EditChannelFlag" textvalitor="(?:\d|[A-F]|[a-f]){0,8}" width="120" bordersize="1" bordercolor="0x7F7F7F7F" height="28" />
+							<Label />
+						</HorizontalLayout>
+						<HorizontalLayout height="5" />
+						<HorizontalLayout height="32">
+							<Label />
+							<Label text="扫查增量" width="60" />
+							<HorizontalLayout width="20" />
+							<Edit name="EditScanIncrement" textvalitor="[0-4]" modenumber="true" numberminmax="0,4" wheelstep="1" width="120" bordersize="1" bordercolor="0x7F7F7F7F" height="28" />
+							<Label />
+						</HorizontalLayout>
+					</VerticalLayout>
+					<Label text="板卡参数" float="true" pos="20,0,0,0" bkcolor="0xFFFEFEFE" width="60" height="20" />
+				</VerticalLayout>
+				<VerticalLayout height="5" />
+				<VerticalLayout width="340" height="520" inset="10,10,10,10">
+					<VerticalLayout bkimage="file='Theme\Button\bkimage.png' corner='3,3,3,3'" inset="10,15,10,10">
+						<HorizontalLayout height="5" />
+						<HorizontalLayout height="32">
+							<Label />
+							<Label text="声速" width="60" />
+							<HorizontalLayout width="20" />
+							<Edit name="EditSoundVelocity" textvalitor="\d+\.?\d{0,2}" modenumber="true" numberminmax="1000,10000" wheelstep="100" width="120" textext="m/s" bordersize="1" bordercolor="0x7F7F7F7F" height="28" />
+							<Label />
+						</HorizontalLayout>
+						<HorizontalLayout height="5" />
+						<HorizontalLayout height="32">
+							<Label />
+							<Label text="零点偏移" width="60" />
+							<HorizontalLayout width="20" />
+							<Edit name="EditZeroBias" textvalitor="\d+\.?\d{0,2}" modenumber="true" numberminmax="0,1000" wheelstep="0.5" width="120" bordersize="1" textext="mm" bordercolor="0x7F7F7F7F" height="28" />
+							<Label />
+						</HorizontalLayout>
+						<HorizontalLayout height="5" />
+						<HorizontalLayout height="32">
+							<Label />
+							<Label text="脉冲宽度" width="60" />
+							<HorizontalLayout width="20" />
+							<Edit name="EditPulseWidth" textvalitor="\d+\.?\d{0,2}" modenumber="true" numberminmax="0,1000" wheelstep="0.5" width="120" bordersize="1" bordercolor="0x7F7F7F7F" height="28" />
+							<Label />
+						</HorizontalLayout>
+						<HorizontalLayout height="5" />
+						<HorizontalLayout height="32">
+							<Label />
+							<Label text="延时" width="60" />
+							<HorizontalLayout width="20" />
+							<Edit name="EditDelay" textvalitor="\d+\.?\d{0,2}" modenumber="true" numberminmax="0,1000" wheelstep="0.5" width="120" bordersize="1" textext="mm" bordercolor="0x7F7F7F7F" height="28" />
+							<Label />
+						</HorizontalLayout>
+						<HorizontalLayout height="5" />
+						<HorizontalLayout height="32">
+							<Label />
+							<Label text="采样深度" width="60" />
+							<HorizontalLayout width="20" />
+							<Edit name="EditSampleDepth" textvalitor="\d+\.?\d{0,2}" modenumber="true" numberminmax="0,5000" wheelstep="0.5" width="120" bordersize="1" textext="mm" bordercolor="0x7F7F7F7F" height="28" />
+							<Label />
+						</HorizontalLayout>
+						<HorizontalLayout height="5" />
+						<HorizontalLayout height="32">
+							<Label />
+							<Label text="采样因子" width="60" />
+							<HorizontalLayout width="20" />
+							<Edit name="EditSampleFactor" textvalitor="\d{0,3}" modenumber="true" numberminmax="0,255" wheelstep="1" width="120" bordersize="1" bordercolor="0x7F7F7F7F" height="28" />
+							<Label />
+						</HorizontalLayout>
+						<HorizontalLayout height="5" />
+						<HorizontalLayout height="32">
+							<Label />
+							<Label text="增益" width="60" />
+							<HorizontalLayout width="20" />
+							<Edit name="EditGain" textvalitor="\d+\.?\d{0,3}" modenumber="true" numberminmax="0,110" wheelstep="0.2" width="120" bordersize="1" bordercolor="0x7F7F7F7F" height="28" />
+							<Label />
+						</HorizontalLayout>
+						<HorizontalLayout height="5" />
+						<HorizontalLayout height="32">
+							<Label />
+							<Label text="滤波" width="60" />
+							<HorizontalLayout width="20" />
+							<Combo name="ComboFilter" width="120" textpadding="4,1,1,1" normalimage="file='Theme\Combo\combo.png' source='0,0,100,22' corner='2,2,20,18'" hotimage="file='Theme\Combo\combo.png' source='0,22,100,44' corner='2,2,22,18'" pushedimage="file='Theme\Combo\combo.png' source='0,44,100,66' corner='2,2,22,18'" dropboxsize="0, 400">
+								<ListLabelElement text="不滤波" selected="true" height="32" />
+								<ListLabelElement text="2.5MHz" height="32" />
+								<ListLabelElement text="5.0MHz" height="32" />
+							</Combo>
+							<Label />
+						</HorizontalLayout>
+						<HorizontalLayout height="5" />
+						<HorizontalLayout height="32">
+							<Label />
+							<Label text="检波方式" width="60" />
+							<HorizontalLayout width="20" />
+							<Combo name="CombotDemodu" width="120" textpadding="4,1,1,1" normalimage="file='Theme\Combo\combo.png' source='0,0,100,22' corner='2,2,20,18'" hotimage="file='Theme\Combo\combo.png' source='0,22,100,44' corner='2,2,22,18'" pushedimage="file='Theme\Combo\combo.png' source='0,44,100,66' corner='2,2,22,18'" dropboxsize="0, 400">
+								<ListLabelElement text="射频" selected="true" height="32" />
+								<ListLabelElement text="全波" height="32" />
+								<ListLabelElement text="正半波" height="32" />
+								<ListLabelElement text="负半波" height="32" />
+							</Combo>
+							<Label />
+						</HorizontalLayout>
+						<HorizontalLayout height="5" />
+						<HorizontalLayout height="32">
+							<Label />
+							<Label text="B门类型" width="60" />
+							<HorizontalLayout width="20" />
+							<Combo name="ComboGateBType" width="120" textpadding="4,1,1,1" normalimage="file='Theme\Combo\combo.png' source='0,0,100,22' corner='2,2,20,18'" hotimage="file='Theme\Combo\combo.png' source='0,22,100,44' corner='2,2,22,18'" pushedimage="file='Theme\Combo\combo.png' source='0,44,100,66' corner='2,2,22,18'" dropboxsize="0, 400">
+								<ListLabelElement text="固定" selected="true" height="32" />
+								<ListLabelElement text="跟随" height="32" />
+							</Combo>
+							<Label />
+						</HorizontalLayout>
+						<HorizontalLayout height="5" />
+						<HorizontalLayout>
+							<Label />
+							<Option name="OptCH1" text="1" width="50" valign="center" textpadding="28,8,0,0" align="left" selectedimage="file='Theme\Check\checked.png' dest='10,8,26,24'" normalimage="file='Theme\Check\unchecked.png' dest='10,8,26,24'" hotimage="" pushedimage="" />
+							<Option name="OptCH2" text="2" width="50" valign="center" textpadding="28,8,0,0" align="left" selectedimage="file='Theme\Check\checked.png' dest='10,8,26,24'" normalimage="file='Theme\Check\unchecked.png' dest='10,8,26,24'" hotimage="" pushedimage="" />
+							<Option name="OptCH3" text="3" width="50" valign="center" textpadding="28,8,0,0" align="left" selectedimage="file='Theme\Check\checked.png' dest='10,8,26,24'" normalimage="file='Theme\Check\unchecked.png' dest='10,8,26,24'" hotimage="" pushedimage="" />
+							<Option name="OptCH4" text="4" width="50" valign="center" textpadding="28,8,0,0" align="left" selectedimage="file='Theme\Check\checked.png' dest='10,8,26,24'" normalimage="file='Theme\Check\unchecked.png' dest='10,8,26,24'" hotimage="" pushedimage="" />
+							<Option name="OptCH5" text="5" width="50" valign="center" textpadding="28,8,0,0" align="left" selectedimage="file='Theme\Check\checked.png' dest='10,8,26,24'" normalimage="file='Theme\Check\unchecked.png' dest='10,8,26,24'" hotimage="" pushedimage="" />
+							<Option name="OptCH6" text="6" width="50" valign="center" textpadding="28,8,0,0" align="left" selectedimage="file='Theme\Check\checked.png' dest='10,8,26,24'" normalimage="file='Theme\Check\unchecked.png' dest='10,8,26,24'" hotimage="" pushedimage="" />
+							<Label />
+						</HorizontalLayout>
+						<HorizontalLayout height="2" />
+						<HorizontalLayout>
+							<Label />
+							<Option name="OptCH7" text="7" width="50" valign="center" textpadding="28,8,0,0" align="left" selectedimage="file='Theme\Check\checked.png' dest='10,8,26,24'" normalimage="file='Theme\Check\unchecked.png' dest='10,8,26,24'" hotimage="" pushedimage="" />
+							<Option name="OptCH8" text="8" width="50" valign="center" textpadding="28,8,0,0" align="left" selectedimage="file='Theme\Check\checked.png' dest='10,8,26,24'" normalimage="file='Theme\Check\unchecked.png' dest='10,8,26,24'" hotimage="" pushedimage="" />
+							<Option name="OptCH9" text="9" width="50" valign="center" textpadding="28,8,0,0" align="left" selectedimage="file='Theme\Check\checked.png' dest='10,8,26,24'" normalimage="file='Theme\Check\unchecked.png' dest='10,8,26,24'" hotimage="" pushedimage="" />
+							<Option name="OptCH10" text="10" width="50" valign="center" textpadding="28,8,0,0" align="left" selectedimage="file='Theme\Check\checked.png' dest='10,8,26,24'" normalimage="file='Theme\Check\unchecked.png' dest='10,8,26,24'" hotimage="" pushedimage="" />
+							<Option name="OptCH11" text="11" width="50" valign="center" textpadding="28,8,0,0" align="left" selectedimage="file='Theme\Check\checked.png' dest='10,8,26,24'" normalimage="file='Theme\Check\unchecked.png' dest='10,8,26,24'" hotimage="" pushedimage="" />
+							<Option name="OptCH12" text="12" width="50" valign="center" textpadding="28,8,0,0" align="left" selectedimage="file='Theme\Check\checked.png' dest='10,8,26,24'" normalimage="file='Theme\Check\unchecked.png' dest='10,8,26,24'" hotimage="" pushedimage="" />
+							<Label />
+						</HorizontalLayout>
+						<HorizontalLayout height="5" />
+						<HorizontalLayout>
+							<Label />
+							<Button name="BtnCopy" width="80" height="32" text="通道拷贝" />
+							<Label />
+						</HorizontalLayout>
+					</VerticalLayout>
+					<Label text="通道参数" float="true" pos="20,0,0,0" bkcolor="0xFFFEFEFE" width="60" height="20" />
+				</VerticalLayout>
+				<VerticalLayout />
+			</VerticalLayout>
+		</HorizontalLayout>
+	</VerticalLayout>
+</Window>

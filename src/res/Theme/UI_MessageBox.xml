@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Window size="480,320" corner="5,5" caption="0,0,0,70">
+	<Font name="楷体" size="14" default="true" />
+	<Font name="楷体" size="18" />
+	<Font name="楷体" size="24" />
+	<Font name="楷体" size="32" />
+	<Font name="楷体" size="14" bold="true" />
+	<Font name="楷体" size="18" bold="true" />
+	<Font name="楷体" size="24" bold="true" />
+	<Font name="楷体" size="32" bold="true" />
+
+	<Default name="Button" value="align=&quot;center&quot; valign=&quot;center&quot; bkcolor=&quot;0xFFEEEEEE&quot; hotbkcolor=&quot;0xFF1874CD&quot;" />
+
+	<VerticalLayout bkcolor="0xFFFEFEFE" bordersize="1" bordercolor="0xFFDDDDDD">
+		<HorizontalLayout height="34">
+			<Label name="LabelTitle" bkimage="file='Theme\Button\union.png' dest='2,2,34,34'" textpadding="34,0,0,0" align="left" valign="center" />
+			<HorizontalLayout width="40">
+				<Button float="true" pos="0,0,0,0" name="closebtn" tooltip="关闭" width="39" height="19" bkcolor="" normalimage="Theme\Button\btn_close_normal.png" hotimage="Theme\Button\btn_close_highlight.png" pushedimage="Theme\Button\btn_close_down.png" />
+			</HorizontalLayout>
+		</HorizontalLayout>
+		<VerticalLayout bkimage="Theme\Line\v_line.png" height="1" />
+		<HorizontalLayout inset="20, 30, 20, 20">
+			<VerticalLayout>
+				<Text name="LabelString" multiline="true" font="2" textcolor="0xFF000000" />
+			</VerticalLayout>
+		</HorizontalLayout>
+		<VerticalLayout bkimage="Theme\Line\v_line.png" height="1" />
+		<VerticalLayout height="10" />
+		<TabLayout name="TabBtn" height="40">
+			<HorizontalLayout>
+				<VerticalLayout />
+				<Button name="IDOK" width="150" text="确定" />
+				<VerticalLayout />
+			</HorizontalLayout>
+			<HorizontalLayout>
+				<VerticalLayout />
+				<Button name="IDYES" width="150" text="是" />
+				<VerticalLayout width="50" />
+				<Button name="IDCANCEL" width="150" text="否" />
+				<VerticalLayout />
+			</HorizontalLayout>
+		</TabLayout>
+		<VerticalLayout height="20" />
+	</VerticalLayout>
+</Window>
