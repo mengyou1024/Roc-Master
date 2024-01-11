@@ -50,5 +50,3 @@ pack-installer.iss
 
 .vscode/settings.json
 output/
-
-archive.json

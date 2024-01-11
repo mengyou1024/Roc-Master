@@ -312,6 +312,13 @@ int GetVersionCode(std::string version) {
     return curVer;
 }
 
+int GetVersionCode(int major, int minor, int patch) {
+    if (major >= 0 && minor >= 0 && patch >= 0) {
+        return (major & 0xFF) << 16 | (minor & 0xFF) << 8 | (patch & 0xFF);
+    }
+    return 0;
+}
+
 bool Check4Update(std::string currentVersion, std::string newVersion) {
     int curVer = GetVersionCode(currentVersion);
     int newVer = GetVersionCode(newVersion);

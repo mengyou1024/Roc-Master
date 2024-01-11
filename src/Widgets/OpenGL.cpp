@@ -99,7 +99,20 @@ bool OpenGL::Create(HWND hParent) {
 bool OpenGL::SupportOpenGL() {
     wglMakeCurrent(m_hDC, m_hRC);
     const GLubyte* OpenGLVersion = glGetString(GL_VERSION);
-
+    static auto ShowGLVersion = []() -> int {
+        GLint majVers = 0, minVers = 0;
+        glGetIntegerv(GL_MAJOR_VERSION, &majVers);
+        glGetIntegerv(GL_MINOR_VERSION, &minVers);
+        auto curVer = GetVersionCode(majVers, minVers);
+        int minVer = GetVersionCode(3, 3);
+        if (curVer >= minVer) {
+            spdlog::info("OpenGL Version: {}.{}", majVers, minVers);
+        } else {
+            spdlog::error("OpenGL Version: {}.{} minimum suppor version is 3.3", majVers, minVers);
+        }
+        return 0;
+    };
+    static int temp = ShowGLVersion();
     return true;
 }
 

@@ -59,7 +59,16 @@ bool PointInRect(RECT rc, ::CPoint pt);
  * @param version 版本号字符串
  * @return versionCode
  */
-int GetVersionCode(std::string version);
+int GetVersionCode(std::string_view version);
+
+/**
+ * @brief 获取版本的整形码
+ * @param major 主版本
+ * @param minor 次版本
+ * @param patch 补丁
+ * @return versionCode
+ */
+int GetVersionCode(int major, int minor = 0, int patch = 0);
 
 /**
  * @brief 检查更新

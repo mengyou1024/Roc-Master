@@ -1,6 +1,6 @@
 find_package(Git QUIET)
 
-if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+if (NOT EXISTS "${CMAKE_SOURCE_DIR}/archive.json")
     if(GIT_FOUND)
         execute_process(
             COMMAND ${GIT_EXECUTABLE} describe --tags
@@ -42,15 +42,13 @@ if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     else(GIT_FOUND)
         message(FATAL_ERROR "no git found, use `choco install git` to install")
     endif(GIT_FOUND)
-elseif (CMAKE_BUILD_TYPE STREQUAL "Release")
+else (NOT EXISTS "${CMAKE_SOURCE_DIR}/archive.json")
     file(READ "${CMAKE_SOURCE_DIR}/archive.json" ARCHIVE_JSON_STRING)
     string(JSON APP_VERSION GET "${ARCHIVE_JSON_STRING}" APP_VERSION)
     string(JSON GIT_USER_NAME GET "${ARCHIVE_JSON_STRING}" GIT_USER_NAME)
     string(JSON GIT_REPOSITORY_URL GET "${ARCHIVE_JSON_STRING}" GIT_REPOSITORY_URL)
     string(JSON GIT_USER_EMAIL GET "${ARCHIVE_JSON_STRING}" GIT_USER_EMAIL)
-else ()
-    message(FATAL_ERROR "CMAKE_BUILD_TYPE must be Debug or Release")
-endif()
+endif(NOT EXISTS "${CMAKE_SOURCE_DIR}/archive.json")
 
 message(STATUS "APP VERSION:" ${APP_VERSION})
 message(STATUS "GIT_REPOSITORY_URL:${GIT_REPOSITORY_URL}")
