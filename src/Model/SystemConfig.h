@@ -22,7 +22,7 @@ namespace ORM_Model {
         std::wstring httpProxy              = {};    ///< http代理
         bool         enableMeasureThickness = false; ///< 使能测厚功能
         bool         enableNetworkMulti     = false; ///< 使用多通道网络(原10通道)
-        bool         enableNetworkTOFD      = false; ///< 使用TOFD版网络
+        bool         enableNetworkTOFD      = true; ///< 使用TOFD版网络
         std::string  ipFPGA                 = {};    ///< FPGA的IP地址
         std::string  ipPC                   = {};    ///< PC的IP地址
         uint16_t     portFPGA               = {};    ///< FPGA的端口

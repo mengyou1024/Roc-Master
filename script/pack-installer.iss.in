@@ -51,6 +51,7 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 [Files]
 Source: "@CMAKE_SOURCE_DIR@/output/@PROJECT_NAME@-@APP_VERSION@/*"; DestDir: "{app}"; Flags: comparetimestamp
 Source: "@CMAKE_SOURCE_DIR@/output/@PROJECT_NAME@-@APP_VERSION@/template/*"; DestDir: "{app}/template"; Flags: comparetimestamp
+Source: "@CMAKE_SOURCE_DIR@/vc_redist/VC_redist.x64.exe"; DestDir: "{app}"; Flags: deleteafterinstall
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Registry]
@@ -76,4 +77,4 @@ Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: de
 [Run]
 ;安装完成后自动运行程序
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent runascurrentuser
-
+Filename: "{app}\vc_redist.x64.exe"; Parameters: /q; StatusMsg: "Installing Microsoft Visual C++ Runtime ..."
