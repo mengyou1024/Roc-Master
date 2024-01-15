@@ -363,7 +363,7 @@ public:
 
     [[nodiscard]]
     virtual unique_ptr<NM_DATA> readDatas() {
-        return false;
+        return nullptr;
     }
 
     virtual void syncCache2Board() final {
