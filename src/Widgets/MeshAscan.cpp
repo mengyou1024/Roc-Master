@@ -39,6 +39,11 @@ void MeshAscan::SetLimits(float fMin, float fMax) {
     m_fScanMax = fMax;
 }
 
+void MeshAscan::SetLimits(std::pair<double, double> limits) {
+    m_fScanMin = (float)limits.first;
+    m_fScanMax = (float)limits.second;
+}
+
 void MeshAscan::CreateBK() {
     Mesh::CreateBK();
 

@@ -11,7 +11,10 @@ public:
     MeshAscan(OpenGL *pOpenGL);
     virtual ~MeshAscan();
 
+    [[deprecated("使用`void SetLimits(std::pair<double, double> limits)`替代")]]
     virtual void SetLimits(float fMin, float fMax) override;
+
+    void SetLimits(std::pair<double, double> limits);
 
     virtual void CreateBK() override;
     virtual void Setup() override;

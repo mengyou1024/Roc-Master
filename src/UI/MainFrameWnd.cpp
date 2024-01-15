@@ -503,18 +503,16 @@ void MainFrameWnd::UpdateAScanCallback(const HDBridge::NM_DATA &data, const HD_U
     if (model == nullptr || model->m_pMesh.at(data.iChannel) == nullptr) {
         return;
     }
-    auto                                  bridge = caller.getBridge();
-    auto                                  mesh   = model->getMesh<MeshAscan *>(data.iChannel);
-    std::shared_ptr<std::vector<uint8_t>> hdata  = std::make_shared<std::vector<uint8_t>>(data.pAscan);
+    auto bridge = caller.getBridge();
+    auto mesh   = model->getMesh<MeshAscan *>(data.iChannel);
+    auto hdata  = std::make_shared<std::vector<uint8_t>>(data.pAscan);
     if (bridge == nullptr || mesh == nullptr || hdata == nullptr) {
         return;
     }
     // 更新A扫图像
     mesh->hookAScanData(hdata);
-    float delay = bridge->getDelay(data.iChannel);
-    float depth = bridge->getSampleDepth(data.iChannel) + delay;
     // 设置坐标轴范围
-    mesh->SetLimits((float)(bridge->time2distance(delay, data.iChannel)), (float)(bridge->time2distance(depth, data.iChannel)));
+    mesh->SetLimits(bridge->getAxisLimits(data.iChannel));
     // 更新波门
     for (int i = 0; i < 2; i++) {
         HDBridge::HB_GateInfo g = bridge->getGateInfo(i, data.iChannel);
@@ -1562,9 +1560,9 @@ void MainFrameWnd::StartScan(bool changeFlag) {
     }
     if (mScanningFlag == false) {
         // 保存当前时间
-        std::stringstream                     buffer = {};
-        std::chrono::system_clock::time_point t      = std::chrono::system_clock::now();
-        time_t                                tm     = std::chrono::system_clock::to_time_t(t);
+        std::stringstream buffer = {};
+        auto              t      = std::chrono::system_clock::now();
+        time_t            tm     = std::chrono::system_clock::to_time_t(t);
         buffer << std::put_time(localtime(&tm), "%Y-%m-%d__%H-%M-%S");
         mDetectInfo.time                   = buffer.str();
         mDetectInfo.enableMeasureThickness = GetSystemConfig().enableMeasureThickness;

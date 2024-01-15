@@ -453,6 +453,14 @@ public:
         return distance2time(distance_mm, (double)mCache.soundVelocity[channel % CHANNEL_NUMBER]);
     }
 
+    virtual std::pair<double, double> getAxisLimits(int ch) final {
+        auto delay = getDelay(ch);
+        auto depth = getSampleDepth(ch) + delay;
+        auto min   = time2distance(delay, ch);
+        auto max   = time2distance(depth, ch);
+        return std::make_pair(min, max);
+    }
+
     /**
      * @brief 计算波门信息
      * @param data 扫查数据
