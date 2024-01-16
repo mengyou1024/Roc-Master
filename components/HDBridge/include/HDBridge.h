@@ -18,6 +18,9 @@ using std::vector;
 #endif
 
 class HDBridge {
+    friend class NetworkMulti;
+    friend class TOFDMultiPort;
+
 public:
     enum class HB_Voltage : uint32_t {
         Voltage_50V = 0,
@@ -128,7 +131,7 @@ public:
     };
 #pragma pack()
 
-protected:
+private:
     int          mId      = {};
     std::wstring mName    = {};
     bool         mIsValid = {};
