@@ -18,6 +18,7 @@ struct HD_ScanORM {
     #pragma pack(1)
     std::array<float, 4>                                                mThickness     = {};
     std::array<float, 2>                                                mCScanLimits   = {};
+    float                                                               mXAxisLoc = {};
     std::array<HDBridge::HB_ScanGateInfo, HDBridge::CHANNEL_NUMBER + 4> mScanGateInfo  = {};
     std::array<HDBridge::HB_ScanGateInfo, HDBridge::CHANNEL_NUMBER>     mScanGateAInfo = {};
     std::array<HDBridge::HB_ScanGateInfo, HDBridge::CHANNEL_NUMBER>     mScanGateBInfo = {};

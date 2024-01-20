@@ -3,6 +3,7 @@
 #include "MainFrameWnd.h"
 
 #include "Mutilple.h"
+#include <AbsPLCIntf.h>
 #include <BusyWnd.h>
 #include <ChannelSettingWnd.h>
 #include <DefectsListWnd.h>
@@ -283,8 +284,8 @@ void MainFrameWnd::DrawReviewCScan() {
 
     // 回放的C扫范围为第一幅图的最小值到最后一幅图的最大值
     if (mFragmentReview->size() > 0) {
-        float cScanMinLimits = ((*mFragmentReview)[0]).mScanOrm.mCScanLimits[0];
-        float cScanMaxLimits = ((*mFragmentReview)[mFragmentReview->size() - 1]).mScanOrm.mCScanLimits[1];
+        float cScanMinLimits = ((*mFragmentReview)[0]).mScanOrm.mXAxisLoc;
+        float cScanMaxLimits = ((*mFragmentReview)[mFragmentReview->size() - 1]).mScanOrm.mXAxisLoc;
         m_OpenGL_CSCAN.getModel<ModelGroupCScan *>()->SetAxisRange(cScanMinLimits, cScanMaxLimits);
     }
 }
@@ -1333,6 +1334,8 @@ void MainFrameWnd::SaveDefectStartID(int channel) {
     ORM_Model::ScanRecord scanRecord = {};
     scanRecord.startID               = mRecordCount + (int)mReviewData.size();
     scanRecord.channel               = channel;
+    auto [_, axis]                   = AbsPLCIntf::getVariable<float>("V27.0");
+    scanRecord.xAxisLoc              = axis;
     mScanRecordCache.push_back(scanRecord);
     mIDDefectRecord[channel] = (int)mScanRecordCache.size() - 1;
 }
@@ -1420,10 +1423,9 @@ void MainFrameWnd::SaveScanData() {
         mUtils->mScanOrm.mScanGateAInfo[i] = mUtils->getCache().gateInfo[i];
         mUtils->mScanOrm.mScanGateBInfo[i] = mUtils->getCache().gate2Info[i];
     }
-    // 保存C扫的坐标信息
-    auto [minLimit, maxLimit]        = m_OpenGL_CSCAN.getModel<ModelGroupCScan *>()->GetAxisRange();
-    mUtils->mScanOrm.mCScanLimits[0] = minLimit;
-    mUtils->mScanOrm.mCScanLimits[1] = maxLimit;
+    // 保存探头的当前位置
+    auto [__, xAxisLoc]        = AbsPLCIntf::getVariable<float>("V27.0");
+    mUtils->mScanOrm.mXAxisLoc = xAxisLoc;
     // 保存扫查数据
     if (mReviewData.size() >= SCAN_RECORD_CACHE_MAX_ITEMS) {
         std::vector<HD_Utils> copyData = mReviewData;

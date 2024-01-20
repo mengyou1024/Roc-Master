@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Window size="640,480" caption="5,5,5,34">
+<Window size="790,480" caption="5,5,5,34">
 	<Font name="楷体" size="14" default="true" />
 	<Font name="楷体" size="18" />
 	<Font name="楷体" size="24" />
@@ -23,13 +23,14 @@
 		</HorizontalLayout>
 		<VerticalLayout bkimage="Theme\Line\v_line.png" height="1" />
 		<VerticalLayout inset="10,15,10,10">
-			<VerticalLayout width="640">
+			<VerticalLayout width="790">
 				<List name="ListDefects" itemalign="center" inset="1,1,1,1" bordersize="1" bordercolor="0x7F7F7F7F" bkcolor="#FFFFFFFF" itemtextpadding="5,0,0,0" itemtextcolor="#FF000000" itembkcolor="#FFFFFFFF" itemselectedtextcolor="#FF000000" itemselectedbkcolor="#FFC1E3FF" itemhottextcolor="#FF000000" itemhotbkcolor="#FFE9F5FF" itemdisabledtextcolor="#FFCCCCCC" itemdisabledbkcolor="#FFFFFFFF" vscrollbar="true" hscrollbar="true">
 					<ListHeader bkimage="Theme\List\list_header_bg.png">
 						<ListHeaderItem text="ID" width="150" height="40" minwidth="16" sepwidth="1" align="center" hotimage="Theme\List\list_header_hot.png" pushedimage="Theme\List\list_header_pushed.png" sepimage="Theme\List\list_header_sep.png" />
 						<ListHeaderItem text="通道号" width="150" height="40" minwidth="16" sepwidth="1" align="center" hotimage="Theme\List\list_header_hot.png" pushedimage="Theme\List\list_header_pushed.png" sepimage="Theme\List\list_header_sep.png" />
 						<ListHeaderItem text="起始ID" width="150" height="40" minwidth="16" sepwidth="1" align="center" hotimage="Theme\List\list_header_hot.png" pushedimage="Theme\List\list_header_pushed.png" sepimage="Theme\List\list_header_sep.png" />
 						<ListHeaderItem text="结束ID" width="150" height="40" minwidth="16" sepwidth="1" align="center" hotimage="Theme\List\list_header_hot.png" pushedimage="Theme\List\list_header_pushed.png" sepimage="Theme\List\list_header_sep.png" />
+						<ListHeaderItem text="位置" width="150" height="40" minwidth="16" sepwidth="1" align="center" hotimage="Theme\List\list_header_hot.png" pushedimage="Theme\List\list_header_pushed.png" sepimage="Theme\List\list_header_sep.png" />
 					</ListHeader>
 				</List>
 			</VerticalLayout>

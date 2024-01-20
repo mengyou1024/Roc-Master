@@ -14,16 +14,17 @@ using namespace sqlite_orm;
 namespace ORM_Model {
     class ScanRecord {
     public:
-        uint32_t    id      = {}; ///< id
-        int         channel = {}; ///< 缺陷通道号
-        int         startID = {}; ///< 缺陷的起始ID
-        int         endID   = {}; ///< 缺陷的结束ID
+        uint32_t id       = {}; ///< id
+        int      channel  = {}; ///< 缺陷通道号
+        int      startID  = {}; ///< 缺陷的起始ID
+        int      endID    = {}; ///< 缺陷的结束ID
+        float    xAxisLoc = {}; ///< X轴坐标位置
 
         static auto storage(std::string dbName) {
             return make_storage(dbName,
                                 make_table("ScanRecord", make_column("ID", &ScanRecord::id, primary_key().autoincrement()),
                                            make_column("CHANNEL", &ScanRecord::channel), make_column("START_ID", &ScanRecord::startID),
-                                           make_column("END_ID", &ScanRecord::endID)));
+                                           make_column("END_ID", &ScanRecord::endID), make_column("X_AXIS", &ScanRecord::xAxisLoc)));
         }
 
         static auto storage(void) {

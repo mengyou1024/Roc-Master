@@ -66,6 +66,10 @@ void DefectsListWnd::LoadDefectsList(std::string time) {
             pLine->SetText(1, std::to_wstring(it.channel).data());
             pLine->SetText(2, std::to_wstring(it.startID).data());
             pLine->SetText(3, std::to_wstring(it.endID).data());
+            std::wstringstream buf;
+            buf.precision(2);
+            buf << it.xAxisLoc;
+            pLine->SetText(4, buf.str().data());
         }
     }
 }
