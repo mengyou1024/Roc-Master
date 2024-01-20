@@ -31,10 +31,10 @@ public:
 /**
  * @brief 获取变量映射
  * @param id 变量id
- * @return [area, start, isBit, bitSel, valid]
+ * @return [area, start, isBit, bitSel, dbNum, valid]
  */
-static std::tuple<uint8_t, int, bool, int, bool> getMapping(std::string id) {
-    static std::regex reg(R"(^([IQMV])(\d+)\.?([07])?$)");
+static std::tuple<uint8_t, int, bool, int, int, bool> getMapping(std::string id) {
+    static std::regex reg(R"(^([IQMV])(\d+)\.?([0-7])?$)");
     std::smatch       match;
     if (std::regex_match(id, match, reg)) {
         uint8_t area = 0;
@@ -47,75 +47,77 @@ static std::tuple<uint8_t, int, bool, int, bool> getMapping(std::string id) {
         } else if (match[1].str() == "V") {
             area = S7AreaDB;
         }
-        int  start  = atol(match[2].str().c_str());
-        bool isBit  = match[3].matched;
-        int  bitSel = 0;
-        if (isBit) {
-            bitSel = atol(match[3].str().c_str());
+        if (match[1].str() == "V") {
+            int dbNum = atol(match[2].str().c_str());
+            int start = atol(match[3].str().c_str());
+            return std::make_tuple(area, start, 0, 0, dbNum, true);
+        } else {
+            int  start  = atol(match[2].str().c_str());
+            bool isBit  = match[3].matched;
+            int  bitSel = 0;
+            if (isBit) {
+                bitSel = atol(match[3].str().c_str());
+            }
+            return std::make_tuple(area, start, isBit, bitSel, 0, true);
         }
-        return std::make_tuple(area, start, isBit, bitSel, true);
     }
-    return std::make_tuple(0, 0, 0, 0, false);
+    return std::make_tuple(0, 0, 0, 0, 0, false);
 }
 
-template <class T>
-static bool __getVariable(std::string id, T& ret, int type) {
+template <class T> static bool __getVariable(std::string id, T& ret, int type) {
     if (!AbsPLCIntf::isConnected()) {
         return false;
     }
-    auto [area, start, isBit, bitSel, valid] = getMapping(id);
+    auto [area, start, isBit, bitSel, dbNum, valid] = getMapping(id);
     if (!valid) {
         return false;
     }
-    auto _ret = doWithReconnect([area, start, type, &ret]() -> bool {
+    auto _ret = doWithReconnect([area, start, type, dbNum, &ret]() -> bool {
         auto client = _RuitiePLCInfo::getInstance()->m_client;
-        return client->ReadArea(area, 1, start, 1, type, &ret) == 0;
+        return client->ReadArea(area, dbNum, start, 1, type, &ret) == 0;
     });
     return _ret;
 }
 
-template <class T>
-static bool __getVariable(std::string id, int sz, std::vector<T>& data, int type) {
+template <class T> static bool __getVariable(std::string id, int sz, std::vector<T>& data, int type) {
     if (!AbsPLCIntf::isConnected()) {
         return false;
     }
-    auto [area, start, isBit, bitSel, valid] = getMapping(id);
+    auto [area, start, isBit, bitSel, dbNum, valid] = getMapping(id);
     if (!valid) {
         return false;
     }
-    auto _ret = doWithReconnect([area, start, sz, type, &data]() -> bool {
+    auto _ret = doWithReconnect([area, start, sz, type, dbNum, &data]() -> bool {
         auto client = _RuitiePLCInfo::getInstance()->m_client;
-        return client->ReadArea(area, 1, start, sz, type, (void*)data.data()) == 0;
+        return client->ReadArea(area, dbNum, start, sz, type, (void*)data.data()) == 0;
     });
     return _ret;
 }
 
-template <class T>
-static bool __setVariable(std::string id, T ret, int type) {
+template <class T> static bool __setVariable(std::string id, T ret, int type) {
     if (!AbsPLCIntf::isConnected()) {
         return false;
     }
-    auto [area, start, isBit, bitSel, valid] = getMapping(id);
+    auto [area, start, isBit, bitSel, dbNum, valid] = getMapping(id);
     if (!valid) {
         return false;
     }
-    auto _ret = doWithReconnect([area, start, type, &ret]() -> bool {
+    auto _ret = doWithReconnect([area, start, type, dbNum, &ret]() -> bool {
         auto client = _RuitiePLCInfo::getInstance()->m_client;
-        return client->WriteArea(area, 1, start, 1, type, &ret) == 0;
+        return client->WriteArea(area, dbNum, start, 1, type, &ret) == 0;
     });
     return _ret;
 }
 
-template <class T>
-static bool __setVariable(std::string id, int sz, const std::vector<T>& data, int type) {
+template <class T> static bool __setVariable(std::string id, int sz, const std::vector<T>& data, int type) {
     if (!AbsPLCIntf::isConnected()) {
         return false;
     }
-    auto [area, start, isBit, bitSel, valid] = getMapping(id);
+    auto [area, start, isBit, bitSel, dbNum, valid] = getMapping(id);
     if (!valid) {
         return false;
     }
-    auto _ret = doWithReconnect([area, start, sz, type, &data]() -> bool {
+    auto _ret = doWithReconnect([area, start, sz, type, dbNum, &data]() -> bool {
         auto client = _RuitiePLCInfo::getInstance()->m_client;
         return client->WriteArea(area, 1, start, sz, type, (void*)data.data()) == 0;
     });
@@ -123,10 +125,7 @@ static bool __setVariable(std::string id, int sz, const std::vector<T>& data, in
 }
 
 static bool reconnect() {
-    string ip   = "";
-    int    slot = 0;
-    int    rack = 0;
-    AbsPLCIntf::getConnectedInfo(&ip, &rack, &slot);
+    auto [ip, slot, rack] = AbsPLCIntf::getConnectedInfo();
     if (ip.empty()) {
         return false;
     } else {
@@ -218,6 +217,15 @@ bool AbsPLCIntf::connectTo(const char* addr, int rack, int slot) {
     return true;
 }
 
+std::tuple<std::string, int, int> AbsPLCIntf::getConnectedInfo() {
+    std::string addr = "";
+    int         rack = 0, slot = 0;
+    addr = _RuitiePLCInfo::getInstance()->m_addr;
+    rack = _RuitiePLCInfo::getInstance()->m_rack;
+    slot = _RuitiePLCInfo::getInstance()->m_slot;
+    return std::make_tuple(addr, rack, slot);
+}
+
 void AbsPLCIntf::disconnect(void) {
     if (_RuitiePLCInfo::getInstance()->m_client) {
         if (isConnected()) {
@@ -229,20 +237,8 @@ void AbsPLCIntf::disconnect(void) {
     }
 }
 
-void AbsPLCIntf::getConnectedInfo(std::string* addr, int* rack, int* slot) {
-    if (addr) {
-        *addr = _RuitiePLCInfo::getInstance()->m_addr;
-    }
-    if (rack) {
-        *rack = _RuitiePLCInfo::getInstance()->m_rack;
-    }
-    if (slot) {
-        *slot = _RuitiePLCInfo::getInstance()->m_slot;
-    }
-}
-
 bool AbsPLCIntf::getVariable(string id, bool& val) {
-    auto [area, start, isBit, bitSel, valid] = getMapping(id);
+    auto [area, start, isBit, bitSel, dbNum, valid] = getMapping(id);
     if (!valid) {
         return false;
     }
@@ -298,7 +294,7 @@ bool AbsPLCIntf::getVariable(string id, int sz, std::vector<float>& data) {
 }
 
 bool AbsPLCIntf::setVariable(string id, bool val) {
-    auto [area, start, isBit, bitSel, valid] = getMapping(id);
+    auto [area, start, isBit, bitSel, dbNum, valid] = getMapping(id);
     if (!valid) {
         return false;
     }

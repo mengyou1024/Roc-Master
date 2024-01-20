@@ -55,7 +55,7 @@ namespace AbsPLCIntf {
      * @param rack plc rack
      * @param slot plc slot
      */
-    bool connectTo(const char* addr = "192.168.2.1", int rack = 0, int slot = 1);
+    bool connectTo(const char* addr = "192.168.0.1", int rack = 0, int slot = 1);
 
     /**
      * @brief disconnect
@@ -66,11 +66,9 @@ namespace AbsPLCIntf {
     /**
      * @brief Get the Connected Info object
      *
-     * @param addr plc address
-     * @param rack plc rack
-     * @param slot plc slot
+     * @return [addr, rack, slot]
      */
-    void getConnectedInfo(std::string* addr = nullptr, int* rack = nullptr, int* slot = nullptr);
+    std::tuple<std::string, int, int> getConnectedInfo();
 
     // getter
 
@@ -92,15 +90,13 @@ namespace AbsPLCIntf {
     bool setVariable(string id, int sz, const std::vector<uint8_t>& data);
     bool setVariable(string id, int sz, const std::vector<float>& data);
 
-    template <class T>
-    std::pair<bool, T> getVariable(string id) {
+    template <class T> std::pair<bool, T> getVariable(string id) {
         T    ret{};
         bool res = getVariable(id, ret);
         return std::make_pair(res, ret);
     }
 
-    template <class T>
-    std::pair<bool, std::vector<T>> getVariable(string id, int sz) {
+    template <class T> std::pair<bool, std::vector<T>> getVariable(string id, int sz) {
         bool           res = {};
         std::vector<T> ret = {};
         res                = getVariable(id, sz, ret);

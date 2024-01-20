@@ -45,10 +45,19 @@ MainProcess::MainProcess() {
     spdlog::set_level(spdlog::level::info);
 #endif
     spdlog::info("{:-^80}", "application start, version: " APP_VERSION);
+    auto is_connected       = AbsPLCIntf::connectTo();
+    auto [addr, rack, slot] = AbsPLCIntf::getConnectedInfo();
+    if (is_connected) {
+        spdlog::info("connect to {} {} {} success", addr, rack, slot);
+    } else {
+        spdlog::warn("connect to {} {} {} failed", addr, rack, slot);
+    }
 }
 
 MainProcess::~MainProcess() {
+    auto [addr, rack, slot] = AbsPLCIntf::getConnectedInfo();
     AbsPLCIntf::disconnect();
+    spdlog::info("disconnect from {} {} {}", addr, rack, slot);
 #if _DEBUG
     FreeConsole();
     fclose(mFile);
