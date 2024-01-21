@@ -145,7 +145,7 @@
 							<Label />
 							<Label text="检波方式" width="60" />
 							<HorizontalLayout width="20" />
-							<Combo name="CombotDemodu" width="120" textpadding="4,1,1,1" normalimage="file='Theme\Combo\combo.png' source='0,0,100,22' corner='2,2,20,18'" hotimage="file='Theme\Combo\combo.png' source='0,22,100,44' corner='2,2,22,18'" pushedimage="file='Theme\Combo\combo.png' source='0,44,100,66' corner='2,2,22,18'" dropboxsize="0, 400">
+							<Combo name="ComboDemodu" width="120" textpadding="4,1,1,1" normalimage="file='Theme\Combo\combo.png' source='0,0,100,22' corner='2,2,20,18'" hotimage="file='Theme\Combo\combo.png' source='0,22,100,44' corner='2,2,22,18'" pushedimage="file='Theme\Combo\combo.png' source='0,44,100,66' corner='2,2,22,18'" dropboxsize="0, 400">
 								<ListLabelElement text="射频" selected="true" height="32" />
 								<ListLabelElement text="全波" height="32" />
 								<ListLabelElement text="正半波" height="32" />

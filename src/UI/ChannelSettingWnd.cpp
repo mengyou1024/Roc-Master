@@ -64,7 +64,7 @@ void ChannelSettingWnd::Notify(TNotifyUI& msg) {
             mUtils->getBridge()->setGain(mChannel, (float)_wtof(msg.pSender->GetText().GetData()));
         }
     } else if (msg.sType == DUI_MSGTYPE_ITEMSELECT) {
-        if (msg.pSender->GetName() == _T("ComboVolatage")) {
+        if (msg.pSender->GetName() == _T("ComboVoltage")) {
             auto voltage = static_cast<CComboUI*>(msg.pSender);
             auto index   = voltage->GetCurSel();
             mUtils->getBridge()->setVoltage(static_cast<HDBridge::HB_Voltage>(index));
@@ -72,11 +72,11 @@ void ChannelSettingWnd::Notify(TNotifyUI& msg) {
             auto p     = static_cast<CComboUI*>(msg.pSender);
             auto index = p->GetCurSel();
             mUtils->getBridge()->setFilter(mChannel, static_cast<HDBridge::HB_Filter>(index));
-        } else if (msg.pSender->GetName() == _T("CombotDemodu")) {
+        } else if (msg.pSender->GetName() == _T("ComboDemodu")) {
             auto p     = static_cast<CComboUI*>(msg.pSender);
             auto index = p->GetCurSel();
             mUtils->getBridge()->setDemodu(mChannel, static_cast<HDBridge::HB_Demodu>(index));
-        } else if (msg.pSender->GetName() == _T("CombotGateBType")) {
+        } else if (msg.pSender->GetName() == _T("ComboGateBType")) {
             auto p     = static_cast<CComboUI*>(msg.pSender);
             auto index = p->GetCurSel();
             mUtils->getBridge()->setGate2Type(mChannel, static_cast<HDBridge::HB_Gate2Type>(index));
@@ -164,8 +164,29 @@ void ChannelSettingWnd::ReadValue2UI() {
     edit = m_PaintManager.FindControl<CEditUI*>(_T("EditGain"));
     if (edit) {
         CString str;
-        str.Format(_T("%.2f"), mUtils->getBridge()->getGain(mChannel));
+        str.Format(_T("%.1f"), mUtils->getBridge()->getGain(mChannel));
         edit->SetText(str);
+    }
+
+    auto combo = m_PaintManager.FindControl<CComboUI*>(_T("ComboVoltage"));
+    if (combo) {
+        auto val = static_cast<int>(mUtils->getBridge()->getVoltage());
+        combo->SelectItem(val);
+    }
+    combo = m_PaintManager.FindControl<CComboUI*>(_T("ComboFilter"));
+    if (combo) {
+        auto val = static_cast<int>(mUtils->getBridge()->getFilter(mChannel));
+        combo->SelectItem(val);
+    }
+    combo = m_PaintManager.FindControl<CComboUI*>(_T("ComboDemodu"));
+    if (combo) {
+        auto val = static_cast<int>(mUtils->getBridge()->getDemodu(mChannel));
+        combo->SelectItem(val);
+    }
+    combo = m_PaintManager.FindControl<CComboUI*>(_T("ComboGateBType"));
+    if (combo) {
+        auto val = static_cast<int>(mUtils->getBridge()->getGate2Type(mChannel));
+        combo->SelectItem(val);
     }
 }
 
