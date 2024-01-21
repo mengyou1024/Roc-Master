@@ -39,7 +39,8 @@ constexpr std::wstring_view SCAN_CONFIG_LAST = _T("上一次配置");
 #undef GATE_B
 
 enum TIMER_ENUM {
-    CSCAN_UPDATE = 0,
+    CSCAN_UPDATE   = 0,
+    AUTOSCAN_TIMER = 1,
     TIMER_SIZE,
 };
 
@@ -103,6 +104,7 @@ MainFrameWnd::MainFrameWnd() {
 
 MainFrameWnd::~MainFrameWnd() {
     try {
+        KillTimer(AUTOSCAN_TIMER);
         mCScanThreadRunning = false;
         mCScanNotify.notify_all();
         mCScanThread.join();
@@ -216,6 +218,7 @@ void MainFrameWnd::InitWindow() {
                 spdlog::warn("载入文件: {} 出错!", mReviewPathEntry);
             }
         }
+        SetTimer(AUTOSCAN_TIMER, 100);
         CheckAndUpdate();
     });
     UpdateSliderAndEditValue(mCurrentGroup, mConfigType, mGateType, mChannelSel, true);
@@ -1175,6 +1178,20 @@ void MainFrameWnd::OnTimer(int iIdEvent) {
     switch (iIdEvent) {
         case CSCAN_UPDATE: {
             UpdateCScanOnTimer();
+            break;
+        }
+        case AUTOSCAN_TIMER: {
+            // 获取是否是自动模式
+            auto [res_auto, value_auto] = AbsPLCIntf::getVariable<bool>("I1.2");
+            if (res_auto && value_auto) {
+                // 获取检测点状态
+                auto [res, value] = AbsPLCIntf::getVariable<bool>("M50.0");
+                if (res && value) {
+                    StartScan();
+                } else if (res && !value) {
+                    StopScan();
+                }
+            }
             break;
         }
         default: break;
