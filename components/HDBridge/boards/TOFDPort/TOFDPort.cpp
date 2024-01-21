@@ -187,6 +187,34 @@ unique_ptr<HDBridge::NM_DATA> TOFDMultiPort::readDatas() {
     ret->pAscan.resize(data->iAScanSize);
     memcpy(ret->pAscan.data(), data->pAscan, ret->iAScanSize);
     memcpy(ret->pCoder.data(), data->pCoder, sizeof(int32_t) * 2);
+    auto pScanBKP = ret->pAscan;
+    {
+        // 计算平均
+        constexpr auto averageTimes = 6;
+        static std::array<std::vector<uint8_t>, averageTimes*HDBridge::CHANNEL_NUMBER> bkp;
+        if (ret->iChannel >= 0 && ret->iChannel < HDBridge::CHANNEL_NUMBER) {
+            bool check_size = true;
+            for(int i =ret->iChannel * averageTimes;i<ret->iChannel * averageTimes + averageTimes ;i++) {
+                if (bkp[i].size() != ret->pAscan.size()) {
+                    check_size = false;
+                }
+            }
+
+            if (check_size) {
+                for(auto i =0;i<ret->pAscan.size();i++) {
+                    int sum = 0;
+                    for(auto j = 0;j<averageTimes;j++) {
+                        sum += bkp[ret->iChannel * averageTimes + j][i];
+                    }
+                    ret->pAscan[i] = sum / averageTimes;
+                }
+            }
+            for(int i =ret->iChannel * averageTimes;i<ret->iChannel + averageTimes-1 ;i++) {
+                bkp[i] = bkp[i+1];
+            }
+            bkp[ret->iChannel + averageTimes-1] = pScanBKP;
+        }
+    }
     std::array<int, 2>   pGatePos = {};
     std::array<uint8_t, 2> pGateAmp = {};
     for (int i = 0; i < 2; i++) {
