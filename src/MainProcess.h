@@ -1,7 +1,7 @@
 #pragma once
 
-#include <functional>
 #include <Model/SystemConfig.h>
+#include <functional>
 
 class MainProcess {
 public:
@@ -13,7 +13,7 @@ public:
 
 private:
     std::vector<std::function<void(void)>> mFuncWhenDestory = {};
-#if _DEBUG
+#ifndef APP_RELEASE
     FILE *mFile = nullptr;
 #endif
 };

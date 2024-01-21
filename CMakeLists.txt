@@ -15,6 +15,10 @@ aux_source_directory(src Src_Ext)
 
 add_definitions(-DORM_DB_NAME=\"data.db\")
 
+if (APP_RELEASE)
+    add_definitions(-DAPP_RELEASE)
+endif()
+
 add_executable(${PROJECT_NAME} WIN32 ${Src_Model} ${Src_Ui} ${Src_Widgets} ${Src_Ext})
 
 # 资源文件

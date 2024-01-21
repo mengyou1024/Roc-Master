@@ -73,9 +73,9 @@ MainFrameWnd::MainFrameWnd() {
                 }
                 mUtils = std::make_unique<HD_Utils>(bridge);
                 mUtils->getBridge()->syncCache2Board();
-#ifndef _DEBUG
+#ifdef APP_RELEASE
                 config[0].setValid(false);
-#endif // ! _DEBUG
+#endif // APP_RELEASE
                 HDBridge::storage().update(config[0]);
             } else {
                 throw std::runtime_error("上一次配置验证失败，可能由于软件运行中异常退出.");
@@ -552,6 +552,7 @@ void MainFrameWnd::UpdateAllGateResult(const HDBridge::NM_DATA &data, const HD_U
     for (int i = 0; i < 3; i++) {
         auto info            = bridge->getScanGateInfo(channel, i);
         auto [pos, max, res] = bridge->computeGateInfo(data.pAscan, info);
+        auto zero            = bridge->time2distance(bridge->getDelay(channel), channel);
         if (res) {
             mAllGateResult[channel][i].result = true;
             auto [bias, depth]                = bridge->getRangeOfAcousticPath(channel);
@@ -1188,8 +1189,14 @@ void MainFrameWnd::OnTimer(int iIdEvent) {
                 auto [res, value] = AbsPLCIntf::getVariable<bool>("M50.0");
                 if (res && value) {
                     StartScan();
+                    auto btn = m_PaintManager.FindControl<CButtonUI *>(_T("BtnUIAutoScan"));
+                    btn->SetBkColor(0xFF339933);
                 } else if (res && !value) {
-                    StopScan();
+                    BusyWnd wnd([this]() { StopScan(); });
+                    wnd.Create(m_hWnd, wnd.GetWindowClassName(), UI_WNDSTYLE_DIALOG, UI_WNDSTYLE_EX_DIALOG);
+                    wnd.ShowModal();
+                    auto btn = m_PaintManager.FindControl<CButtonUI *>(_T("BtnUIAutoScan"));
+                    btn->SetBkColor(0xFFEEEEEE);
                 }
             }
             break;
@@ -1369,7 +1376,7 @@ void MainFrameWnd::SaveDefectEndID(int channel) {
 }
 
 void MainFrameWnd::CheckAndUpdate(bool showNoUpdate) {
-#if !defined(_DEBUG) && APP_CHECK_UPDATE
+#if defined(APP_RELEASE) && APP_CHECK_UPDATE
     if (!GetSystemConfig().checkUpdate) {
         return;
     }

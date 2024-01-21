@@ -31,7 +31,7 @@ MainProcess::MainProcess() {
     _stprintf_s(ExePath, _T("%s%s"), drive, dir);
     SetCurrentDirectory(ExePath);
     InitStroage();
-#if _DEBUG
+#ifndef APP_RELEASE
     // _CrtSetBreakAlloc(1739);
     AllocConsole();
     system("chcp 65001");
@@ -58,7 +58,7 @@ MainProcess::~MainProcess() {
     auto [addr, rack, slot] = AbsPLCIntf::getConnectedInfo();
     AbsPLCIntf::disconnect();
     spdlog::info("disconnect from {} {} {}", addr, rack, slot);
-#if _DEBUG
+#ifndef APP_RELEASE
     FreeConsole();
     fclose(mFile);
 #endif

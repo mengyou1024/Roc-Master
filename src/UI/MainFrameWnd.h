@@ -215,8 +215,7 @@ private:
      * @param ...args 构造函数参数
      * @return HDBridge的独占指针
      */
-    template <class BR, class... Args>
-    static std::unique_ptr<HDBridge> GenerateHDBridge(const HDBridge& config, Args&&... args) {
+    template <class BR, class... Args> static std::unique_ptr<HDBridge> GenerateHDBridge(const HDBridge& config, Args&&... args) {
         static_assert(std::is_base_of_v<HDBridge, BR> && !std::is_same_v<BR, HDBridge>);
         auto ret = std::unique_ptr<HDBridge>(new BR(std::forward<Args>(args)...));
         *ret     = config;
