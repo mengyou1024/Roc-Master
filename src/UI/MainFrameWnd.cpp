@@ -198,15 +198,12 @@ void MainFrameWnd::InitWindow() {
     m_OpenGL_CSCAN.Attach(m_pWndOpenGL_CSCAN);
     // 初始化
     AddTaskToQueue([this]() {
-        // 延迟最大化窗口
-        SendMessage(WM_SYSCOMMAND, SC_MAXIMIZE, 0);
-
-        Sleep(100);
-
         m_OpenGL_ASCAN.AddGroupAScanModel();
         m_OpenGL_CSCAN.AddGroupCScanModel();
         // 设置板卡参数
         Sleep(100);
+        // 延迟最大化窗口
+        SendMessage(WM_SYSCOMMAND, SC_MAXIMIZE, 0);
         mUtils->start();
         mUtils->addReadCallback(HD_Utils::WrapReadCallback(&MainFrameWnd::UpdateAllGateResult, this));
         mUtils->addReadCallback(HD_Utils::WrapReadCallback(&MainFrameWnd::UpdateAScanCallback, this));
