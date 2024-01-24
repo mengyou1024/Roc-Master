@@ -138,7 +138,11 @@
 				</HorizontalLayout>
 				<HorizontalLayout width="20" />
 				<Button align="center" name="BtnCScanSelect" userdata="1" width="32" height="32" bkimage="Theme\Button\plc_right_normal.jpg" hotimage="Theme\Button\plc_right_hot.jpg" />
-				<HorizontalLayout width="200" />
+				<HorizontalLayout width="50" />
+				<Label text="X轴位置:" width="64" height="32" align="center" />
+				<Label name="LabelXAxisLoc" text="" height="32" width="80" align="center" bordersize="1" bordercolor="0x7F7F7F7F" />
+				<Label text="mm" width="20" height="32" align="center" />
+				<HorizontalLayout width="50" />
 				<Button align="center" name="BtnCScanIndexSelect" userdata="-1" width="32" height="32" bkimage="Theme\Button\plc_left_normal.jpg" hotimage="Theme\Button\plc_left_hot.jpg" />
 				<HorizontalLayout width="20" />
 				<HorizontalLayout width="240" >

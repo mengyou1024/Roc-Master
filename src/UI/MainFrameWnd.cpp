@@ -1103,6 +1103,11 @@ void MainFrameWnd::OnLButtonDown(UINT nFlags, ::CPoint pt) {
         auto edit = m_PaintManager.FindControl<CEditUI *>(_T("EditCScanSelect"));
         edit->SetNumberLimits(1, mFragmentReview->fragments());
 
+        auto    label = m_PaintManager.FindControl<CLabelUI *>(_T("LabelXAxisLoc"));
+        CString str;
+        str.Format(L"%.2f", (*mFragmentReview)[index].mScanOrm.mXAxisLoc);
+        label->SetText(str);
+
         // 扫查通道
         for (int i = 0; i < HDBridge::CHANNEL_NUMBER; i++) {
             auto mesh  = m_OpenGL_ASCAN.getMesh<MeshAscan *>(i);
@@ -1254,14 +1259,7 @@ void MainFrameWnd::OnTimer(int iIdEvent) {
     }
 }
 
-void MainFrameWnd::OnMouseMove(UINT nFlags, ::CPoint pt) {
-    if (mWidgetMode == WidgetMode::MODE_REVIEW && mFragmentReview->size() > 0) {
-        auto index = GetCScanIndexFromPt(pt);
-        if (index >= 0 && index < mFragmentReview->size()) {
-            spdlog::debug("index: {} value {}", index, (*mFragmentReview)[index].mScanOrm.mXAxisLoc);
-        }
-    }
-}
+void MainFrameWnd::OnMouseMove(UINT nFlags, ::CPoint pt) {}
 
 void MainFrameWnd::EnterReview(std::string path) {
     mReviewPathEntry = path;
