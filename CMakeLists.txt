@@ -68,7 +68,7 @@ execute_process(
 
 file(RELATIVE_PATH CMAKE_BINARY_DIR_RELATIVE ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR})
 
-if(CMAKE_BUILD_TYPE STREQUAL Release)
+if(APP_RELEASE)
 
 add_custom_target(
     PackExecuatble
@@ -138,4 +138,4 @@ message("
 --------------------------------------------------------------------
 ")
 
-endif(CMAKE_BUILD_TYPE STREQUAL Release)
+endif(APP_RELEASE)
