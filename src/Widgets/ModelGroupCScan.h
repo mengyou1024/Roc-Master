@@ -19,8 +19,6 @@ private:
     constexpr static auto VIEW_CSCAN_NUM     = static_cast<int>(VIEW_TYPE::VIEW_CSCAN_MAX);
     constexpr static auto VIEW_CSCAN_COLUMNS = 1;
 
-    void DrawAxis(void);
-
 public:
     ModelGroupCScan(OpenGL* pOpenGL);
     virtual ~ModelGroupCScan();
@@ -41,16 +39,6 @@ public:
 
 public:
     int   m_iBuffer;
-    CAxis m_pAxis;
-
-    void SetAxisRange(float min, float max) {
-        mAxisMin = min;
-        mAxisMax = max;
-    }
-
-    std::pair<float, float> GetAxisRange() {
-        return std::make_pair(mAxisMin, mAxisMax);
-    }
 
     void SetViewGroup(const size_t g) {
         mGroupIndex = g;
@@ -61,8 +49,6 @@ public:
     }
 
 private:
-    float                   mAxisMin         = {0.0f};
-    float                   mAxisMax         = {100.f};
     RECT                    mCurrentViewPort = {};
     RECT                    mAxisViewPort    = {};
     GLuint                  m_iAxisVAO       = {};

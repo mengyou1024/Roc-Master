@@ -281,13 +281,6 @@ void MainFrameWnd::DrawReviewCScan() {
             }
         }
     }
-
-    // 回放的C扫范围为第一幅图的最小值到最后一幅图的最大值
-    if (mFragmentReview->size() > 0) {
-        float cScanMinLimits = ((*mFragmentReview)[0]).mScanOrm.mXAxisLoc;
-        float cScanMaxLimits = ((*mFragmentReview)[mFragmentReview->size() - 1]).mScanOrm.mXAxisLoc;
-        m_OpenGL_CSCAN.getModel<ModelGroupCScan *>()->SetAxisRange(cScanMinLimits, cScanMaxLimits);
-    }
 }
 
 void MainFrameWnd::UpdateSliderAndEditValue(long newGroup, ConfigType newConfig, GateType newGate, ChannelSel newChannelSel,
