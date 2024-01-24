@@ -1497,7 +1497,6 @@ bool MainFrameWnd::EnterReviewMode(std::string name) {
         UpdateSystemConfig(systemConfig);
         mFragmentReview = std::make_unique<FragmentReview>(mReviewData);
         DrawReviewCScan();
-        OnLButtonDown(1, GetCScainIndexPt(0));
 
         // 界面布局切换为回放模式
         for (auto &UI_N : LayoutStatusChange) {
@@ -1506,6 +1505,9 @@ bool MainFrameWnd::EnterReviewMode(std::string name) {
             layout->SetVisible(val);
         }
         mWidgetMode = WidgetMode::MODE_REVIEW;
+        // 模拟一次点击C扫图区域, 以显示帧数和页数
+        // warning: 该函数必须在 `mWidgetMode = WidgetMode::MODE_REVIEW;` 之后调用, 否则第一次进回显示空白
+        OnLButtonDown(1, GetCScainIndexPt(0));
         spdlog::info("load:{}, frame:{}", name, mReviewData.size());
         spdlog::info("takes time: {} ms", GetTickCount64() - tick);
         return true;
