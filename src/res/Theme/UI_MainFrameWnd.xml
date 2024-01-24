@@ -127,13 +127,29 @@
 				<HorizontalLayout />
 				<Button align="center" name="BtnCScanSelect" userdata="-1" width="32" height="32" bkimage="Theme\Button\plc_left_normal.jpg" hotimage="Theme\Button\plc_left_hot.jpg" />
 				<HorizontalLayout width="20" />
-				<Edit width="240" name="EditCScanSelect" align="center" height="32"  />
+				<HorizontalLayout width="240" >
+					<Label />
+					<Label text="第" align="center" height="32" width="15" />
+					<HorizontalLayout width="10" />
+					<Edit name="EditCScanSelect" textvalitor="\d+" modenumber="true" wheelstep="1" align="center" width="60" height="32" bordersize="1" bordercolor="0x7F7F7F7F" />
+					<HorizontalLayout width="10" />
+					<Label name="LabelCScanSelect" align="center" text="帧 / 共 0 帧" width="120" />
+					<Label />
+				</HorizontalLayout>
 				<HorizontalLayout width="20" />
 				<Button align="center" name="BtnCScanSelect" userdata="1" width="32" height="32" bkimage="Theme\Button\plc_right_normal.jpg" hotimage="Theme\Button\plc_right_hot.jpg" />
 				<HorizontalLayout width="200" />
 				<Button align="center" name="BtnCScanIndexSelect" userdata="-1" width="32" height="32" bkimage="Theme\Button\plc_left_normal.jpg" hotimage="Theme\Button\plc_left_hot.jpg" />
 				<HorizontalLayout width="20" />
-				<Edit width="240" name="EditCScanIndexSelect" align="center" height="32"  />
+				<HorizontalLayout width="240" >
+					<Label />
+					<Label text="第" align="center" height="32" width="15" />
+					<HorizontalLayout width="10" />
+					<Edit name="EditCScanIndexSelect" textvalitor="\d+" modenumber="true" wheelstep="1" align="center" width="60" height="32" bordersize="1" bordercolor="0x7F7F7F7F" />
+					<HorizontalLayout width="10" />
+					<Label name="LabelCScanIndexSelect" align="center" text="个点 / 共 0 个点" width="120" />
+					<Label />
+				</HorizontalLayout>
 				<HorizontalLayout width="20" />
 				<Button align="center" name="BtnCScanIndexSelect" userdata="1" width="32" height="32" bkimage="Theme\Button\plc_right_normal.jpg" hotimage="Theme\Button\plc_right_hot.jpg" />
 				<HorizontalLayout />

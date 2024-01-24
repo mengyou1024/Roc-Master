@@ -177,6 +177,7 @@ public:
     virtual void       OnLButtonDown(UINT nFlags, ::CPoint pt) override;
     virtual void       OnLButtonDClick(UINT nFlags, ::CPoint pt) override;
     virtual void       OnTimer(int iIdEvent) override;
+    virtual void       OnMouseMove(UINT nFlags, ::CPoint pt) override;
 
     void EnterReview(std::string path = {});
 
@@ -186,7 +187,22 @@ private:
      * @param index 数据点索引
      * @return 界面上的位置点
      */
-    ::CPoint GetCScainIndexPt(int index) const;
+    ::CPoint GetCScanPtFromIndex(int index) const;
+
+    /**
+     * @brief 从点获取C扫图像的索引
+     * 
+     * @param pt 当前点(相对于整个界面)
+     * @return int 索引
+     */
+    int GetCScanIndexFromPt(::CPoint pt) const;
+
+    /**
+     * @brief 更新帧区域
+     * 
+     * @param index 
+     */
+    void UpdateFrame(int index);
 
     /**
      * @brief 绘制回放C扫图

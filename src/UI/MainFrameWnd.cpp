@@ -221,6 +221,35 @@ void MainFrameWnd::InitWindow() {
     UpdateSliderAndEditValue(mCurrentGroup, mConfigType, mGateType, mChannelSel, true);
 }
 
+int MainFrameWnd::GetCScanIndexFromPt(::CPoint pt) const {
+    if (!PointInRect(m_pWndOpenGL_CSCAN->GetPos(), pt)) {
+        return -1;
+    }
+    auto temp = pt;
+    temp.x -= m_pWndOpenGL_CSCAN->GetX();
+    temp.y -= m_pWndOpenGL_CSCAN->GetY();
+    return (int)(std::round((double)mFragmentReview->size() * (double)temp.x / (double)m_pWndOpenGL_CSCAN->GetWidth()));
+}
+
+void MainFrameWnd::UpdateFrame(int index) {
+    mFragmentReview->setCurFragment(index);
+    auto    edit = m_PaintManager.FindControl<CEditUI *>(L"EditCScanSelect");
+    CString str;
+    str.Format(L"%d", mFragmentReview->getCurFragment());
+    edit->SetText(str);
+    auto label = m_PaintManager.FindControl<CLabelUI *>(L"LabelCScanSelect");
+    str.Format(L"帧 / 共 %d 帧", mFragmentReview->fragments());
+    label->SetText(str);
+
+    edit = m_PaintManager.FindControl<CEditUI *>(L"EditCScanIndexSelect");
+    edit->SetNumberLimits(1, mFragmentReview->size());
+    str.Format(L"%d", mFragmentReview->getCursor() + 1);
+    edit->SetText(str);
+    label = m_PaintManager.FindControl<CLabelUI *>(L"LabelCScanIndexSelect");
+    str.Format(L"个点 / 共 %d 个点", mFragmentReview->size());
+    label->SetText(str);
+}
+
 void MainFrameWnd::DrawReviewCScan() {
     // 删除所有通道的C扫数据
     for (int index = 0; index < HDBridge::CHANNEL_NUMBER + 4; index++) {
@@ -849,12 +878,9 @@ void MainFrameWnd::Notify(TNotifyUI &msg) {
             } else if (msg.pSender->GetUserData() == L"-1") {
                 (*mFragmentReview)--;
             }
-            auto    edit = m_PaintManager.FindControl<CEditUI *>(L"EditCScanSelect");
-            CString str;
-            str.Format(L"第 %d 帧 / 共 %d 帧", mFragmentReview->getCurFragment(), mFragmentReview->fragments());
-            edit->SetText(str);
+            UpdateFrame(mFragmentReview->getCurFragment() - 1);
             DrawReviewCScan();
-            auto pt = GetCScainIndexPt(mFragmentReview->getCursor());
+            auto pt = GetCScanPtFromIndex(mFragmentReview->getCursor());
             OnLButtonDown(1, pt);
         }
 
@@ -871,7 +897,7 @@ void MainFrameWnd::Notify(TNotifyUI &msg) {
                     cursor = 0;
                 }
             }
-            auto pt = GetCScainIndexPt(mFragmentReview->getCursor());
+            auto pt = GetCScanPtFromIndex(mFragmentReview->getCursor());
             OnLButtonDown(1, pt);
         }
 
@@ -978,6 +1004,19 @@ void MainFrameWnd::Notify(TNotifyUI &msg) {
 
             // 设置超声板数值
             SetConfigValue(static_cast<float>(currentValue));
+        } else if (msg.pSender->GetName() == _T("EditCScanSelect")) {
+            auto         edit         = static_cast<CEditUI *>(msg.pSender);
+            std::wstring text         = edit->GetText();
+            int          currentValue = _wtol(text.data()) - 1;
+            UpdateFrame(currentValue);
+            DrawReviewCScan();
+            OnLButtonDown(1, GetCScanPtFromIndex(mFragmentReview->getCursor()));
+        } else if (msg.pSender->GetName() == _T("EditCScanIndexSelect")) {
+            auto         edit         = static_cast<CEditUI *>(msg.pSender);
+            std::wstring text         = edit->GetText();
+            int          currentValue = _wtol(text.data()) - 1;
+            mFragmentReview->setCursor(currentValue);
+            OnLButtonDown(1, GetCScanPtFromIndex(currentValue));
         }
     } else if (msg.sType == DUI_MSGTYPE_MOUSEWHELL) {
         if (msg.pSender->GetName() == _T("EditConfig")) {
@@ -1006,6 +1045,28 @@ void MainFrameWnd::Notify(TNotifyUI &msg) {
 
             // 设置超声板数值
             SetConfigValue(static_cast<float>(currentValue));
+        } else if (msg.pSender->GetName() == _T("EditCScanSelect")) {
+            if (LOWORD(msg.wParam)) {
+                (*mFragmentReview)--;
+            } else {
+                (*mFragmentReview)++;
+            }
+            UpdateFrame(mFragmentReview->getCurFragment() - 1);
+            DrawReviewCScan();
+            OnLButtonDown(1, GetCScanPtFromIndex(mFragmentReview->getCursor()));
+        } else if (msg.pSender->GetName() == _T("EditCScanIndexSelect")) {
+            auto cur = mFragmentReview->getCursor();
+            if (LOWORD(msg.wParam)) {
+                cur--;
+            } else {
+                cur++;
+            }
+            if (cur < 0) {
+                cur = 0;
+            } else if (cur >= mFragmentReview->size()) {
+                cur = mFragmentReview->size() - 1;
+            }
+            OnLButtonDown(1, GetCScanPtFromIndex(cur));
         }
     }
 
@@ -1033,16 +1094,14 @@ void MainFrameWnd::OnLButtonDown(UINT nFlags, ::CPoint pt) {
         } else if (index < 0) {
             index = 0;
         }
-        auto    edit = m_PaintManager.FindControl<CEditUI *>(L"EditCScanSelect");
-        CString str;
-        str.Format(L"第 %d 帧 / 共 %d 帧", mFragmentReview->getCurFragment(), mFragmentReview->fragments());
-        edit->SetText(str);
-        edit = m_PaintManager.FindControl<CEditUI *>(L"EditCScanIndexSelect");
-        str.Format(L"第 %d 个点 / 共 %d 个点", index + 1, mFragmentReview->size());
-        mFragmentReview->setCursor(index);
-        edit->SetText(str);
 
+        mFragmentReview->setCursor(index);
+        UpdateFrame(mFragmentReview->getCurFragment() - 1);
         auto &bridge = (*mFragmentReview)[index];
+
+        // 设置Edit的limits
+        auto edit = m_PaintManager.FindControl<CEditUI *>(_T("EditCScanSelect"));
+        edit->SetNumberLimits(1, mFragmentReview->fragments());
 
         // 扫查通道
         for (int i = 0; i < HDBridge::CHANNEL_NUMBER; i++) {
@@ -1158,7 +1217,7 @@ void MainFrameWnd::OnLButtonDClick(UINT nFlags, ::CPoint pt) {
                 if (mFragmentReview->begin() != mReviewData.begin() || mFragmentReview->end() != mReviewData.end()) {
                     DrawReviewCScan();
                 }
-                auto pt = GetCScainIndexPt(index - 1);
+                auto pt = GetCScanPtFromIndex(index - 1);
                 OnLButtonDown(1, pt);
             }
         }
@@ -1195,11 +1254,20 @@ void MainFrameWnd::OnTimer(int iIdEvent) {
     }
 }
 
+void MainFrameWnd::OnMouseMove(UINT nFlags, ::CPoint pt) {
+    if (mWidgetMode == WidgetMode::MODE_REVIEW && mFragmentReview->size() > 0) {
+        auto index = GetCScanIndexFromPt(pt);
+        if (index >= 0 && index < mFragmentReview->size()) {
+            spdlog::debug("index: {} value {}", index, (*mFragmentReview)[index].mScanOrm.mXAxisLoc);
+        }
+    }
+}
+
 void MainFrameWnd::EnterReview(std::string path) {
     mReviewPathEntry = path;
 }
 
-::CPoint MainFrameWnd::GetCScainIndexPt(int index) const {
+::CPoint MainFrameWnd::GetCScanPtFromIndex(int index) const {
     auto     width  = m_pWndOpenGL_CSCAN->GetWidth();
     auto     height = m_pWndOpenGL_CSCAN->GetHeight();
     ::CPoint pt;
@@ -1500,7 +1568,7 @@ bool MainFrameWnd::EnterReviewMode(std::string name) {
         mWidgetMode = WidgetMode::MODE_REVIEW;
         // 模拟一次点击C扫图区域, 以显示帧数和页数
         // warning: 该函数必须在 `mWidgetMode = WidgetMode::MODE_REVIEW;` 之后调用, 否则第一次进回显示空白
-        OnLButtonDown(1, GetCScainIndexPt(0));
+        OnLButtonDown(1, GetCScanPtFromIndex(0));
         spdlog::info("load:{}, frame:{}", name, mReviewData.size());
         spdlog::info("takes time: {} ms", GetTickCount64() - tick);
         return true;
