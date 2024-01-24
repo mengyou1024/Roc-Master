@@ -317,7 +317,7 @@ void OpenGL::Render() {
         m_pModel[i]->RenderFore(); // 文字
     }
 
-#ifdef _DEBUG
+#ifndef APP_RELEASE
     glEnable(GL_TEXTURE_2D);
     glEnable(GL_BLEND);
     CString strInfo;
