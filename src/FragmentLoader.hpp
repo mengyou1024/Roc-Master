@@ -57,6 +57,11 @@ public:
         if (mCurFragment < 0) {
             mCurFragment = 0;
         }
+        if (mCurFragment == mFragments - 1) {
+            mFragmentSize = (int)mRV.size() % SIZE_PER_FRAGMENT;
+        } else {
+            mFragmentSize = SIZE_PER_FRAGMENT;
+        }
         mFragmentStart = mCurFragment * SIZE_PER_FRAGMENT;
         return *this;
     }
