@@ -1075,7 +1075,7 @@ void MainFrameWnd::OnLButtonDown(UINT nFlags, ::CPoint pt) {
 
             for (int j = 0; j < 3; j++) {
                 auto [pos, max, res] = HDBridge::computeGateInfo(bridge.mScanOrm.mScanData[i]->pAscan, scanGate[j]);
-                auto depth           = bridge.mScanOrm.mScanData[i]->aScanLimits[1];
+                auto depth           = bridge.mScanOrm.mScanData[i]->aScanLimits[1] - bridge.mScanOrm.mScanData[i]->aScanLimits[0];
                 if (res) {
                     mesh->SetGateData(std::make_pair(pos * depth, max / 2.55f), j);
                 } else {
@@ -1109,7 +1109,7 @@ void MainFrameWnd::OnLButtonDown(UINT nFlags, ::CPoint pt) {
             for (int j = 0; j < 3; j++) {
                 auto [pos, max, res] = HDBridge::computeGateInfo(bridge.mScanOrm.mScanData[i]->pAscan, scanGate[j]);
                 if (res) {
-                    auto depth = bridge.mScanOrm.mScanData[i]->aScanLimits[1];
+                    auto depth = bridge.mScanOrm.mScanData[i]->aScanLimits[1] - bridge.mScanOrm.mScanData[i]->aScanLimits[0];
                     mesh->SetGateData(std::make_pair(pos * depth, max / 2.55f), j);
                 } else {
                     mesh->SetGateData(j);

@@ -244,7 +244,7 @@ void MeshAscan::hookAScanData(const std::shared_ptr<std::vector<uint8_t>> data) 
 
 void MeshAscan::SetGateData(const std::pair<float, float>& data, int index) {
     CString str;
-    str.Format(L"%c深度:%.1fmm, %c波幅:%.1f%%", 'A' + index, data.first, 'A' + index, data.second);
+    str.Format(L"%c深度:%.1fmm, %c波幅:%.1f%%", 'A' + index, data.first + m_fScanMin, 'A' + index, data.second);
     m_sGateDataShow[index] = str;
 }
 
