@@ -25,6 +25,7 @@
 #include <regex>
 #include <rttr/type.h>
 #include <sstream>
+#include <numeric>
 
 using rttr::array_range;
 using rttr::property;
@@ -1249,7 +1250,7 @@ void MainFrameWnd::OnBtnReportExport(TNotifyUI &msg) {
 
     // TODO: 对`mDefectInfo`进行排序
     std::sort(mDefectInfo.begin(), mDefectInfo.end(), [](const auto &a, const auto &b) {
-        return a->id < b->id;
+        return a.id < b.id;
     });
 
     for (auto index = 0; index < mDefectInfo.size(); index++) {
@@ -1342,11 +1343,32 @@ void MainFrameWnd::ThreadCScan(void) {
         
         // 测厚
         for (uint32_t i = 0ull; i < 4ull; i++) {
-            if (mUtils->getCache().scanGateInfo[(size_t)HDBridge::CHANNEL_NUMBER + i].width > 0.0001f) {
+            // TODO: 每一圈测厚一次
+            bool conditionRes = [](bool &clear)->bool{
+                static float lastRecordXValue = 0.0f;
+                if (clear) {
+                    lastRecordXValue = 0.0f;
+                    clear = false;
+                    return true;
+                }
+                auto [res, xValue] = AbsPLCIntf::getVariable<float>("V27.0");
+                if (res && (xValue - lastRecordXValue) >= 36.0f) {
+                    lastRecordXValue = xValue;
+                    return true;
+                }
+                return false;
+            }(mClearMTXValue);
+
+            static std::array<std::vector<float>, 4> mThicknessRecord = {};
+            if (!conditionRes && mUtils->getCache().scanGateInfo[(size_t)HDBridge::CHANNEL_NUMBER + i].width > 0.0001f) {
+                mThicknessRecord[i].push_back(mUtils->mScanOrm.mThickness[i]);
+            } else if (conditionRes && mUtils->getCache().scanGateInfo[(size_t)HDBridge::CHANNEL_NUMBER + i].width > 0.0001f) {
                 auto   mesh         = m_OpenGL_CSCAN.getMesh<MeshGroupCScan *>((size_t)HDBridge::CHANNEL_NUMBER + i);
                 double baseTickness = _wtof(mDetectInfo.thickness.c_str());
                 if (baseTickness != 0.0f && baseTickness != -HUGE_VAL && baseTickness != HUGE_VAL) {
-                    auto relative_error = (mUtils->mScanOrm.mThickness[i] - baseTickness) / baseTickness;
+                    auto averageThickness = std::accumulate(mThicknessRecord[i].begin(), mThicknessRecord[i].end(), 0.0f) / (float)mThicknessRecord[i].size();
+                    mThicknessRecord[i].clear();
+                    auto relative_error = (averageThickness - baseTickness) / baseTickness;
                     if (relative_error > RELATIVE_ERROR_MAX) {
                         relative_error = RELATIVE_ERROR_MAX;
                     } else if (relative_error < -RELATIVE_ERROR_MAX) {
@@ -1706,6 +1728,7 @@ void MainFrameWnd::StartScan(bool changeFlag) {
                 mScanRecordCache.clear();
                 mScanningFlag = true;
                 SetTimer(CSCAN_UPDATE, 1000 / mSamplesPerSecond);
+                mClearMTXValue = true; ///< 清除测厚的X轴计数
             } catch (std::exception &e) {
                 spdlog::warn(GB2312ToUtf8(e.what()));
                 DMessageBox(L"请勿快速点击扫查按钮");

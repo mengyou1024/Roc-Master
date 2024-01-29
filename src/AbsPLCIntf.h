@@ -90,13 +90,15 @@ namespace AbsPLCIntf {
     bool setVariable(string id, int sz, const std::vector<uint8_t>& data);
     bool setVariable(string id, int sz, const std::vector<float>& data);
 
-    template <class T> std::pair<bool, T> getVariable(string id) {
+    template <class T>
+    std::pair<bool, T> getVariable(string id) {
         T    ret{};
         bool res = getVariable(id, ret);
         return std::make_pair(res, ret);
     }
 
-    template <class T> std::pair<bool, std::vector<T>> getVariable(string id, int sz) {
+    template <class T>
+    std::pair<bool, std::vector<T>> getVariable(string id, int sz) {
         bool           res = {};
         std::vector<T> ret = {};
         res                = getVariable(id, sz, ret);

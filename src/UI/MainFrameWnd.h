@@ -163,6 +163,7 @@ private: /* 私有变量参数 */
     bool                    mCScanThreadRunning = {};                      ///< C扫线程运行
     ARR_GateResCh           mAllGateResult      = {};                      ///< 所有波门的计算结果
     GateResultTimeNote      mLastGateResUpdate  = {};                      ///< 上一次波门结果更新的时间
+    bool                    mClearMTXValue      = false;                      ///< Clear Measure Thickness X Value 
     // 参数备份
     ORM_Model::DetectInfo mDetectInfoBak   = {};
     std::wstring          mJobGroupNameBak = {};
