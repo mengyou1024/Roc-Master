@@ -182,6 +182,14 @@ public:
     void EnterReview(std::string path = {});
 
 private:
+
+    /**
+     * @brief 报表导出按钮事件
+     * 
+     * @param msg 
+     */
+    void OnBtnReportExport(TNotifyUI &msg);
+
     /**
      * @brief 获取C扫图像索引点在界面上的位置
      * @param index 数据点索引

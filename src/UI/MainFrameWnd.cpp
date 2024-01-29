@@ -902,33 +902,7 @@ void MainFrameWnd::Notify(TNotifyUI &msg) {
         }
 
         if (msg.pSender->GetName() == _T("BtnExportReport")) {
-            std::map<string, string> valueMap = {};
-            valueMap["jobGroup"]              = GetJobGroup();
-            valueMap["user"]                  = StringFromWString(GetSystemConfig().userName);
-            for (const auto &prot : type::get<ORM_Model::DetectInfo>().get_properties()) {
-                valueMap[string(prot.get_name())] = StringFromWString(prot.get_value(mDetectInfo).convert<std::wstring>());
-            }
-            for (auto index = 0; index < mDefectInfo.size(); index++) {
-                for (const auto &prot : type::get<ORM_Model::DefectInfo>().get_properties()) {
-                    std::stringstream ss;
-                    ss << "defect[" << index << "]." << prot.get_name();
-                    if (prot.get_name() == "id") {
-                        valueMap[ss.str()] = std::to_string(prot.get_value(mDefectInfo[index]).convert<std::uint32_t>());
-                    } else {
-                        valueMap[ss.str()] = StringFromWString(prot.get_value(mDefectInfo[index]).convert<std::wstring>());
-                    }
-                }
-            }
-            CFileDialog dlg(false, L"docx", L"Report.docx", OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, L"Word Document (*.docx)| *.docx||");
-            if (dlg.DoModal() == IDOK) {
-                if (WordTemplateRender(L"./template/template.docx", dlg.GetPathName().GetString(), valueMap) == false) {
-                    spdlog::error("export report document error!");
-                    DMessageBox(L"导出失败!");
-                } else {
-                    DMessageBox(L"导出成功!");
-                }
-            }
-
+            OnBtnReportExport(msg);
         } else if (msg.pSender->GetName() == _T("BtnDetectInformation")) {
             DetectionInformationEntryWnd wnd;
             wnd.Create(m_hWnd, wnd.GetWindowClassName(), UI_WNDSTYLE_DIALOG, UI_WNDSTYLE_EX_DIALOG);
@@ -1265,6 +1239,41 @@ void MainFrameWnd::EnterReview(std::string path) {
     mReviewPathEntry = path;
 }
 
+void MainFrameWnd::OnBtnReportExport(TNotifyUI &msg) {
+    std::map<string, string> valueMap = {};
+    valueMap["jobGroup"]              = GetJobGroup();
+    valueMap["user"]                  = StringFromWString(GetSystemConfig().userName);
+    for (const auto &prot : type::get<ORM_Model::DetectInfo>().get_properties()) {
+        valueMap[string(prot.get_name())] = StringFromWString(prot.get_value(mDetectInfo).convert<std::wstring>());
+    }
+
+    // TODO: 对`mDefectInfo`进行排序
+    std::sort(mDefectInfo.begin(), mDefectInfo.end(), [](const auto &a, const auto &b) {
+        return a->id < b->id;
+    });
+
+    for (auto index = 0; index < mDefectInfo.size(); index++) {
+        for (const auto &prot : type::get<ORM_Model::DefectInfo>().get_properties()) {
+            std::stringstream ss;
+            ss << "defect[" << index << "]." << prot.get_name();
+            if (prot.get_name() == "id") {
+                valueMap[ss.str()] = std::to_string(prot.get_value(mDefectInfo[index]).convert<std::uint32_t>());
+            } else {
+                valueMap[ss.str()] = StringFromWString(prot.get_value(mDefectInfo[index]).convert<std::wstring>());
+            }
+        }
+    }
+    CFileDialog dlg(false, L"docx", L"Report.docx", OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, L"Word Document (*.docx)| *.docx||");
+    if (dlg.DoModal() == IDOK) {
+        if (WordTemplateRender(L"./template/template.docx", dlg.GetPathName().GetString(), valueMap) == false) {
+            spdlog::error("export report document error!");
+            DMessageBox(L"导出失败!");
+        } else {
+            DMessageBox(L"导出成功!");
+        }
+    }
+}
+
 ::CPoint MainFrameWnd::GetCScanPtFromIndex(int index) const {
     auto     width  = m_pWndOpenGL_CSCAN->GetWidth();
     auto     height = m_pWndOpenGL_CSCAN->GetHeight();
@@ -1330,6 +1339,7 @@ void MainFrameWnd::ThreadCScan(void) {
                 }
             }
         }
+        
         // 测厚
         for (uint32_t i = 0ull; i < 4ull; i++) {
             if (mUtils->getCache().scanGateInfo[(size_t)HDBridge::CHANNEL_NUMBER + i].width > 0.0001f) {
@@ -1521,8 +1531,11 @@ void MainFrameWnd::SaveScanData() {
     for (int i = 0; i < res.size(); i++) {
         if (res[i] == DetectionStateMachine::DetectionStatus::Rasing) {
             SaveDefectStartID(i);
+            // 插入一个新的缺陷信息
+            mDefectInfo.push_back({});
         } else if (res[i] == DetectionStateMachine::DetectionStatus::Falling) {
             SaveDefectEndID(i);
+            // TODO: 保存缺陷信息到`mDefectInfo`中
         }
     }
 }

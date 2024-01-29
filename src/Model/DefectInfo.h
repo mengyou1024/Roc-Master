@@ -28,8 +28,6 @@ namespace ORM_Model {
         std::wstring width       = {};
         std::wstring result      = {};
 
-        bool isLogin = false; ///< ÊÇ·ñµÇÂ¼
-
         static auto storage(std::string name) {
             return make_storage(name, make_table("DefectInfo", make_column("ID", &DefectInfo::id, primary_key().autoincrement()),
                                                  make_column("PRODUCT", &DefectInfo::product),
