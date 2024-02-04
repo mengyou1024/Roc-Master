@@ -22,10 +22,10 @@
 #include <chrono>
 #include <future>
 #include <iomanip>
+#include <numeric>
 #include <regex>
 #include <rttr/type.h>
 #include <sstream>
-#include <numeric>
 
 using rttr::array_range;
 using rttr::property;
@@ -471,7 +471,7 @@ void MainFrameWnd::SetConfigValue(float val, bool sync) {
         case MainFrameWnd::ConfigType::GateStart: {
             if (gate == static_cast<int>(GateType::GATE_SCAN)) {
                 mUtils->getCache().scanGateInfo[_channelSel].pos = static_cast<float>(val / 100.0);
-                auto m = static_cast<MeshAscan *>(m_OpenGL_ASCAN.getModel<ModelGroupAScan *>()->m_pMesh[_channelSel]);
+                auto m                                           = static_cast<MeshAscan *>(m_OpenGL_ASCAN.getModel<ModelGroupAScan *>()->m_pMesh[_channelSel]);
                 m->UpdateGate(gate, true, mUtils->getCache().scanGateInfo[_channelSel].pos,
                               mUtils->getCache().scanGateInfo[_channelSel].width, mUtils->getCache().scanGateInfo[_channelSel].height);
                 break;
@@ -486,7 +486,7 @@ void MainFrameWnd::SetConfigValue(float val, bool sync) {
         case MainFrameWnd::ConfigType::GateWidth: {
             if (gate == static_cast<int>(GateType::GATE_SCAN)) {
                 mUtils->getCache().scanGateInfo[_channelSel].width = static_cast<float>(val / 100.0);
-                auto m = static_cast<MeshAscan *>(m_OpenGL_ASCAN.getModel<ModelGroupAScan *>()->m_pMesh[_channelSel]);
+                auto m                                             = static_cast<MeshAscan *>(m_OpenGL_ASCAN.getModel<ModelGroupAScan *>()->m_pMesh[_channelSel]);
                 m->UpdateGate(gate, true, mUtils->getCache().scanGateInfo[_channelSel].pos,
                               mUtils->getCache().scanGateInfo[_channelSel].width, mUtils->getCache().scanGateInfo[_channelSel].height);
                 break;
@@ -501,7 +501,7 @@ void MainFrameWnd::SetConfigValue(float val, bool sync) {
         case MainFrameWnd::ConfigType::GateHeight: {
             if (gate == static_cast<int>(GateType::GATE_SCAN)) {
                 mUtils->getCache().scanGateInfo[_channelSel].height = static_cast<float>(val / 100.0);
-                auto m = static_cast<MeshAscan *>(m_OpenGL_ASCAN.getModel<ModelGroupAScan *>()->m_pMesh[_channelSel]);
+                auto m                                              = static_cast<MeshAscan *>(m_OpenGL_ASCAN.getModel<ModelGroupAScan *>()->m_pMesh[_channelSel]);
                 m->UpdateGate(gate, true, mUtils->getCache().scanGateInfo[_channelSel].pos,
                               mUtils->getCache().scanGateInfo[_channelSel].width, mUtils->getCache().scanGateInfo[_channelSel].height);
                 break;
@@ -613,10 +613,10 @@ void MainFrameWnd::UpdateAllGateResult(const HDBridge::NM_DATA &data, const HD_U
             }
         }
 
-        auto gateLeft      = bridge->getScanGateInfo(data.iChannel + HDBridge::CHANNEL_NUMBER, 1);
-        auto gateRigth     = bridge->getScanGateInfo(data.iChannel + HDBridge::CHANNEL_NUMBER, 2);
-        auto [bias, depth] = bridge->getRangeOfAcousticPath(data.iChannel);
-        auto thickness     = HDBridge::computeDistance(data.pAscan, depth, gateLeft, gateRigth);
+        auto gateLeft                                                           = bridge->getScanGateInfo(data.iChannel + HDBridge::CHANNEL_NUMBER, 1);
+        auto gateRigth                                                          = bridge->getScanGateInfo(data.iChannel + HDBridge::CHANNEL_NUMBER, 2);
+        auto [bias, depth]                                                      = bridge->getRangeOfAcousticPath(data.iChannel);
+        auto thickness                                                          = HDBridge::computeDistance(data.pAscan, depth, gateLeft, gateRigth);
         mUtils->mScanOrm.mThickness[(size_t)channel - HDBridge::CHANNEL_NUMBER] = (float)thickness;
         mesh->SetTickness((float)thickness);
     }
@@ -1340,15 +1340,15 @@ void MainFrameWnd::ThreadCScan(void) {
                 }
             }
         }
-        
+
         // 测厚
         for (uint32_t i = 0ull; i < 4ull; i++) {
             // TODO: 每一圈测厚一次
-            bool conditionRes = [](bool &clear)->bool{
+            bool conditionRes = [](bool &clear) -> bool {
                 static float lastRecordXValue = 0.0f;
                 if (clear) {
                     lastRecordXValue = 0.0f;
-                    clear = false;
+                    clear            = false;
                     return true;
                 }
                 auto [res, xValue] = AbsPLCIntf::getVariable<float>("V27.0");

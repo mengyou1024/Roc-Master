@@ -499,7 +499,6 @@ public:
                         minMaxVec.push_back(_left);
                     }
                 }
-                auto minMax = std::minmax_element(minMaxVec.begin(), minMaxVec.end());
                 max         = minMaxVec[0] + minMaxVec.size() / 2;
             }
             auto pos = (float)((double)std::distance(data.begin(), max) / (double)data.size());

@@ -163,7 +163,7 @@ private: /* 私有变量参数 */
     bool                    mCScanThreadRunning = {};                      ///< C扫线程运行
     ARR_GateResCh           mAllGateResult      = {};                      ///< 所有波门的计算结果
     GateResultTimeNote      mLastGateResUpdate  = {};                      ///< 上一次波门结果更新的时间
-    bool                    mClearMTXValue      = false;                      ///< Clear Measure Thickness X Value 
+    bool                    mClearMTXValue      = false;                   ///< Clear Measure Thickness X Value
     // 参数备份
     ORM_Model::DetectInfo mDetectInfoBak   = {};
     std::wstring          mJobGroupNameBak = {};
@@ -183,13 +183,12 @@ public:
     void EnterReview(std::string path = {});
 
 private:
-
     /**
      * @brief 报表导出按钮事件
-     * 
-     * @param msg 
+     *
+     * @param msg
      */
-    void OnBtnReportExport(TNotifyUI &msg);
+    void OnBtnReportExport(TNotifyUI& msg);
 
     /**
      * @brief 获取C扫图像索引点在界面上的位置
@@ -200,7 +199,7 @@ private:
 
     /**
      * @brief 从点获取C扫图像的索引
-     * 
+     *
      * @param pt 当前点(相对于整个界面)
      * @return int 索引
      */
@@ -208,8 +207,8 @@ private:
 
     /**
      * @brief 更新帧区域
-     * 
-     * @param index 
+     *
+     * @param index
      */
     void UpdateFrame(int index);
 
@@ -240,7 +239,8 @@ private:
      * @param ...args 构造函数参数
      * @return HDBridge的独占指针
      */
-    template <class BR, class... Args> static std::unique_ptr<HDBridge> GenerateHDBridge(const HDBridge& config, Args&&... args) {
+    template <class BR, class... Args>
+    static std::unique_ptr<HDBridge> GenerateHDBridge(const HDBridge& config, Args&&... args) {
         static_assert(std::is_base_of_v<HDBridge, BR> && !std::is_same_v<BR, HDBridge>);
         auto ret = std::unique_ptr<HDBridge>(new BR(std::forward<Args>(args)...));
         *ret     = config;
