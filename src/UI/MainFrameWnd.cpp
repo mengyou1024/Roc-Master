@@ -1216,17 +1216,19 @@ void MainFrameWnd::OnTimer(int iIdEvent) {
             if (res_auto && value_auto) {
                 // 获取检测点状态
                 auto [res, value] = AbsPLCIntf::getVariable<bool>("M50.0");
-                if (res && value) {
+                static bool last_value = true;
+                if (res && value && last_value != value) {
                     StartScan();
                     auto btn = m_PaintManager.FindControl<CButtonUI *>(_T("BtnUIAutoScan"));
                     btn->SetBkColor(0xFF339933);
-                } else if (res && !value) {
+                } else if (res && !value && last_value != value) {
                     BusyWnd wnd([this]() { StopScan(); });
                     wnd.Create(m_hWnd, wnd.GetWindowClassName(), UI_WNDSTYLE_DIALOG, UI_WNDSTYLE_EX_DIALOG);
                     wnd.ShowModal();
                     auto btn = m_PaintManager.FindControl<CButtonUI *>(_T("BtnUIAutoScan"));
                     btn->SetBkColor(0xFFEEEEEE);
                 }
+                last_value = value;
             }
             break;
         }
