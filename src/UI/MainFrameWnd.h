@@ -164,6 +164,9 @@ private: /* 私有变量参数 */
     ARR_GateResCh           mAllGateResult      = {};                      ///< 所有波门的计算结果
     GateResultTimeNote      mLastGateResUpdate  = {};                      ///< 上一次波门结果更新的时间
     bool                    mClearMTXValue      = false;                   ///< Clear Measure Thickness X Value
+    std::atomic<float>      mAxisXValue         = {};                      ///< PLC 读取的 X 值
+    std::thread             mPLCThread          = {};                      ///< PLC 线程句柄
+    std::atomic<bool>       mPLCThreadRunning   = {};                      ///< PLC 线程运行标志
     // 参数备份
     ORM_Model::DetectInfo mDetectInfoBak   = {};
     std::wstring          mJobGroupNameBak = {};
@@ -251,6 +254,12 @@ private:
      * @brief C扫线程
      */
     void ThreadCScan(void);
+
+    /**
+     * @brief PLC线程
+     *
+     */
+    void ThreadPLC(void);
 
     /**
      * @brief 选组按钮单击回调函数

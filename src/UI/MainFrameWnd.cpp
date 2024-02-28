@@ -62,6 +62,8 @@ MainFrameWnd::MainFrameWnd() {
     try {
         mCScanThreadRunning = true;
         mCScanThread        = std::thread(&MainFrameWnd::ThreadCScan, this);
+        mPLCThreadRunning   = true;
+        mPLCThread          = std::thread(&MainFrameWnd::ThreadPLC, this);
         auto config         = HDBridge::storage().get_all<HDBridge>(where(c(&HDBridge::getName) == std::wstring(SCAN_CONFIG_LAST)));
         if (config.size() == 1) {
             if (config[0].isValid()) {
@@ -107,8 +109,10 @@ MainFrameWnd::~MainFrameWnd() {
     try {
         KillTimer(AUTOSCAN_TIMER);
         mCScanThreadRunning = false;
+        mPLCThreadRunning   = false;
         mCScanNotify.notify_all();
         mCScanThread.join();
+        mPLCThread.join();
         // 退出前停止扫查并且退出回放模式
         StopScan(true);
         if (mWidgetMode == WidgetMode::MODE_REVIEW) {
@@ -1215,8 +1219,8 @@ void MainFrameWnd::OnTimer(int iIdEvent) {
             auto [res_auto, value_auto] = AbsPLCIntf::getVariable<bool>("I1.2");
             if (res_auto && value_auto) {
                 // 获取检测点状态
-                auto [res, value] = AbsPLCIntf::getVariable<bool>("M50.0");
-                static bool last_value = true;
+                auto [res, value]                   = AbsPLCIntf::getVariable<bool>("M5.0");
+                static std::atomic<bool> last_value = true;
                 if (res && value && last_value != value) {
                     StartScan();
                     auto btn = m_PaintManager.FindControl<CButtonUI *>(_T("BtnUIAutoScan"));
@@ -1346,20 +1350,20 @@ void MainFrameWnd::ThreadCScan(void) {
         // 测厚
         for (uint32_t i = 0ull; i < 4ull; i++) {
             // TODO: 每一圈测厚一次
-            bool conditionRes = [](bool &clear) -> bool {
+            bool conditionRes = [](bool &clear, float _xValue) -> bool {
                 static float lastRecordXValue = 0.0f;
                 if (clear) {
                     lastRecordXValue = 0.0f;
                     clear            = false;
                     return true;
                 }
-                auto [res, xValue] = AbsPLCIntf::getVariable<float>("V27.0");
+                auto [res, xValue] = std::make_pair(true, _xValue);
                 if (res && (xValue - lastRecordXValue) >= 36.0f) {
                     lastRecordXValue = xValue;
                     return true;
                 }
                 return false;
-            }(mClearMTXValue);
+            }(mClearMTXValue, mAxisXValue.load());
 
             static std::array<std::vector<float>, 4> mThicknessRecord = {};
             if (!conditionRes && mUtils->getCache().scanGateInfo[(size_t)HDBridge::CHANNEL_NUMBER + i].width > 0.0001f) {
@@ -1396,6 +1400,16 @@ void MainFrameWnd::ThreadCScan(void) {
             }
         }
         SaveScanData();
+    }
+}
+
+void MainFrameWnd::ThreadPLC(void) {
+    while (mCScanThreadRunning) {
+        auto [res, val] = AbsPLCIntf::getVariable<float>("V27.0");
+        if (res) {
+            mAxisXValue = val;
+        }
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
 }
 
@@ -1448,7 +1462,7 @@ void MainFrameWnd::SaveDefectStartID(int channel) {
     ORM_Model::ScanRecord scanRecord = {};
     scanRecord.startID               = mRecordCount + (int)mReviewData.size();
     scanRecord.channel               = channel;
-    auto [_, axis]                   = AbsPLCIntf::getVariable<float>("V27.0");
+    auto axis                        = mAxisXValue.load();
     scanRecord.xAxisLoc              = axis;
     mScanRecordCache.push_back(scanRecord);
     mIDDefectRecord[channel] = (int)mScanRecordCache.size() - 1;
@@ -1538,7 +1552,7 @@ void MainFrameWnd::SaveScanData() {
         mUtils->mScanOrm.mScanGateBInfo[i] = mUtils->getCache().gate2Info[i];
     }
     // 保存探头的当前位置
-    auto [__, xAxisLoc]        = AbsPLCIntf::getVariable<float>("V27.0");
+    auto xAxisLoc              = mAxisXValue.load();
     mUtils->mScanOrm.mXAxisLoc = xAxisLoc;
     // 保存扫查数据
     if (mReviewData.size() >= SCAN_RECORD_CACHE_MAX_ITEMS) {
