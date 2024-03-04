@@ -243,15 +243,27 @@ void MeshAscan::hookAScanData(const std::shared_ptr<std::vector<uint8_t>> data) 
 }
 
 void MeshAscan::SetGateData(const std::pair<float, float>& data, int index) {
-    CString str;
-    str.Format(L"%c深度:%.1fmm, %c波幅:%.1f%%", 'A' + index, data.first + m_fScanMin, 'A' + index, data.second);
-    m_sGateDataShow[index] = str;
+    if (index < 3 && index >= 0) {
+        CString str;
+        str.Format(L"%c深度:%.1fmm, %c波幅:%.1f%%", 'A' + index, data.first + m_fScanMin, 'A' + index, data.second);
+        m_sGateDataShow[index] = str;
+    } else {
+        CString str;
+        str.Format(L"A-C深度:%.1fmm", data.second - data.first);
+        m_sGateDataShow[index] = str;
+    }
 }
 
 void MeshAscan::SetGateData(int index) {
-    CString str;
-    str.Format(L"%c深度:无, %c波幅:无", 'A' + index, 'A' + index);
-    m_sGateDataShow[index] = str;
+    if (index < 3 && index >= 0) {
+        CString str;
+        str.Format(L"%c深度:无, %c波幅:无", 'A' + index, 'A' + index);
+        m_sGateDataShow[index] = str;
+    } else {
+        CString str;
+        str.Format(L"A-C深度:无");
+        m_sGateDataShow[index] = str;
+    }
 }
 
 void MeshAscan::SetTickness(float thickness) {
@@ -364,10 +376,10 @@ void MeshAscan::ShowGateData() {
     glEnable(GL_BLEND);
     glScissor(m_rcItem.vleft, m_rcItem.vtop, m_rcItem.vWidth(), m_rcItem.vHeight());
     glPushMatrix();
-    auto           index = 2;
+    auto           index = 3;
     constexpr auto step  = 25;
     for (auto& s : m_sGateDataShow) {
-        m_pOpenGL->m_Font.Text((float)(m_rcItem.vleft + 5), (float)(m_rcItem.vtop + (index--) * step + m_rcItem.vHeight() - 70), s,
+        m_pOpenGL->m_Font.Text((float)(m_rcItem.vleft + 5), (float)(m_rcItem.vtop + (index--) * step + m_rcItem.vHeight() - 95), s,
                                glm::vec4(0.6, 0.8f, 0.8f, 1.f), 1.f);
     }
 

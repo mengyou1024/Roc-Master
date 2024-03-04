@@ -573,6 +573,9 @@ void MainFrameWnd::UpdateAllGateResult(const HDBridge::NM_DATA &data, const HD_U
         return;
     }
     auto bridge = caller.getBridge();
+
+    auto diffValue = std::make_pair<float, float>(0.0f, 0.0f);
+
     for (int i = 0; i < 3; i++) {
         auto info            = bridge->getScanGateInfo(channel, i);
         auto [pos, max, res] = bridge->computeGateInfo(data.pAscan, info);
@@ -584,9 +587,18 @@ void MainFrameWnd::UpdateAllGateResult(const HDBridge::NM_DATA &data, const HD_U
             mAllGateResult[channel][i].max    = (float)max / 2.55f;
             auto gateData                     = std::make_pair(mAllGateResult[channel][i].pos, mAllGateResult[channel][i].max);
             mesh->SetGateData(gateData, i);
+            if (i == 0) {
+                diffValue.first = mAllGateResult[channel][i].pos;
+            } else if (i == 2) {
+                diffValue.second = mAllGateResult[channel][i].pos;
+                mesh->SetGateData(diffValue, 3);
+            }
         } else {
             mAllGateResult[channel][i].result = false;
             mesh->SetGateData(i);
+            if (i == 0 || i == 2) {
+                mesh->SetGateData(3);
+            }
         }
     }
     if (channel < 4) {
@@ -595,6 +607,7 @@ void MainFrameWnd::UpdateAllGateResult(const HDBridge::NM_DATA &data, const HD_U
         int  i               = 2;
         auto info            = bridge->getScanGateInfo(channel, i);
         auto [pos, max, res] = bridge->computeGateInfo(data.pAscan, info);
+        auto diffValue       = std::make_pair<float, float>(0.0f, 0.0f);
         if (res) {
             mAllGateResult[channel][i].result = true;
             auto [bias, depth]                = bridge->getRangeOfAcousticPath(channel);
@@ -602,9 +615,18 @@ void MainFrameWnd::UpdateAllGateResult(const HDBridge::NM_DATA &data, const HD_U
             mAllGateResult[channel][i].max    = (float)max / 2.55f;
             auto gateData                     = std::make_pair(mAllGateResult[channel][i].pos, mAllGateResult[channel][i].max);
             mesh->SetGateData(gateData, i);
+            if (i == 0) {
+                diffValue.first = mAllGateResult[channel][i].pos;
+            } else if (i == 2) {
+                diffValue.second = mAllGateResult[channel][i].pos;
+                mesh->SetGateData(diffValue, 3);
+            }
         } else {
             mAllGateResult[channel][i].result = false;
             mesh->SetGateData(i);
+            if (i == 2) {
+                mesh->SetGateData(3);
+            }
         }
         for (int i = 0; i < 2; i++) {
             mAllGateResult[channel][i] = mAllGateResult[(size_t)channel - HDBridge::CHANNEL_NUMBER][i];
@@ -612,8 +634,17 @@ void MainFrameWnd::UpdateAllGateResult(const HDBridge::NM_DATA &data, const HD_U
             if (res) {
                 auto gateData = std::make_pair(mAllGateResult[channel][i].pos, mAllGateResult[channel][i].max);
                 mesh->SetGateData(gateData, i);
+                if (i == 0) {
+                    diffValue.first = mAllGateResult[channel][i].pos;
+                } else if (i == 2) {
+                    diffValue.second = mAllGateResult[channel][i].pos;
+                    mesh->SetGateData(diffValue, 3);
+                }
             } else {
                 mesh->SetGateData(i);
+                if (i == 2) {
+                    mesh->SetGateData(3);
+                }
             }
         }
 
@@ -1112,14 +1143,23 @@ void MainFrameWnd::OnLButtonDown(UINT nFlags, ::CPoint pt) {
                 bridge.mScanOrm.mScanGateBInfo[i],
                 bridge.mScanOrm.mScanGateInfo[i],
             };
-
+            auto diffValue = std::make_pair<float, float>(0.f, 0.f);
             for (int j = 0; j < 3; j++) {
                 auto [pos, max, res] = HDBridge::computeGateInfo(bridge.mScanOrm.mScanData[i]->pAscan, scanGate[j]);
                 auto depth           = bridge.mScanOrm.mScanData[i]->aScanLimits[1] - bridge.mScanOrm.mScanData[i]->aScanLimits[0];
                 if (res) {
                     mesh->SetGateData(std::make_pair(pos * depth, max / 2.55f), j);
+                    if (j == 0) {
+                        diffValue.first = pos * depth;
+                    } else if (j == 2) {
+                        diffValue.second = pos * depth;
+                        mesh->SetGateData(diffValue, 3);
+                    }
                 } else {
                     mesh->SetGateData(j);
+                    if (j == 0 || j == 2) {
+                        mesh->SetGateData(3);
+                    }
                 }
             }
         }
@@ -1146,13 +1186,23 @@ void MainFrameWnd::OnLButtonDown(UINT nFlags, ::CPoint pt) {
                 bridge.mScanOrm.mScanGateBInfo[i],
                 bridge.mScanOrm.mScanGateInfo[i + HDBridge::CHANNEL_NUMBER],
             };
+            auto diffValue = std::make_pair<float, float>(0.f, 0.f);
             for (int j = 0; j < 3; j++) {
                 auto [pos, max, res] = HDBridge::computeGateInfo(bridge.mScanOrm.mScanData[i]->pAscan, scanGate[j]);
                 if (res) {
                     auto depth = bridge.mScanOrm.mScanData[i]->aScanLimits[1] - bridge.mScanOrm.mScanData[i]->aScanLimits[0];
                     mesh->SetGateData(std::make_pair(pos * depth, max / 2.55f), j);
+                    if (j == 0) {
+                        diffValue.first = pos * depth;
+                    } else if (j == 2) {
+                        diffValue.second = pos * depth;
+                        mesh->SetGateData(diffValue, 3);
+                    }
                 } else {
                     mesh->SetGateData(j);
+                    if (j == 0 || j == 2) {
+                        mesh->SetGateData(3);
+                    }
                 }
             }
             mesh->SetTickness(bridge.mScanOrm.mThickness[i]);
