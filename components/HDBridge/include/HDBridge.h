@@ -17,6 +17,8 @@ using std::vector;
     #include <sqlite_orm/sqlite_orm.h>
 #endif
 
+#define HDBRIDGE_COPY_GATE 1
+
 class HDBridge {
     friend class NetworkMulti;
     friend class TOFDMultiPort;
@@ -499,7 +501,7 @@ public:
                         minMaxVec.push_back(_left);
                     }
                 }
-                max         = minMaxVec[0] + minMaxVec.size() / 2;
+                max = minMaxVec[0] + minMaxVec.size() / 2;
             }
             auto pos = (float)((double)std::distance(data.begin(), max) / (double)data.size());
             if (pos < 0.0f) {
@@ -517,7 +519,7 @@ public:
      * @param channel 通道号
      * @param gateIndex 波门索引
      * @return [Amp, is_ok] Amp is 0-100.f
-    */
+     */
     std::pair<double, bool> getGateAmp(const std::vector<uint8_t> &data, int channel, int gateIndex) const {
         auto [_, max, res] = computeGateInfo(data, getScanGateInfo(channel, gateIndex));
         return std::make_pair((double)max / 2.55, res);
@@ -574,6 +576,13 @@ public:
         auto filter        = mCache.filter[src];
         auto demodu        = mCache.demodu[src];
         auto phaseReverse  = mCache.phaseReverse[src];
+#if HDBRIDGE_COPY_GATE
+        auto gateInfo     = mCache.gateInfo[src];
+        auto gate2Info    = mCache.gate2Info[src];
+        auto gate2Type    = mCache.gate2Type[src];
+        auto scanGateInfo = mCache.scanGateInfo[src];
+#endif
+
         for (auto i : dist) {
             if (i == src) {
                 continue;
@@ -589,13 +598,23 @@ public:
                 mCache.filter[i]        = filter;
                 mCache.demodu[i]        = demodu;
                 mCache.phaseReverse[i]  = phaseReverse;
+#if HDBRIDGE_COPY_GATE
+                mCache.gateInfo[i]     = gateInfo;
+                mCache.gate2Info[i]    = gate2Info;
+                mCache.gate2Type[i]    = gate2Type;
+                mCache.scanGateInfo[i] = scanGateInfo;
+                if (i <= 3) {
+                    mCache.scanGateInfo[i + HDBridge::CHANNEL_NUMBER] = scanGateInfo;
+                }
+#endif
             }
         }
+
         syncCache2Board();
     }
 #ifdef USE_SQLITE_ORM
     #ifndef ORM_DB_NAME
-    #define ORM_DB_NAME "HDBridge.db"
+        #define ORM_DB_NAME "HDBridge.db"
     #endif // !ORM_DB_NAME
 
     static auto storage(std::string fileName) {
