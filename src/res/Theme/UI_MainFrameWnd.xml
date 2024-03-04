@@ -56,6 +56,8 @@
 				<VerticalLayout width="1" bkimage="Theme\list\list_header_sep.png" />
 				<!-- <Button name="BtnUIFunction" text="功能" width="100" font="5" />
 				<VerticalLayout width="1" bkimage="Theme\list\list_header_sep.png" /> -->
+				<Button name="BtnUICalibration" text="声速校准" width="100" font="5" />
+				<VerticalLayout width="1" bkimage="Theme\list\list_header_sep.png" />
 				<Button name="BtnUIAmpMemory" text="峰值记忆" width="100" font="5" />
 				<VerticalLayout width="1" bkimage="Theme\list\list_header_sep.png" />
 				<Button name="BtnUIFreeze" text="波形冻结" width="100" font="5" />

@@ -17,6 +17,7 @@
 #include <RecordSelectWnd.h>
 #include <SettingWnd.h>
 #include <UI/DetectionInformationEntryWnd.h>
+#include <UI/SoundVelocityCalibration.h>
 #include <algorithm>
 #include <array>
 #include <chrono>
@@ -847,6 +848,39 @@ void MainFrameWnd::OnBtnUIClicked(std::wstring &name) {
         wnd.Create(m_hWnd, wnd.GetWindowClassName(), UI_WNDSTYLE_DIALOG, UI_WNDSTYLE_EX_DIALOG);
         wnd.CenterWindow();
         wnd.ShowModal();
+    } else if (name == _T("Calibration")) {
+        // TODO: 声速校准
+        auto index = 0;
+        if (GetSystemConfig().enableMeasureThickness) {
+            index += HDBridge::CHANNEL_NUMBER;
+        }
+        if (!mAllGateResult[index][2] || !mAllGateResult[index][0]) {
+            DMessageBox(L"确保1通道A波门和C波门有计算结果", L"声速校准");
+            spdlog::warn("确保1通道A波门和C波门有计算结果");
+            return;
+        }
+
+        auto                     initValue = mAllGateResult[index][2].pos - mAllGateResult[index][0].pos;
+        SoundVelocityCalibration wnd(initValue);
+        wnd.Create(m_hWnd, wnd.GetWindowClassName(), UI_WNDSTYLE_DIALOG, UI_WNDSTYLE_EX_DIALOG);
+        wnd.CenterWindow();
+        wnd.ShowModal();
+        auto [res, val] = wnd.GetResult();
+        if (res) {
+            auto bridge = mUtils->getBridge();
+            auto sampleTime = bridge->distance2time(mAllGateResult[index][2].pos, index) - bridge->distance2time(mAllGateResult[index][0].pos, index);
+            if (sampleTime < 0.0001) {
+                DMessageBox(L"计算出错, A波门和C波们采样时间差为0", L"声速校准");
+                spdlog::warn("计算出错, A波门和C波们采样时间差为0");
+                return;
+            }
+            auto soundVelocity = HDBridge::velocityFromDistanceAndTime(val, sampleTime);
+            for (auto i = 0; i < HDBridge::CHANNEL_NUMBER; ++i) {
+                mUtils->getBridge()->setSoundVelocity(i, soundVelocity);
+            }
+            mUtils->getBridge()->syncCache2Board();
+            spdlog::info("校准声速: {} m/s", soundVelocity);
+        }
     }
 }
 

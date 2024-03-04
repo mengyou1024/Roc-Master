@@ -450,6 +450,17 @@ public:
         }
     }
 
+    /**
+     * @brief 从距离和时间计算声速
+     * 
+     * @param distance_mm 距离
+     * @param time_us 时间
+     * @return constexpr double 声速(m/s)
+     */
+    static constexpr double velocityFromDistanceAndTime(double distance_mm, double time_us) {
+        return distance_mm * 2000.0 / time_us;
+    }
+
     virtual double time2distance(double time_us, int channel) final {
         return time2distance(time_us, (double)mCache.soundVelocity[channel % CHANNEL_NUMBER]);
     }
