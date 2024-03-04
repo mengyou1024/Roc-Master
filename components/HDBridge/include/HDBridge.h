@@ -438,7 +438,7 @@ public:
      * @brief 距离转时间
      * @param distance_mm
      * @param velocity_in_m_per_s
-     * @return
+     * @return 时间 (us)
      */
     static constexpr double distance2time(double distance_mm, double velocity_in_m_per_s) {
         if (velocity_in_m_per_s == 0.0) {
