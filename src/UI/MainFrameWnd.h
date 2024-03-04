@@ -167,6 +167,7 @@ private: /* 私有变量参数 */
     std::atomic<float>      mAxisXValue         = {};                      ///< PLC 读取的 X 值
     std::thread             mPLCThread          = {};                      ///< PLC 线程句柄
     std::atomic<bool>       mPLCThreadRunning   = {};                      ///< PLC 线程运行标志
+    TaskQueue               mPLCAlaramTaskQueue;
     // 参数备份
     ORM_Model::DetectInfo mDetectInfoBak   = {};
     std::wstring          mJobGroupNameBak = {};
@@ -396,6 +397,13 @@ private:
      * @param showNoUpdate 无更新可用时是否显示窗口
      */
     void CheckAndUpdate(bool showNoUpdate = false);
+
+    /**
+     * @brief PLC报警
+     * 
+     * @param isInternal 是否是内伤报警
+     */
+    void PLCAlaram(bool isInternal = false);
 };
 
 #pragma pop_macro("GATE_A")

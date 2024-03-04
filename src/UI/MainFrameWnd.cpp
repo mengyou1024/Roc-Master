@@ -1625,6 +1625,8 @@ void MainFrameWnd::SaveScanData() {
             SaveDefectStartID(i);
             // 插入一个新的缺陷信息
             mDefectInfo.push_back({});
+            // TODO: 判断缺陷类型并报警
+            PLCAlaram(i > 4);
         } else if (res[i] == DetectionStateMachine::DetectionStatus::Falling) {
             SaveDefectEndID(i);
             // TODO: 保存缺陷信息到`mDefectInfo`中
@@ -1843,5 +1845,25 @@ void MainFrameWnd::StopScan(bool changeFlag) {
         mReviewData.clear();
         mRecordCount = 0;
         mScanRecordCache.clear();
+    }
+}
+
+void MainFrameWnd::PLCAlaram(bool isInternal) {
+    auto alramTask = [&]() {
+        const auto     light    = isInternal ? "Q1.0" : "Q1.1";
+        constexpr auto beepName = "Q0.7";
+        AbsPLCIntf::setVariable(light, true);
+        bool beep = true;
+        for (auto i = 0; i < 12; i++) {
+            AbsPLCIntf::setVariable(beepName, beep);
+            beep = !beep;
+            Sleep(1000);
+        }
+        AbsPLCIntf::setVariable(beepName, false);
+        AbsPLCIntf::setVariable(light, false);
+    };
+    auto add_to_task_res = mPLCAlaramTaskQueue.TryAddTask(alramTask, "PLC_ALARM", true);
+    if (!add_to_task_res) {
+        spdlog::warn("PLC alarm Task Busy!");
     }
 }

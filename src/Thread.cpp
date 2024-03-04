@@ -2,7 +2,10 @@
 
 #include "Thread.h"
 
-Thread::Thread() : _pthread(nullptr), m_bWorking(false), _hevent(INVALID_HANDLE_VALUE) {}
+Thread::Thread() :
+_pthread(nullptr),
+m_bWorking(false),
+_hevent(INVALID_HANDLE_VALUE) {}
 
 Thread::~Thread() {
     Close();
@@ -82,6 +85,29 @@ void TaskQueue::AddTask(std::function<void(void)> func, std::string id, bool rm_
         mTaskQueue.push({func, id});
     }
     mCVNotify.notify_one();
+}
+
+bool TaskQueue::TryAddTask(std::function<void(void)> func, std::string id, bool rm_same_id) {
+    if (mTaskQueueMutex.try_lock()) {
+        bool find_same = false;
+        for (int i = 0; i < mTaskQueue.size(); i++) {
+            auto &[_task, _id] = mTaskQueue.front();
+            if (rm_same_id && _id == id) {
+                _task     = func;
+                find_same = true;
+            }
+            mTaskQueue.push({_task, _id});
+            mTaskQueue.pop();
+        }
+        if (!rm_same_id || !find_same) {
+            mTaskQueue.push({func, id});
+        }
+        mCVNotify.notify_one();
+        mTaskQueueMutex.unlock();
+        return true;
+    } else {
+        return false;
+    }
 }
 
 void TaskQueue::run(void) {

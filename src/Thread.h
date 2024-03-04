@@ -46,6 +46,7 @@ public:
     ~TaskQueue();
 
     void AddTask(std::function<void(void)> func, std::string id = 0, bool rm_same_id = false);
+    bool TryAddTask(std::function<void(void)> func, std::string id = 0, bool rm_same_id = false);
 
 private:
     std::condition_variable_any mCVNotify       = {};
