@@ -822,11 +822,15 @@ void MainFrameWnd::OnBtnUIClicked(std::wstring &name) {
 void MainFrameWnd::KillUITimer(void) {
     ::KillTimer(m_OpenGL_ASCAN.m_hWnd, 0);
     ::KillTimer(m_OpenGL_CSCAN.m_hWnd, 0);
+    KillTimer(CSCAN_UPDATE);
+    KillTimer(AUTOSCAN_TIMER);
 }
 
 void MainFrameWnd::ResumeUITimer(void) {
     ::SetTimer(m_OpenGL_ASCAN.m_hWnd, 0, 15, NULL);
     ::SetTimer(m_OpenGL_CSCAN.m_hWnd, 0, 15, NULL);
+    SetTimer(CSCAN_UPDATE, 1000 / mSamplesPerSecond);
+    SetTimer(AUTOSCAN_TIMER, 100);
 }
 
 void MainFrameWnd::Notify(TNotifyUI &msg) {
@@ -1219,7 +1223,7 @@ void MainFrameWnd::OnTimer(int iIdEvent) {
             auto [res_auto, value_auto] = AbsPLCIntf::getVariable<bool>("I1.2");
             if (res_auto && value_auto) {
                 // 获取检测点状态
-                auto [res, value]                   = AbsPLCIntf::getVariable<bool>("M5.0");
+                auto [res, value]                   = AbsPLCIntf::getVariable<bool>("M50.0");
                 static std::atomic<bool> last_value = true;
                 if (res && value && last_value != value) {
                     StartScan();
