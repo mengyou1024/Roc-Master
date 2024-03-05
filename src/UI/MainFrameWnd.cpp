@@ -103,6 +103,7 @@ MainFrameWnd::MainFrameWnd() {
         }
         mUtils = std::make_unique<HD_Utils>(bridge);
         mUtils->getBridge()->defaultInit();
+        mUtils->getBridge()->syncCache2Board();
     } catch (std::exception &e) { spdlog::error(GB2312ToUtf8(e.what())); }
 }
 
@@ -867,7 +868,7 @@ void MainFrameWnd::OnBtnUIClicked(std::wstring &name) {
         wnd.ShowModal();
         auto [res, val] = wnd.GetResult();
         if (res) {
-            auto bridge = mUtils->getBridge();
+            auto bridge     = mUtils->getBridge();
             auto sampleTime = bridge->distance2time(mAllGateResult[index][2].pos, index) - bridge->distance2time(mAllGateResult[index][0].pos, index);
             if (sampleTime < 0.0001) {
                 DMessageBox(L"计算出错, A波门和C波们采样时间差为0", L"声速校准");
