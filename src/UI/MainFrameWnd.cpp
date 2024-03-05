@@ -1729,7 +1729,46 @@ void MainFrameWnd::SaveScanData() {
             PLCAlaram(i > 4);
         } else if (res[i] == DetectionStateMachine::DetectionStatus::Falling) {
             SaveDefectEndID(i);
+            // 扫查记录
+            const auto &scanRecord = mScanRecordCache.at(mIDDefectRecord[i]);
+            const auto  startID    = scanRecord.startID;
+            const auto  endID      = scanRecord.endID;
+            const auto &data       = mReviewData.end();
+            VEC_Utils   vec_utils;
+            if (mReviewData.size() >= (scanRecord.endID - scanRecord.startID + 1)) {
+                // 扫查记录完全在缓存中
+                for (auto it = mReviewData.begin() + (mReviewData.size() - (scanRecord.endID - scanRecord.startID + 1));
+                     it != mReviewData.end(); it++) {
+                    vec_utils.emplace_back(*it);
+                }
+            } else if (mReviewData.size() == 0) {
+                // 扫查记录完全在数据库中
+                for (auto id = startID; id <= endID; id++) {
+                    vec_utils.emplace_back(HD_Utils::storage(mSavePath).get<HD_Utils>(id));
+                }
+            } else if ((scanRecord.endID - scanRecord.startID + 1) > mReviewData.size()) {
+                // 一部分在缓存中，一部分在数据库中
+                for (auto id = startID; id <= endID - mReviewData.size(); id++) {
+                    vec_utils.emplace_back(HD_Utils::storage(mSavePath).get<HD_Utils>(1));
+                }
+                vec_utils.insert(vec_utils.end(), mReviewData.begin(), mReviewData.end());
+            }
             // TODO: 保存缺陷信息到`mDefectInfo`中
+            // 缺陷信息
+            std::wstringstream ss;
+            ss.precision(2);
+            ss.setf(std::ios::fixed);
+            auto &defectInfo       = mDefectInfo.back();
+            defectInfo.product     = L"";
+            defectInfo.description = L"";
+            defectInfo.flawno      = L"";
+            defectInfo.dac         = L"";
+            defectInfo.type        = L"";
+            defectInfo.location    = (ss.clear(), ss << scanRecord.xAxisLoc, ss.str());
+            defectInfo.length      = (ss.clear(), ss << mAxisXValue.load() - scanRecord.xAxisLoc, ss.str());
+            defectInfo.depth       = L"";
+            defectInfo.width       = L"";
+            defectInfo.result      = L"";
         }
     }
 }
