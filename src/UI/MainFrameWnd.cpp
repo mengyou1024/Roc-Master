@@ -1269,6 +1269,7 @@ void MainFrameWnd::OnLButtonDClick(UINT nFlags, ::CPoint pt) {
                     mUtils = std::move(wnd->returnHDUtils());
                     delete wnd;
                     mUtils->popCallback();
+                    UpdateSliderAndEditValue(mCurrentGroup, mConfigType, mGateType, mChannelSel, true);
                     ResumeUITimer();
                     // 如果正在扫查则重新开始扫查
                     if (mScanningFlag == true) {
