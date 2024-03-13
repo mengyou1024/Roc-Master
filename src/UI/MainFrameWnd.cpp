@@ -15,7 +15,6 @@
 #include <ModelGroupCScan.h>
 #include <ParamManagementWnd.h>
 #include <RecordSelectWnd.h>
-#include <UI/RecordSelectListViewWnd.h>
 #include <SettingWnd.h>
 #include <UI/DetectionInformationEntryWnd.h>
 #include <UI/RecordSelectListViewWnd.h>
@@ -1725,8 +1724,30 @@ void MainFrameWnd::SaveScanData() {
             SaveDefectStartID(i);
             // 插入一个新的缺陷信息
             mDefectInfo.push_back({});
-            // TODO: 判断缺陷类型并报警
-            PLCAlaram(i > 4);
+            // DONE: 判断缺陷类型并报警
+            // 检测时的缺陷深度
+            float thicknessOnTesting = 0.0f;
+            // 工件的平均厚度
+            float  averageThickness = 0.0f;
+            if (mSystemConfig.enableMeasureThickness) {
+                // 如果开启了测厚功能, 则平均厚度由4个通道的平均值决定
+                averageThickness = std::accumulate(
+                                        mReviewData.back().mScanOrm.mThickness.begin(),
+                                        mReviewData.back().mScanOrm.mThickness.end(),
+                                        0.0) /
+                                    mReviewData.back().mScanOrm.mThickness.size();
+            } else {
+                // 如果为开启测厚功能，则工件厚度由用户输入
+                averageThickness = std::stof(mDetectInfo.thickness);
+            }
+            if (i < 4 && mSystemConfig.enableMeasureThickness) {
+                // 如果是1-4通道，且开启测厚功能, 缺陷深度是测厚通道(13-16)C波门与A波门最高波位置的差值
+                thicknessOnTesting = mAllGateResult[i + HDBridge::CHANNEL_NUMBER][2].pos - mAllGateResult[i + HDBridge::CHANNEL_NUMBER][0].pos;
+            } else if(i < 4 ) {
+                // 其他情况为当前通道的C波门与A波门最高波位置的差值
+                thicknessOnTesting = mAllGateResult[i][2].pos - mAllGateResult[i][0].pos;
+            }
+            PLCAlaram(averageThickness > thicknessOnTesting);
         } else if (res[i] == DetectionStateMachine::DetectionStatus::Falling) {
             SaveDefectEndID(i);
             // 扫查记录
