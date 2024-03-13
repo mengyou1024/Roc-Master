@@ -269,7 +269,7 @@ void RecordSelectListViewWnd::ListTime() const {
                 auto list     = new CListTextElementUI;
                 pListTime->Add(list);
                 list->SetText(0, WStringFromString(fileName.substr(0, 8)).data());
-                // TODO: 添加缺陷数量
+                // DONE: 添加缺陷数量
                 auto path = StringFromWString(_T(SCAN_DATA_DIR_NAME) + GetSystemConfig().groupName + L"/" +
                                               std::wstring(listYearMonthValue.GetData()) + L"/" + std::wstring(listDayValue.GetData()) +
                                               L"/" + WStringFromString(fileName));

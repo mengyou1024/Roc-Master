@@ -898,7 +898,7 @@ void MainFrameWnd::OnBtnUIClicked(std::wstring &name) {
         wnd.CenterWindow();
         wnd.ShowModal();
     } else if (name == _T("Calibration")) {
-        // TODO: 声速校准
+        // TO_VERIFY: 声速校准
         auto index = 0;
         if (GetSystemConfig().enableMeasureThickness) {
             index += HDBridge::CHANNEL_NUMBER;
@@ -1491,8 +1491,8 @@ void MainFrameWnd::ThreadCScan(void) {
 
         // 测厚
         for (uint32_t i = 0ull; i < 4ull; i++) {
-            // TODO: 每一圈测厚一次
-            bool conditionRes = [](bool &clear, float _xValue) -> bool {
+            // TO_VERIFY: 每一圈测厚一次
+            bool conditionRes = [this](bool &clear, float _xValue) -> bool {
                 static float lastRecordXValue = 0.0f;
                 if (clear) {
                     lastRecordXValue = 0.0f;
@@ -1500,7 +1500,7 @@ void MainFrameWnd::ThreadCScan(void) {
                     return true;
                 }
                 auto [res, xValue] = std::make_pair(true, _xValue);
-                if (res && (xValue - lastRecordXValue) >= 36.0f) {
+                if (res && (xValue - lastRecordXValue) >= mSystemConfig.stepDistance) {
                     lastRecordXValue = xValue;
                     return true;
                 }
