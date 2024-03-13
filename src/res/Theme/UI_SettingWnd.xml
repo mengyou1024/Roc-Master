@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Window size="240,240" caption="5,5,5,34">
+<Window size="280,250" caption="5,5,5,34">
 	<Font name="楷体" size="14" default="true" />
 	<Font name="楷体" size="18" />
 	<Font name="楷体" size="24" />
@@ -23,7 +23,7 @@
 		</HorizontalLayout>
 		<VerticalLayout bkimage="Theme\Line\v_line.png" height="1" />
 		<VerticalLayout inset="10,15,10,10">
-			<HorizontalLayout inset="10,10,10,10">
+			<HorizontalLayout height="120" inset="10,10,10,10">
 				<VerticalLayout bkimage="file='Theme\Button\bkimage.png' corner='3,3,3,3'" inset="10,15,10,10" childalign="center" childvalign="center">
 					<!-- <HorizontalLayout height="32" >
 						<Label text="自动更新" width="60"/>
@@ -39,6 +39,12 @@
 						<Edit name="EditSystemProxy" textvalitor="h?t{0,2}p?:?/{0,2}\d{0,3}(\.\d{0,3}){0,3}:?\d{0,5}" width="240" bordersize="1" bordercolor="0x7F7F7F7F" height="28" />
 						<Label />
 					</HorizontalLayout> -->
+					<HorizontalLayout height="32">
+						<Label text="步进距离(mm)" width="80"/>
+						<HorizontalLayout width="20" />
+						<Edit name="EditStepSize" width="120" modenumber="true" wheelstep="1" textvalitor="\d+\.?\d{0,2}" bordersize="1" bordercolor="0x7F7F7F7F" height="28" />
+						<Label />
+					</HorizontalLayout>
 					<HorizontalLayout height="32">
 						<Label text="使用网口" width="60"/>
 						<HorizontalLayout width="20" />

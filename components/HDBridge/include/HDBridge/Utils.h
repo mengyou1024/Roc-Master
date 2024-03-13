@@ -18,12 +18,25 @@ struct HD_ScanORM {
     #pragma pack(1)
     std::array<float, 4>                                                mThickness     = {};
     std::array<float, 2>                                                mCScanLimits   = {};
-    float                                                               mXAxisLoc = {};
+    float                                                               mXAxisLoc      = {};
     std::array<HDBridge::HB_ScanGateInfo, HDBridge::CHANNEL_NUMBER + 4> mScanGateInfo  = {};
     std::array<HDBridge::HB_ScanGateInfo, HDBridge::CHANNEL_NUMBER>     mScanGateAInfo = {};
     std::array<HDBridge::HB_ScanGateInfo, HDBridge::CHANNEL_NUMBER>     mScanGateBInfo = {};
     #pragma pack()
     std::array<shared_ptr<HDBridge::NM_DATA>, HDBridge::CHANNEL_NUMBER> mScanData = {};
+
+    HD_ScanORM& copy(const HD_ScanORM& other, int index) {
+        this->mThickness                                       = other.mThickness;
+        this->mCScanLimits                                     = other.mCScanLimits;
+        this->mScanGateInfo[index % HDBridge::CHANNEL_NUMBER]  = other.mScanGateInfo[index % HDBridge::CHANNEL_NUMBER];
+        this->mScanGateAInfo[index % HDBridge::CHANNEL_NUMBER] = other.mScanGateAInfo[index % HDBridge::CHANNEL_NUMBER];
+        this->mScanGateBInfo[index % HDBridge::CHANNEL_NUMBER] = other.mScanGateBInfo[index % HDBridge::CHANNEL_NUMBER];
+        this->mScanData[index % HDBridge::CHANNEL_NUMBER]      = other.mScanData[index % HDBridge::CHANNEL_NUMBER];
+        if (index < 4) {
+            this->mScanGateInfo[index + HDBridge::CHANNEL_NUMBER] = other.mScanGateInfo[index + HDBridge::CHANNEL_NUMBER];
+        }
+        return *this;
+    }
 };
 
 namespace sqlite_orm {
@@ -95,10 +108,17 @@ public:
     };
 #endif
 
+    static HD_Utils fromOrmData(const HD_ScanORM& data) {
+        HD_Utils ret;
+        ret.mScanOrm = data;
+        return ret;
+    }
+
+
     HD_ScanORM mScanOrm = {};
 
-    explicit HD_Utils(std::unique_ptr<HDBridge>& bridge)
-        : mBridge(std::move(bridge)) {
+    HD_Utils(std::unique_ptr<HDBridge>& bridge) :
+    mBridge(std::move(bridge)) {
         if (mBridge) {
             if (!mBridge->open()) {
                 spdlog::error("open board failed");
@@ -115,8 +135,8 @@ public:
         }
     }
 
-    explicit HD_Utils(const HD_Utils& other)
-        : HD_Utils() {
+    HD_Utils(const HD_Utils& other) :
+    HD_Utils() {
         id       = other.id;
         mScanOrm = other.mScanOrm;
     }

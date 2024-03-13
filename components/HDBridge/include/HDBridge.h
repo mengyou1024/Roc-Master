@@ -19,6 +19,9 @@ using std::vector;
 
 #define HDBRIDGE_COPY_GATE 1
 
+class NetworkMulti;
+class TOFDMultiPort;
+
 class HDBridge {
     friend class NetworkMulti;
     friend class TOFDMultiPort;
@@ -452,7 +455,7 @@ public:
 
     /**
      * @brief 从距离和时间计算声速
-     * 
+     *
      * @param distance_mm 距离
      * @param time_us 时间
      * @return constexpr double 声速(m/s)

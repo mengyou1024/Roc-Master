@@ -67,6 +67,8 @@ MainFrameWnd::MainFrameWnd() {
         mPLCThreadRunning   = true;
         mPLCThread          = std::thread(&MainFrameWnd::ThreadPLC, this);
         auto config         = HDBridge::storage().get_all<HDBridge>(where(c(&HDBridge::getName) == std::wstring(SCAN_CONFIG_LAST)));
+        // 获取系统配置
+        mSystemConfig = GetSystemConfig();
         if (config.size() == 1) {
             if (config[0].isValid()) {
                 auto                 systemConfig = GetSystemConfig();
@@ -560,13 +562,50 @@ void MainFrameWnd::UpdateAScanCallback(const HDBridge::NM_DATA &data, const HD_U
     // 更新扫查波门
     mesh->UpdateGate(2, 1, info.pos, info.width, info.height);
 
-    // 测厚的波门
-    if (data.iChannel < 4) {
-        auto  mesh   = m_OpenGL_ASCAN.getMesh<MeshAscan *>((size_t)data.iChannel + HDBridge::CHANNEL_NUMBER);
-        auto  bridge = mUtils->getBridge();
-        auto &info   = bridge->getCache().scanGateInfo[(size_t)data.iChannel + HDBridge::CHANNEL_NUMBER];
-        mesh->UpdateGate(2, 1, info.pos, info.width, info.height);
+    //
+    bool conditionRes = [this](bool &clear, float _xValue) -> bool {
+        // 上一次X值
+        static float lastRecordXValue = 0.0f;
+        if (clear) {
+            lastRecordXValue = 0.0f;
+            clear            = false;
+            return true;
+        }
+        auto [res, xValue] = std::make_pair(true, _xValue);
+        if (res && (xValue - lastRecordXValue) >= mSystemConfig.stepDistance) {
+            lastRecordXValue = xValue;
+            return true;
+        }
+        return false;
+    }(mClearSSRValue, mAxisXValue.load());
+    if (conditionRes) {
+        // 表示距离超过步进
+        // 拷贝当前通道的参数
+        mMaxGateAmpUtils.copy(mUtils->mScanOrm, data.iChannel);
+        mMaxGateRes[data.iChannel][2] = mAllGateResult[data.iChannel][2];
+    } else {
+        // 距离未超过步进
+        auto res = mAllGateResult[data.iChannel][2];
+        if (res) {
+            auto lastRes = mMaxGateRes[data.iChannel][2];
+            if (lastRes && lastRes.max >= res.max) {
+                // 当扫查波们里面的最高值大于当前扫查波们内的最高时时拷贝
+                mMaxGateAmpUtils.copy(mUtils->mScanOrm, data.iChannel);
+                mMaxGateRes[data.iChannel][2] = mAllGateResult[data.iChannel][2];
+            }
+        }
     }
+}
+
+void MainFrameWnd::SaveBridgeToUtils(const HDBridge::NM_DATA &data, const HD_Utils &caller) {
+    // 保存当前波门的位置信息
+    auto channel = data.iChannel;
+    // 保存波门
+    mUtils->mScanOrm.mScanGateInfo[channel % (HDBridge::CHANNEL_NUMBER + 4)] = mUtils->getCache().scanGateInfo[channel % (HDBridge::CHANNEL_NUMBER + 4)];
+    mUtils->mScanOrm.mScanGateAInfo[channel % HDBridge::CHANNEL_NUMBER]      = mUtils->getCache().gateInfo[channel % HDBridge::CHANNEL_NUMBER];
+    mUtils->mScanOrm.mScanGateBInfo[channel % HDBridge::CHANNEL_NUMBER]      = mUtils->getCache().gate2Info[channel % HDBridge::CHANNEL_NUMBER];
+    // 保存探头的当前位置
+    mUtils->mScanOrm.mXAxisLoc = mAxisXValue.load();
 }
 
 void MainFrameWnd::UpdateAllGateResult(const HDBridge::NM_DATA &data, const HD_Utils &caller) {
@@ -751,6 +790,7 @@ void MainFrameWnd::OnBtnUIClicked(std::wstring &name) {
         wnd.Create(m_hWnd, wnd.GetWindowClassName(), UI_WNDSTYLE_DIALOG, UI_WNDSTYLE_EX_DIALOG);
         wnd.CenterWindow();
         wnd.ShowModal();
+        mSystemConfig                  = GetSystemConfig();
         auto newConfig                 = GetSystemConfig();
         auto newEnableNetwork          = newConfig.enableNetworkTOFD;
         auto newEnableMeasureThickness = newConfig.enableMeasureThickness;
@@ -1417,6 +1457,10 @@ void MainFrameWnd::ThreadCScan(void) {
             break;
         }
 
+        // 更新C扫的坐标轴范围
+        auto [r_min, _] = m_OpenGL_CSCAN.getModel<ModelGroupCScan *>()->GetAxisRange();
+        m_OpenGL_CSCAN.getModel<ModelGroupCScan *>()->SetAxisRange(r_min, mAxisXValue.load());
+
         // 更新C扫
         std::array<std::shared_ptr<HDBridge::NM_DATA>, HDBridge::CHANNEL_NUMBER> scanData = mUtils->mScanOrm.mScanData;
         for (auto &it : scanData) {
@@ -1506,6 +1550,25 @@ void MainFrameWnd::ThreadPLC(void) {
         auto [res, val] = AbsPLCIntf::getVariable<float>("V27.0");
         if (res) {
             mAxisXValue = val;
+        }
+        bool conditionRes = [this](bool &clear, float _xValue) -> bool {
+            // 上一次X值
+            static float lastRecordXValue = 0.0f;
+            if (clear) {
+                lastRecordXValue = 0.0f;
+                clear            = false;
+                return true;
+            }
+            auto [res, xValue] = std::make_pair(true, _xValue);
+            if (res && (xValue - lastRecordXValue) >= mSystemConfig.stepDistance) {
+                lastRecordXValue = xValue;
+                return true;
+            }
+            return false;
+        }(mClearSSRValue, mAxisXValue.load());
+        if (conditionRes) {
+            // 通知保存和更新C扫
+            mCScanNotify.notify_one();
         }
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
@@ -1643,15 +1706,6 @@ void MainFrameWnd::CheckAndUpdate(bool showNoUpdate) {
 }
 
 void MainFrameWnd::SaveScanData() {
-    // 保存当前波门的位置信息
-    mUtils->mScanOrm.mScanGateInfo = mUtils->getCache().scanGateInfo;
-    for (size_t i = 0; i < HDBridge::CHANNEL_NUMBER; i++) {
-        mUtils->mScanOrm.mScanGateAInfo[i] = mUtils->getCache().gateInfo[i];
-        mUtils->mScanOrm.mScanGateBInfo[i] = mUtils->getCache().gate2Info[i];
-    }
-    // 保存探头的当前位置
-    auto xAxisLoc              = mAxisXValue.load();
-    mUtils->mScanOrm.mXAxisLoc = xAxisLoc;
     // 保存扫查数据
     if (mReviewData.size() >= SCAN_RECORD_CACHE_MAX_ITEMS) {
         std::vector<HD_Utils> copyData = mReviewData;
@@ -1661,7 +1715,8 @@ void MainFrameWnd::SaveScanData() {
         mRecordCount += (int)mReviewData.size();
         mReviewData.clear();
     } else {
-        mReviewData.push_back(*mUtils);
+        auto saveData = HD_Utils::fromOrmData(mMaxGateAmpUtils);
+        mReviewData.push_back(saveData);
     }
     auto &res = mDetectionSM.UpdateData(mDefectJudgmentValue);
     for (int i = 0; i < res.size(); i++) {
@@ -1845,6 +1900,8 @@ void MainFrameWnd::StartScan(bool changeFlag) {
                 mScanningFlag = true;
                 SetTimer(CSCAN_UPDATE, 1000 / mSamplesPerSecond);
                 mClearMTXValue = true; ///< 清除测厚的X轴计数
+                mClearSSRValue = true;
+                m_OpenGL_CSCAN.getModel<ModelGroupCScan *>()->SetAxisRange(mAxisXValue.load(), mAxisXValue.load());
             } catch (std::exception &e) {
                 spdlog::warn(GB2312ToUtf8(e.what()));
                 DMessageBox(L"请勿快速点击扫查按钮");

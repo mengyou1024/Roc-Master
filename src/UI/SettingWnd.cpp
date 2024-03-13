@@ -40,6 +40,10 @@ void SettingWnd::InitWindow() {
     if (edit) {
         edit->SetText(WStringFromString(systemConfig.ipFPGA).c_str());
     }
+    edit = m_PaintManager.FindControl<CEditUI*>(L"EditStepSize");
+    if (edit) {
+        edit->SetText(WStringFromString(std::to_string(systemConfig.stepDistance)).c_str());
+    }
 }
 
 void SettingWnd::Notify(TNotifyUI& msg) {
@@ -70,6 +74,11 @@ void SettingWnd::Notify(TNotifyUI& msg) {
         if (msg.pSender->GetName() == L"EditUseNetwork") {
             auto systemConfig   = GetSystemConfig();
             systemConfig.ipFPGA = StringFromWString(std::wstring(static_cast<CEditUI*>(msg.pSender)->GetText()));
+            UpdateSystemConfig(systemConfig);
+        }
+        if (msg.pSender->GetName() == L"EditStepSize") {
+            auto systemConfig         = GetSystemConfig();
+            systemConfig.stepDistance = std::stof(std::wstring(static_cast<CEditUI*>(msg.pSender)->GetText()));
             UpdateSystemConfig(systemConfig);
         }
     }

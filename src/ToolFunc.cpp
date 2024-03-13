@@ -431,8 +431,8 @@ ORM_Model::SystemConfig GetSystemConfig() {
         config.id                      = 1;
         config.groupName               = _T(DB_UNNAMED_GROUP);
         config.userName                = _T(DB_UNNAMED_USER);
-        ORM_Model::SystemConfig::storage().insert(config);
         try {
+            ORM_Model::SystemConfig::storage().insert(config);
             ORM_Model::JobGroup jobGroup;
             jobGroup.groupName = _T(DB_UNNAMED_GROUP);
             ORM_Model::JobGroup::storage().insert(jobGroup);

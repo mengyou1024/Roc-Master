@@ -57,8 +57,8 @@ private: /* 类型 */
         operator bool() {
             return result;
         }
-        float pos = 0.0f;
-        float max = 0.0f;
+        float pos = 0.0f; // (mm)
+        float max = 0.0f; // (%)
     };
 
     struct {
@@ -164,13 +164,18 @@ private: /* 私有变量参数 */
     ARR_GateResCh           mAllGateResult      = {};                      ///< 所有波门的计算结果
     GateResultTimeNote      mLastGateResUpdate  = {};                      ///< 上一次波门结果更新的时间
     bool                    mClearMTXValue      = false;                   ///< Clear Measure Thickness X Value
+    bool                    mClearSSRValue      = false;                   ///< Clear Scan Scan Record X Value
     std::atomic<float>      mAxisXValue         = {};                      ///< PLC 读取的 X 值
     std::thread             mPLCThread          = {};                      ///< PLC 线程句柄
     std::atomic<bool>       mPLCThreadRunning   = {};                      ///< PLC 线程运行标志
     TaskQueue               mPLCAlaramTaskQueue;
+    HD_Utils::HD_ScanORM    mMaxGateAmpUtils = {};
+    ARR_GateResCh           mMaxGateRes      = {};
     // 参数备份
     ORM_Model::DetectInfo mDetectInfoBak   = {};
     std::wstring          mJobGroupNameBak = {};
+    
+    ORM_Model::SystemConfig mSystemConfig =  {};
 
 public:
     MainFrameWnd();
@@ -300,6 +305,14 @@ private:
     void UpdateAScanCallback(const HDBridge::NM_DATA& data, const HD_Utils& caller);
 
     /**
+     * @brief 保存硬件数据到工具缓存
+     *
+     * @param data
+     * @param caller
+     */
+    void SaveBridgeToUtils(const HDBridge::NM_DATA& data, const HD_Utils& caller);
+
+    /**
      * @brief 更新所有波门的计算结果
      * @param data A扫数据
      * @param caller 调用类
@@ -400,7 +413,7 @@ private:
 
     /**
      * @brief PLC报警
-     * 
+     *
      * @param isInternal 是否是内伤报警
      */
     void PLCAlaram(bool isInternal = false);
