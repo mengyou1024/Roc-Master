@@ -40,7 +40,7 @@ jobs:
     - name: Build Release
       run: |
         cmake --preset x64-release
-        cmake --build build/x64-release --target PackInstaller Archive
+        cmake --build build/x64-release --target PackInstaller
     # 创建Release
     - name: Create Release
       id: create_release
@@ -63,16 +63,6 @@ jobs:
         asset_path: ./output/Roc-MasterInstaller-${{steps.changelog.outputs.version}}.exe
         asset_name: Roc-MasterInstaller-${{steps.changelog.outputs.version}}.exe
         asset_content_type: application/octet-stream
-    # 上传归档源码
-    - name: Upload Release Installer
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./output/Roc-Master-${{steps.changelog.outputs.version}}-archive.zip
-        asset_name: Roc-Master-${{steps.changelog.outputs.version}}-archive.zip
-        asset_content_type: application/zip
     # 提交changelog
     - name: Create Changes File
       run: |
@@ -86,3 +76,17 @@ jobs:
         git commit -m "Update changelog for version ${{steps.changelog.outputs.version}}"
         git pull
         git push origin master
+    # 构建归档
+    - name: Build Archive
+      run: |
+        cmake --build build/x64-release --target Archive
+    # 上传归档源码
+    - name: Upload Archive
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./output/Roc-Master-${{steps.changelog.outputs.version}}-archive.zip
+        asset_name: Roc-Master-${{steps.changelog.outputs.version}}-archive.zip
+        asset_content_type: application/zip
