@@ -17,6 +17,7 @@
 #include <RecordSelectWnd.h>
 #include <SettingWnd.h>
 #include <UI/DetectionInformationEntryWnd.h>
+#include <UI/RecordSelectListViewWnd.h>
 #include <UI/SoundVelocityCalibration.h>
 #include <algorithm>
 #include <array>
@@ -316,6 +317,13 @@ void MainFrameWnd::DrawReviewCScan() {
                 mesh->AppendDot(0, {1.0f, 1.0f, 1.0f, 1.0f}, MAXSIZE_T);
             }
         }
+    }
+
+    // 回放的C扫范围为第一幅图的最小值到最后一幅图的最大值
+    if (mFragmentReview->size() > 0) {
+        float cScanMinLimits = ((*mFragmentReview)[0]).mScanOrm.mXAxisLoc;
+        float cScanMaxLimits = ((*mFragmentReview)[mFragmentReview->size() - 1]).mScanOrm.mXAxisLoc;
+        m_OpenGL_CSCAN.getModel<ModelGroupCScan *>()->SetAxisRange(cScanMinLimits, cScanMaxLimits);
     }
 }
 

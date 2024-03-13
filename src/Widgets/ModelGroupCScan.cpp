@@ -4,7 +4,89 @@
 #include "ModelGroupCScan.h"
 #include "OpenGL.h"
 
-ModelGroupCScan::ModelGroupCScan(OpenGL *pOpenGL) : Model(pOpenGL), m_iBuffer(0) {}
+void ModelGroupCScan::DrawAxis(void) {
+    glViewport(mCurrentViewPort.left, mCurrentViewPort.top, std::abs(mCurrentViewPort.right - mCurrentViewPort.left),
+               std::abs(mCurrentViewPort.top - mCurrentViewPort.bottom));
+    glBindVertexArray(m_iAxisVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, m_iAxisVBO);
+    m_pAxisVertices.resize(2);
+    for (int i = 0; i < (int)m_pAxis.GetCount(); i++) {
+        float x      = (float)(mAxisViewPort.left + 1 + m_pAxis[i]);
+        float y      = (float)mAxisViewPort.top + 1;
+        float fCoord = (m_pAxis.m_pAxis_value[i] == 0) ? ((15 + 0.5f) / 35) : ((13 + 0.5f) / 35);
+
+        m_pAxisVertices[0].x = x;
+        m_pAxisVertices[0].y = y;
+        m_pAxisVertices[0].z = 0;
+        m_pAxisVertices[0].s = 0.5f;
+        m_pAxisVertices[0].t = fCoord;
+        if (m_pAxis.m_pAxisType[i] == 2) {
+            y += 15;
+        } else if (m_pAxis.m_pAxisType[i] == 1) {
+            y += 10;
+        } else {
+            // y += 5;
+        }
+        m_pAxisVertices[1].x = x;
+        m_pAxisVertices[1].y = y;
+        m_pAxisVertices[1].z = 0;
+        m_pAxisVertices[1].s = 0.5f;
+        m_pAxisVertices[1].t = fCoord;
+        glBufferData(GL_ARRAY_BUFFER, sizeof(PT_V3F_T2F) * 2, m_pAxisVertices.data(), GL_DYNAMIC_DRAW);
+        glDrawArrays(GL_LINES, 0, 2);
+    }
+
+    m_pAxisVertices[0].x = (float)mAxisViewPort.left;
+    m_pAxisVertices[0].y = (float)mAxisViewPort.top;
+    m_pAxisVertices[0].z = 0;
+    m_pAxisVertices[0].s = 0.5F;
+    m_pAxisVertices[0].t = ((13 + 0.5f) / 35);
+    m_pAxisVertices[1].x = (float)mAxisViewPort.right;
+    m_pAxisVertices[1].y = (float)mAxisViewPort.top;
+    m_pAxisVertices[1].z = 0;
+    m_pAxisVertices[1].s = 0.5F;
+    m_pAxisVertices[1].t = ((13 + 0.5f) / 35);
+
+    glBufferData(GL_ARRAY_BUFFER, sizeof(PT_V3F_T2F) * 2, m_pAxisVertices.data(), GL_DYNAMIC_DRAW);
+    glDrawArrays(GL_LINES, 0, 2);
+
+    glBindVertexArray(0);
+
+    // 坐标轴数值
+    glEnable(GL_SCISSOR_TEST);
+    glEnable(GL_TEXTURE_2D);
+    glEnable(GL_BLEND);
+
+    CString   strInfo;
+    glm::vec4 color(1.0f, 0, 0, 1.0f);
+    // 坐标
+    glScissor(mAxisViewPort.left, mAxisViewPort.top, std::abs(mAxisViewPort.right - mAxisViewPort.left),
+              std::abs(mAxisViewPort.top - mAxisViewPort.bottom));
+    glPushMatrix();
+    glTranslatef((float)mAxisViewPort.left + 3, (float)mAxisViewPort.top + 5, 0.0F);
+    for (int i = 0; i < (int)m_pAxis.GetCount(); ++i) {
+        if (m_pAxis.m_pAxisType[i] == 2) {
+            // 刻度文字
+            if (m_pAxis.m_pAxis_value[i] == 0) {
+                strInfo.Format(_T("%.1fmm"), m_pAxis.m_pAxis_value[i]);
+                color = glm::vec4(1.0f, 0, 0, 1.0f);
+            } else {
+                strInfo.Format(_T("%.1f"), m_pAxis.m_pAxis_value[i]);
+                color = glm::vec4(1.0f, 1.0f, 0, 1.0f);
+            }
+            m_pOpenGL->m_Font.Text(m_pAxis[i] + 1.0f, 2.0f, strInfo, color, 0.75F);
+        }
+    }
+    glPopMatrix();
+
+    glDisable(GL_TEXTURE_2D);
+    glDisable(GL_BLEND);
+    glDisable(GL_SCISSOR_TEST);
+}
+
+ModelGroupCScan::ModelGroupCScan(OpenGL *pOpenGL) :
+Model(pOpenGL),
+m_iBuffer(0) {}
 
 ModelGroupCScan::~ModelGroupCScan() {
     Release();
@@ -126,6 +208,36 @@ void ModelGroupCScan::RenderFore() {
     glScissor(mAxisViewPort.left, mAxisViewPort.top, std::abs(mAxisViewPort.right - mAxisViewPort.left),
               std::abs(mAxisViewPort.top - mAxisViewPort.bottom));
     glClear(GL_COLOR_BUFFER_BIT);
+    glDisable(GL_SCISSOR_TEST);
+
+    m_pAxis.Set(std::abs(mAxisViewPort.right - mAxisViewPort.left - 1), mAxisMin, mAxisMax);
+    DrawAxis();
+
+    // 坐标轴数值
+    glEnable(GL_SCISSOR_TEST);
+    glEnable(GL_TEXTURE_2D);
+    glEnable(GL_BLEND);
+
+    glm::vec4 color(0.2f, 0.6f, 0.9f, 1.0f);
+    // 绘制索引
+    glScissor(mCurrentViewPort.left, mCurrentViewPort.top, std::abs(mCurrentViewPort.right - mCurrentViewPort.left),
+              std::abs(mCurrentViewPort.top - mCurrentViewPort.bottom));
+    glPushMatrix();
+    for (auto &[index, ptr] : m_pMesh) {
+        glPushMatrix();
+        if (ptr && (index >= mGroupIndex * 4 && index < (static_cast<size_t>(mGroupIndex * 4) + VIEW_CSCAN_NUM))) {
+            glTranslatef((float)ptr->m_rcItem.left + 3, (float)ptr->m_rcItem.top + 10, 0.0F);
+            CString strInfo;
+            strInfo.Format(_T("%lld"), (index % 12) + 1);
+            m_pOpenGL->m_Font.RightText(static_cast<float>(mCurrentViewPort.right - 15), static_cast<float>(ptr->m_rcItem.Height() - 50),
+                                        strInfo, color, 2.F);
+        }
+        glPopMatrix();
+    }
+    glPopMatrix();
+
+    glDisable(GL_TEXTURE_2D);
+    glDisable(GL_BLEND);
     glDisable(GL_SCISSOR_TEST);
 }
 
