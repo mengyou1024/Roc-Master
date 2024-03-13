@@ -15,6 +15,7 @@
 #include <ModelGroupCScan.h>
 #include <ParamManagementWnd.h>
 #include <RecordSelectWnd.h>
+#include <UI/RecordSelectListViewWnd.h>
 #include <SettingWnd.h>
 #include <UI/DetectionInformationEntryWnd.h>
 #include <UI/RecordSelectListViewWnd.h>
@@ -161,7 +162,7 @@ void MainFrameWnd::OnBtnModelClicked(std::wstring name) {
         }
 
     } else {
-        RecordSelectWnd selectWnd;
+        RecordSelectListViewWnd selectWnd;
         selectWnd.Create(m_hWnd, selectWnd.GetWindowClassName(), UI_WNDSTYLE_DIALOG, UI_WNDSTYLE_EX_DIALOG);
         selectWnd.CenterWindow();
         selectWnd.ShowModal();
