@@ -71,7 +71,7 @@ file(RELATIVE_PATH CMAKE_BINARY_DIR_RELATIVE ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_
 if(APP_RELEASE)
 
 add_custom_target(
-    PackExecuatble
+    PackExecutable
     COMMAND ${CMAKE_COMMAND} -E rm -rf ${CMAKE_SOURCE_DIR}/output/${PROJECT_NAME}-${APP_VERSION}
     COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_SOURCE_DIR}/output/${PROJECT_NAME}-${APP_VERSION}/template"
     COMMAND powershell "Copy-Item -Force -Recurse ${CMAKE_BINARY_DIR}/*.dll ${CMAKE_SOURCE_DIR}/output/${PROJECT_NAME}-${APP_VERSION}/;\
@@ -87,7 +87,7 @@ add_custom_target(
     PackInstaller 
     COMMAND ${CMAKE_COMMAND} -E rm -rf ${CMAKE_SOURCE_DIR}/output/${PROJECT_NAME}Installer-${APP_VERSION}.exe
     COMMAND ISCC pack-installer.iss /Q
-    DEPENDS ${PROJECT_NAME} PackExecuatble
+    DEPENDS ${PROJECT_NAME} PackExecutable
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
     BYPRODUCTS "${CMAKE_SOURCE_DIR}/output/${PROJECT_NAME}Installer.exe" ${CMAKE_SOURCE_DIR}/pack-installer.iss
 )
@@ -124,7 +124,7 @@ message("
 |       ${PROJECT_NAME}: 可执行程序
 |           --> ${CMAKE_BINARY_DIR_RELATIVE}/${PROJECT_NAME}.exe
 |
-|       PackExecuatble: 打包生成免安装包
+|       PackExecutable: 打包生成免安装包
 |           --> output/${PROJECT_NAME}-${APP_VERSION}
 |
 |       PackInstaller: 打包生成安装包
