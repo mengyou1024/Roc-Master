@@ -481,12 +481,30 @@ public:
     }
 
     /**
+     * @brief 获取波门计算的结果
+     * 
+     * @param data 一帧扫查数据
+     * @return [(pos(%), max(uint8_t)), ...]
+     */
+    std::array<std::optional<std::tuple<float, uint8_t>>, 3> getGateResult(const HDBridge::NM_DATA &data) {
+        std::array<std::optional<std::tuple<float, uint8_t>>, 3> ret;
+        for (int i = 0; i < 3; i++) {
+            auto gateInfo  = getScanGateInfo(data.iChannel, i);
+            auto [pos, max, res] = computeGateInfo(data.pAscan, gateInfo);
+            if (res) {
+                ret[i] = std::make_tuple(pos, max);
+            }
+        }
+        return ret;
+    }
+
+    /**
      * @brief 计算波门信息
      * @param data 扫查数据
      * @param info 波门信息
-     * @return [波门内最高波的位置, 最高波的值, false if err]
+     * @return [波门内最高波的位置(%), 最高波的值(uint8_t), false if err]
      */
-    static std::tuple<float, uint8_t, bool> computeGateInfo(const std::vector<uint8_t> &data, const HB_ScanGateInfo &info) {
+    static [[deprecated]] std::tuple<float, uint8_t, bool> computeGateInfo(const std::vector<uint8_t> &data, const HB_ScanGateInfo &info) {
         try {
             double start = (double)info.pos;
             if (data.size() < 100) {

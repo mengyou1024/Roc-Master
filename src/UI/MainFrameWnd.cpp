@@ -1,7 +1,5 @@
 #include "pch.h"
-
 #include "MainFrameWnd.h"
-
 #include "Mutilple.h"
 #include <AbsPLCIntf.h>
 #include <BusyWnd.h>
@@ -1724,26 +1722,26 @@ void MainFrameWnd::SaveScanData() {
             SaveDefectStartID(i);
             // 插入一个新的缺陷信息
             mDefectInfo.push_back({});
-            // DONE: 判断缺陷类型并报警
+            // TO_VERIFY: 判断缺陷类型并报警
             // 检测时的缺陷深度
             float thicknessOnTesting = 0.0f;
             // 工件的平均厚度
-            float  averageThickness = 0.0f;
+            float averageThickness = 0.0f;
             if (mSystemConfig.enableMeasureThickness) {
                 // 如果开启了测厚功能, 则平均厚度由4个通道的平均值决定
-                averageThickness = std::accumulate(
-                                        mReviewData.back().mScanOrm.mThickness.begin(),
-                                        mReviewData.back().mScanOrm.mThickness.end(),
-                                        0.0) /
-                                    mReviewData.back().mScanOrm.mThickness.size();
+                const auto &beg  = mReviewData.back().mScanOrm.mThickness.begin();
+                const auto &end  = mReviewData.back().mScanOrm.mThickness.end();
+                const auto  sz   = mReviewData.back().mScanOrm.mThickness.size();
+                averageThickness = std::accumulate(beg, end, 0.0) / sz;
             } else {
                 // 如果为开启测厚功能，则工件厚度由用户输入
                 averageThickness = std::stof(mDetectInfo.thickness);
             }
             if (i < 4 && mSystemConfig.enableMeasureThickness) {
                 // 如果是1-4通道，且开启测厚功能, 缺陷深度是测厚通道(13-16)C波门与A波门最高波位置的差值
-                thicknessOnTesting = mAllGateResult[i + HDBridge::CHANNEL_NUMBER][2].pos - mAllGateResult[i + HDBridge::CHANNEL_NUMBER][0].pos;
-            } else if(i < 4 ) {
+                const auto &gateRes = mAllGateResult[i + HDBridge::CHANNEL_NUMBER];
+                thicknessOnTesting  = gateRes[2].pos - gateRes[0].pos;
+            } else if (i < 4) {
                 // 其他情况为当前通道的C波门与A波门最高波位置的差值
                 thicknessOnTesting = mAllGateResult[i][2].pos - mAllGateResult[i][0].pos;
             }
@@ -1758,8 +1756,8 @@ void MainFrameWnd::SaveScanData() {
             VEC_Utils   vec_utils;
             if (mReviewData.size() >= (scanRecord.endID - scanRecord.startID + 1)) {
                 // 扫查记录完全在缓存中
-                for (auto it = mReviewData.begin() + (mReviewData.size() - (scanRecord.endID - scanRecord.startID + 1));
-                     it != mReviewData.end(); it++) {
+                const auto &_it = mReviewData.begin() + (mReviewData.size() - (scanRecord.endID - scanRecord.startID + 1));
+                for (auto it = _it; it != mReviewData.end(); it++) {
                     vec_utils.emplace_back(*it);
                 }
             } else if (mReviewData.size() == 0) {
