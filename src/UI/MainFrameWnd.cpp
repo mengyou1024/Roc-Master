@@ -1395,6 +1395,26 @@ void MainFrameWnd::OnBtnReportExport(TNotifyUI &msg) {
         return a.id < b.id;
     });
 
+    // DONE: 添加最大壁厚、最小壁厚和平均壁厚
+    float maxWallThickness = 0.0f;
+    float minWallThickness = 9999.f;
+    float sumThickness = 0.0f;
+    for(const auto &it: mReviewData) {
+        auto temp = std::accumulate(it.mScanOrm.mThickness.begin(), it.mScanOrm.mThickness.end(), 0.0f) / 4.f;
+        if (maxWallThickness < temp) {
+            maxWallThickness = temp;
+        }
+        if (minWallThickness > temp) {
+            minWallThickness = temp;
+        }
+        sumThickness += temp;
+    }
+    float averageWallThickness = sumThickness / mReviewData.size();
+
+    valueMap["aveT"] = std::to_string(averageWallThickness);
+    valueMap["maxT"] = std::to_string(maxWallThickness);
+    valueMap["minT"] = std::to_string(minWallThickness);
+
     for (auto index = 0; index < mDefectInfo.size(); index++) {
         for (const auto &prot : type::get<ORM_Model::DefectInfo>().get_properties()) {
             std::stringstream ss;
