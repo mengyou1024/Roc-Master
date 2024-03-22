@@ -399,7 +399,7 @@ void MeshAscan::ShowTickness() {
     glScissor(m_rcItem.vleft, m_rcItem.vtop, m_rcItem.vWidth(), m_rcItem.vHeight());
     glPushMatrix();
     CString str;
-    str.Format(L"测厚: %.1fmm", m_Tickness);
+    str.Format(L"测厚: %.2fmm", m_Tickness);
     m_pOpenGL->m_Font.Text((float)(m_rcItem.vleft + 240), (float)(m_rcItem.vtop + m_rcItem.vHeight() - 20), str,
                            glm::vec4(0.8f, 0.8f, 1.0f, 1.0f), 1.f);
     glPopMatrix();
