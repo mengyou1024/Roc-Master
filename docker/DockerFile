@@ -4,8 +4,10 @@ FROM mcr.microsoft.com/windows/servercore:ltsc2022
 
 SHELL ["powershell"]
 
+COPY packages.config C:/
+
 RUN Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'));`
-    choco install 7zip git InnoSetup ninja pedeps -y;`
+    choco install C:/packages.config -y;`
     choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System' -y
 
 RUN git config --global --add safe.directory C:/workdir/

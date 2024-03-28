@@ -17,7 +17,7 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManage
 ### 2. 安装依赖包
 
 ``` powershell
-choco install packages.config -y
+choco install docker/packages.config -y
 # 安装cmake并添加环境变量
 choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System' -y
 ```
@@ -38,7 +38,7 @@ git clone <git-repository> roc-master
 # 2. 进入目录
 cd roc-master
 # 3. 构建镜像 (耗时较长)
-docker build -t buildtools:latest -m 2GB .
+docker build -t buildtools:latest -m 2GB docker
 # 4. 进入容器
 docker run -it --rm  -v "$(pwd):C:\workdir" buildtools:latest 
 # 5. cmake config
