@@ -8,14 +8,9 @@ RTTR_REGISTRATION {
     registration::class_<DefectInfo>("DefectInfo")
         .constructor<>()
         .property("id", &DefectInfo::id)
-        .property("product", &DefectInfo::product)
-        .property("description", &DefectInfo::description)
-        .property("flawno", &DefectInfo::flawno)
-        .property("dac", &DefectInfo::dac)
-        .property("type", &DefectInfo::type)
+        .property("channel", &DefectInfo::channel)
         .property("location", &DefectInfo::location)
         .property("length", &DefectInfo::length)
         .property("depth", &DefectInfo::depth)
-        .property("width", &DefectInfo::width)
-        .property("result", &DefectInfo::result);
+        .property("maxAmp", &DefectInfo::maxAmp);
 }

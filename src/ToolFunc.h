@@ -4,6 +4,7 @@
 #include <Model/SystemConfig.h>
 #include <HDBridge/Utils.h>
 #include <HDBridge.h>
+#include <Model/DefectInfo.h>
 
 // 点到线段距离
 float PointToSegDist(float x, float y, float x1, float y1, float x2, float y2);
@@ -93,6 +94,8 @@ std::tuple<string, string, string> GetLatestReleaseNote(std::string github_api_u
  * @return true 成功
 */
 bool WordTemplateRender(std::wstring templateName, std::wstring fileName, std::map<string, string> var);
+
+bool WordTemplateRender(std::wstring templateName, std::wstring fileName, std::map<string, string> var, std::vector<ORM_Model::DefectInfo> _def_info);
 
 /**
  * @brief 获取系统配置

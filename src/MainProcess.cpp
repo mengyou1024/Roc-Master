@@ -1,9 +1,7 @@
 #include "pch.h"
-
-#include "AbsPLCIntf.h"
 #include "MainProcess.h"
+#include "AbsPLCIntf.h"
 #include "Mutilple.h"
-
 #include <DMessageBox.h>
 #include <HDBridge/TOFDPort.h>
 #include <HDBridge/Utils.h>
@@ -21,6 +19,7 @@
 namespace fs = std::filesystem;
 using namespace std;
 
+
 MainProcess::MainProcess() {
     TCHAR cPath[_MAX_FNAME];
     TCHAR drive[_MAX_DRIVE];
@@ -30,7 +29,6 @@ MainProcess::MainProcess() {
     _tsplitpath_s(cPath, drive, _MAX_DRIVE, dir, _MAX_DIR, NULL, 0, NULL, 0);
     _stprintf_s(ExePath, _T("%s%s"), drive, dir);
     SetCurrentDirectory(ExePath);
-    InitStroage();
 #ifndef APP_RELEASE
     // _CrtSetBreakAlloc(1739);
     AllocConsole();
@@ -44,6 +42,7 @@ MainProcess::MainProcess() {
     spdlog::flush_on(spdlog::level::info);
     spdlog::set_level(spdlog::level::info);
 #endif
+    InitStroage();
     spdlog::info("{:-^80}", "application start, version: " APP_VERSION);
     auto is_connected       = AbsPLCIntf::connectTo();
     auto [addr, rack, slot] = AbsPLCIntf::getConnectedInfo();
@@ -62,14 +61,17 @@ MainProcess::~MainProcess() {
     FreeConsole();
     fclose(mFile);
 #endif
-    spdlog::drop_all();
     // 退出前压缩数据表
+    auto tick = GetTickCount64();
     HDBridge::storage().vacuum();
     ORM_Model::User::storage().vacuum();
     ORM_Model::SystemConfig::storage().vacuum();
     ORM_Model::ScanRecord::storage().vacuum();
     ORM_Model::DetectInfo::storage().vacuum();
     ORM_Model::JobGroup::storage().vacuum();
+    auto cost = GetTickCount64() - tick;
+    spdlog::debug("vacuum cost: {}ms", cost);
+    spdlog::drop_all();
     for (const auto& func : mFuncWhenDestory) {
         func();
     }
@@ -77,12 +79,15 @@ MainProcess::~MainProcess() {
 
 void MainProcess::InitStroage() {
     try {
+        auto tick = GetTickCount64();
         HDBridge::storage().sync_schema();
         ORM_Model::User::storage().sync_schema();
         ORM_Model::SystemConfig::storage().sync_schema();
         ORM_Model::ScanRecord::storage().sync_schema();
         ORM_Model::DetectInfo::storage().sync_schema();
         ORM_Model::JobGroup::storage().sync_schema();
+        auto cost = GetTickCount64() - tick;
+        spdlog::debug("sync_schema cost: {}ms", cost);
     } catch (std::exception& e) {
         spdlog::warn(GB2312ToUtf8(e.what()));
         spdlog::warn("数据库文件格式出错，将重新初始化所有数据");

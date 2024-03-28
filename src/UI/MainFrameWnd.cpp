@@ -215,6 +215,7 @@ void MainFrameWnd::InitWindow() {
         mUtils->start();
         mUtils->addReadCallback(HD_Utils::WrapReadCallback(&MainFrameWnd::UpdateAllGateResult, this));
         mUtils->addReadCallback(HD_Utils::WrapReadCallback(&MainFrameWnd::UpdateAScanCallback, this));
+        mUtils->addReadCallback(HD_Utils::WrapReadCallback(&MainFrameWnd::SaveBridgeToUtils, this));
         SelectMeasureThickness(GetSystemConfig().enableMeasureThickness);
 
         // 进入回放界面、检查更新
@@ -561,32 +562,36 @@ void MainFrameWnd::UpdateAScanCallback(const HDBridge::NM_DATA &data, const HD_U
     mesh->UpdateGate(2, 1, info.pos, info.width, info.height);
 
     //
-    bool conditionRes = [this](bool &clear, float _xValue) -> bool {
+    bool conditionRes = [this](bool &clear, float _xValue, int ch) -> bool {
         // 上一次X值
-        static float lastRecordXValue = 0.0f;
+        static std::array<float, 16> _lastRecordXValue = {};
+        auto                        &lastRecordXValue  = _lastRecordXValue[ch];
         if (clear) {
-            lastRecordXValue = 0.0f;
-            clear            = false;
+            _lastRecordXValue = {};
+            clear             = false;
             return true;
         }
         auto [res, xValue] = std::make_pair(true, _xValue);
-        if (res && (xValue - lastRecordXValue) >= mSystemConfig.stepDistance) {
+        if (res && std::abs(xValue - lastRecordXValue) >= mSystemConfig.stepDistance) {
             lastRecordXValue = xValue;
             return true;
         }
         return false;
-    }(mClearSSRValue, mAxisXValue.load());
+    }(mClearSSRValue, mAxisXValue.load(), data.iChannel);
     if (conditionRes) {
         // 表示距离超过步进
         // 拷贝当前通道的参数
         mMaxGateAmpUtils.copy(mUtils->mScanOrm, data.iChannel);
         mMaxGateRes[data.iChannel][2] = mAllGateResult[data.iChannel][2];
+        if (mScanningFlag) {
+            UpdateCScan();
+        }
     } else {
         // 距离未超过步进
-        auto res = mAllGateResult[data.iChannel][2];
+        auto &res = mAllGateResult[data.iChannel][2];
         if (res) {
-            auto lastRes = mMaxGateRes[data.iChannel][2];
-            if (lastRes && lastRes.max >= res.max) {
+            auto &lastRes = mMaxGateRes[data.iChannel][2];
+            if (lastRes && lastRes.max <= res.max) {
                 // 当扫查波们里面的最高值大于当前扫查波们内的最高时时拷贝
                 mMaxGateAmpUtils.copy(mUtils->mScanOrm, data.iChannel);
                 mMaxGateRes[data.iChannel][2] = mAllGateResult[data.iChannel][2];
@@ -607,15 +612,17 @@ void MainFrameWnd::SaveBridgeToUtils(const HDBridge::NM_DATA &data, const HD_Uti
 }
 
 void MainFrameWnd::UpdateAllGateResult(const HDBridge::NM_DATA &data, const HD_Utils &caller) {
-    auto channel = data.iChannel;
+    auto channel  = data.iChannel;
+    bool updateUi = true;
     if (channel >= HDBridge::CHANNEL_NUMBER || channel < 0) {
         return;
     }
     if (GetTickCount64() - mLastGateResUpdate[channel] < 500) {
-        return;
+        updateUi = false;
+    } else {
+        mLastGateResUpdate[channel] = GetTickCount64();
     }
-    mLastGateResUpdate[channel] = GetTickCount64();
-    auto mesh                   = m_OpenGL_ASCAN.getMesh<MeshAscan *>((size_t)channel);
+    auto mesh = m_OpenGL_ASCAN.getMesh<MeshAscan *>((size_t)channel);
     if (!mesh) {
         return;
     }
@@ -633,18 +640,26 @@ void MainFrameWnd::UpdateAllGateResult(const HDBridge::NM_DATA &data, const HD_U
             mAllGateResult[channel][i].pos    = pos * (float)depth;
             mAllGateResult[channel][i].max    = (float)max / 2.55f;
             auto gateData                     = std::make_pair(mAllGateResult[channel][i].pos, mAllGateResult[channel][i].max);
-            mesh->SetGateData(gateData, i);
+            if (updateUi) {
+                mesh->SetGateData(gateData, i);
+            }
             if (i == 0) {
                 diffValue.first = mAllGateResult[channel][i].pos;
             } else if (i == 2) {
                 diffValue.second = mAllGateResult[channel][i].pos;
-                mesh->SetGateData(diffValue, 3);
+                if (updateUi) {
+                    mesh->SetGateData(diffValue, 3);
+                }
             }
         } else {
             mAllGateResult[channel][i].result = false;
-            mesh->SetGateData(i);
+            if (updateUi) {
+                mesh->SetGateData(i);
+            }
             if (i == 0 || i == 2) {
-                mesh->SetGateData(3);
+                if (updateUi) {
+                    mesh->SetGateData(3);
+                }
             }
         }
     }
@@ -661,18 +676,26 @@ void MainFrameWnd::UpdateAllGateResult(const HDBridge::NM_DATA &data, const HD_U
             mAllGateResult[channel][i].pos    = pos * (float)depth;
             mAllGateResult[channel][i].max    = (float)max / 2.55f;
             auto gateData                     = std::make_pair(mAllGateResult[channel][i].pos, mAllGateResult[channel][i].max);
-            mesh->SetGateData(gateData, i);
+            if (updateUi) {
+                mesh->SetGateData(gateData, i);
+            }
             if (i == 0) {
                 diffValue.first = mAllGateResult[channel][i].pos;
             } else if (i == 2) {
                 diffValue.second = mAllGateResult[channel][i].pos;
-                mesh->SetGateData(diffValue, 3);
+                if (updateUi) {
+                    mesh->SetGateData(diffValue, 3);
+                }
             }
         } else {
             mAllGateResult[channel][i].result = false;
-            mesh->SetGateData(i);
+            if (updateUi) {
+                mesh->SetGateData(i);
+            }
             if (i == 2) {
-                mesh->SetGateData(3);
+                if (updateUi) {
+                    mesh->SetGateData(3);
+                }
             }
         }
         for (int i = 0; i < 2; i++) {
@@ -680,17 +703,25 @@ void MainFrameWnd::UpdateAllGateResult(const HDBridge::NM_DATA &data, const HD_U
             auto res                   = mAllGateResult[channel][i].result;
             if (res) {
                 auto gateData = std::make_pair(mAllGateResult[channel][i].pos, mAllGateResult[channel][i].max);
-                mesh->SetGateData(gateData, i);
+                if (updateUi) {
+                    mesh->SetGateData(gateData, i);
+                }
                 if (i == 0) {
                     diffValue.first = mAllGateResult[channel][i].pos;
                 } else if (i == 2) {
                     diffValue.second = mAllGateResult[channel][i].pos;
-                    mesh->SetGateData(diffValue, 3);
+                    if (updateUi) {
+                        mesh->SetGateData(diffValue, 3);
+                    }
                 }
             } else {
-                mesh->SetGateData(i);
+                if (updateUi) {
+                    mesh->SetGateData(i);
+                }
                 if (i == 2) {
-                    mesh->SetGateData(3);
+                    if (updateUi) {
+                        mesh->SetGateData(3);
+                    }
                 }
             }
         }
@@ -700,7 +731,9 @@ void MainFrameWnd::UpdateAllGateResult(const HDBridge::NM_DATA &data, const HD_U
         auto [bias, depth]                                                      = bridge->getRangeOfAcousticPath(data.iChannel);
         auto thickness                                                          = HDBridge::computeDistance(data.pAscan, depth, gateLeft, gateRigth);
         mUtils->mScanOrm.mThickness[(size_t)channel - HDBridge::CHANNEL_NUMBER] = (float)thickness;
-        mesh->SetTickness((float)thickness);
+        if (updateUi) {
+            mesh->SetTickness((float)thickness);
+        }
     }
 }
 
@@ -711,7 +744,7 @@ void MainFrameWnd::AmpTraceCallback(const HDBridge::NM_DATA &data, const HD_Util
         // 计算A波门需要调整的偏移
         auto gateInfo        = caller.getBridge()->getScanGateInfo(data.iChannel, 0);
         auto [pos, max, res] = HDBridge::computeGateInfo(data.pAscan, gateInfo);
-        if (res) {
+        if (res && max >= 127) {
             float bias = pos - (gateInfo.pos + gateInfo.width / 2.0f);
             // 调整波门位置
             for (int i = 0; i < 3; i++) {
@@ -744,6 +777,9 @@ void MainFrameWnd::AmpMemeryCallback(const HDBridge::NM_DATA &data, const HD_Uti
         const auto ampData = mesh->GetAmpMemoryData(i);
         auto       g       = bridge->getGateInfo(i, data.iChannel);
         // 获取波门内的数据
+        if (g.pos < 0 || g.pos > 1.0 || g.pos + g.width < 0 || g.pos + g.width > 1.0) {
+            continue;
+        }
         auto left  = data.pAscan.begin() + static_cast<int64_t>((double)data.pAscan.size() * (double)g.pos);
         auto right = data.pAscan.begin() + static_cast<int64_t>((double)data.pAscan.size() * (double)(g.pos + g.width));
 
@@ -1347,18 +1383,22 @@ void MainFrameWnd::OnLButtonDClick(UINT nFlags, ::CPoint pt) {
 void MainFrameWnd::OnTimer(int iIdEvent) {
     switch (iIdEvent) {
         case CSCAN_UPDATE: {
-            UpdateCScanOnTimer();
+            // UpdateCScanOnTimer();
             break;
         }
         case AUTOSCAN_TIMER: {
             // 获取是否是自动模式
             auto [res_auto, value_auto] = AbsPLCIntf::getVariable<bool>("I1.2");
-            if (res_auto && value_auto) {
+            auto [res, _value]          = AbsPLCIntf::getVariable<bool>("M50.0");
+            if (res_auto && value_auto && res && _value) {
                 // 获取检测点状态
-                auto [res, value]                   = AbsPLCIntf::getVariable<bool>("M50.0");
+                auto [_1, v1]                       = AbsPLCIntf::getVariable<bool>("Q3.3");
+                auto [_2, v2]                       = AbsPLCIntf::getVariable<bool>("Q3.4");
+                auto [_3, v3]                       = AbsPLCIntf::getVariable<bool>("Q3.5");
+                bool                     value      = (v3 || v2) || v1;
                 static std::atomic<bool> last_value = true;
                 if (res && value && last_value != value) {
-                    StartScan();
+                    StartScan(true, 3000);
                     auto btn = m_PaintManager.FindControl<CButtonUI *>(_T("BtnUIAutoScan"));
                     btn->SetBkColor(0xFF339933);
                 } else if (res && !value && last_value != value) {
@@ -1394,12 +1434,55 @@ void MainFrameWnd::OnBtnReportExport(TNotifyUI &msg) {
     std::sort(mDefectInfo.begin(), mDefectInfo.end(), [](const auto &a, const auto &b) {
         return a.id < b.id;
     });
+    mDefectInfo.clear();
+    std::vector<ORM_Model::ScanRecord> __list;
+    auto                              &time = mDetectInfo.time;
+    std::regex                         reg(R"((\d+)-(\d+)-(\d+)__(.+))");
+    std::smatch                        match;
+    if (std::regex_match(time, match, reg)) {
+        auto year  = match[1].str();
+        auto month = match[2].str();
+        auto day   = match[3].str();
+        auto tm    = match[4].str();
+        auto path  = string(SCAN_DATA_DIR_NAME + GetJobGroup() + "/") + year + month + "/" + day;
+        std::replace(path.begin(), path.end(), '/', '\\');
+        path += "\\" + tm + APP_SCAN_DATA_SUFFIX;
+        __list = ORM_Model::ScanRecord::storage(path).get_all<ORM_Model::ScanRecord>();
+    }
+
+    for (const auto &_it : __list) {
+        auto   &utils     = mReviewData[_it.startID];
+        auto   &lastUtils = mReviewData[_it.endID];
+        auto    channel   = _it.channel;
+        uint8_t __max     = 0;
+        float   _depth    = 0;
+        for (auto i = _it.startID; i < _it.endID; i++) {
+            const auto &_utils      = mReviewData[i];
+            auto [_pos, _max, _res] = HDBridge::computeGateInfo(_utils.mScanOrm.mScanData[channel]->pAscan, _utils.mScanOrm.mScanGateInfo[channel]);
+            auto depth              = HDBridge::computeDistance(_utils.mScanOrm.mScanData[channel]->pAscan, _utils.mScanOrm.mScanData[channel]->aScanLimits[1] - _utils.mScanOrm.mScanData[channel]->aScanLimits[0], _utils.mScanOrm.mScanGateAInfo[channel], _utils.mScanOrm.mScanGateInfo[channel]);
+            if (_max > __max) {
+                __max  = _max;
+                _depth = depth;
+            }
+        }
+
+        ORM_Model::DefectInfo info;
+        std::wstringstream    ss;
+        ss.precision(2);
+        ss.setf(std::ios::fixed);
+        info.channel  = (ss.str(L""), ss << channel + 1, ss.str());
+        info.location = (ss.str(L""), ss << utils.mScanOrm.mXAxisLoc, ss.str());
+        info.length   = (ss.str(L""), ss << std::abs(lastUtils.mScanOrm.mXAxisLoc - utils.mScanOrm.mXAxisLoc), ss.str());
+        info.depth    = (ss.str(L""), ss << _depth, ss.str());
+        info.maxAmp   = (ss.str(L""), ss << __max / 2.55f, ss.str());
+        mDefectInfo.emplace_back(info);
+    }
 
     // DONE: 添加最大壁厚、最小壁厚和平均壁厚
     float maxWallThickness = 0.0f;
     float minWallThickness = 9999.f;
-    float sumThickness = 0.0f;
-    for(const auto &it: mReviewData) {
+    float sumThickness     = 0.0f;
+    for (const auto &it : mReviewData) {
         auto temp = std::accumulate(it.mScanOrm.mThickness.begin(), it.mScanOrm.mThickness.end(), 0.0f) / 4.f;
         if (maxWallThickness < temp) {
             maxWallThickness = temp;
@@ -1411,24 +1494,22 @@ void MainFrameWnd::OnBtnReportExport(TNotifyUI &msg) {
     }
     float averageWallThickness = sumThickness / mReviewData.size();
 
-    valueMap["aveT"] = std::to_string(averageWallThickness);
-    valueMap["maxT"] = std::to_string(maxWallThickness);
-    valueMap["minT"] = std::to_string(minWallThickness);
+    std::stringstream _ss;
+    _ss.precision(2);
+    _ss.setf(std::ios::fixed);
+    _ss.str("");
+    _ss << averageWallThickness;
+    valueMap["aveT"] = _ss.str();
+    _ss.str("");
+    _ss << maxWallThickness;
+    valueMap["maxT"] = _ss.str();
+    _ss.str("");
+    _ss << minWallThickness;
+    valueMap["minT"] = _ss.str();
 
-    for (auto index = 0; index < mDefectInfo.size(); index++) {
-        for (const auto &prot : type::get<ORM_Model::DefectInfo>().get_properties()) {
-            std::stringstream ss;
-            ss << "defect[" << index << "]." << prot.get_name();
-            if (prot.get_name() == "id") {
-                valueMap[ss.str()] = std::to_string(prot.get_value(mDefectInfo[index]).convert<std::uint32_t>());
-            } else {
-                valueMap[ss.str()] = StringFromWString(prot.get_value(mDefectInfo[index]).convert<std::wstring>());
-            }
-        }
-    }
     CFileDialog dlg(false, L"docx", L"Report.docx", OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, L"Word Document (*.docx)| *.docx||");
     if (dlg.DoModal() == IDOK) {
-        if (WordTemplateRender(L"./template/template.docx", dlg.GetPathName().GetString(), valueMap) == false) {
+        if (WordTemplateRender(L"./template/template.docx", dlg.GetPathName().GetString(), valueMap, mDefectInfo) == false) {
             spdlog::error("export report document error!");
             DMessageBox(L"导出失败!");
         } else {
@@ -1467,6 +1548,95 @@ void MainFrameWnd::ReconnectBoard(std::string ip_FPGA, uint16_t port_FPGA, std::
     bridge->syncCache2Board();
 }
 
+void MainFrameWnd::UpdateCScan(void) {
+    // 更新C扫的坐标轴范围
+    auto [r_min, _] = m_OpenGL_CSCAN.getModel<ModelGroupCScan *>()->GetAxisRange();
+    m_OpenGL_CSCAN.getModel<ModelGroupCScan *>()->SetAxisRange(r_min, mAxisXValue.load());
+
+    // 更新C扫
+    std::array<std::shared_ptr<HDBridge::NM_DATA>, HDBridge::CHANNEL_NUMBER> scanData = mMaxGateAmpUtils.mScanData;
+    for (auto &it : scanData) {
+        if (it != nullptr && it->pAscan.size() > 0) {
+            auto mesh = m_OpenGL_CSCAN.getMesh<MeshGroupCScan *>(it->iChannel);
+            if (mMaxGateAmpUtils.mScanGateInfo[it->iChannel].width != 0.0f) {
+                auto     &sacnGateInfo = mMaxGateAmpUtils.mScanGateInfo[it->iChannel];
+                auto      start        = (double)sacnGateInfo.pos;
+                auto      end          = (double)sacnGateInfo.pos + (double)sacnGateInfo.width;
+                auto      left         = std::begin(it->pAscan) + static_cast<size_t>(start * (double)it->pAscan.size());
+                auto      right        = std::begin(it->pAscan) + static_cast<size_t>(end * (double)it->pAscan.size());
+                auto      max          = std::max_element(left, right);
+                glm::vec4 color        = {};
+                if (*max > it->pGateAmp[1]) {
+                    color = {1.0f, 0.f, 0.f, 1.0f};
+                } else {
+                    color = {1.0f, 1.0f, 1.0f, 1.0f};
+                }
+                if (*max > sacnGateInfo.height * 255.0) {
+                    mDefectJudgmentValue[it->iChannel] = 1;
+                } else {
+                    mDefectJudgmentValue[it->iChannel] = 0;
+                }
+                mesh->AppendDot(*max, color);
+            }
+        }
+    }
+
+    // 测厚
+    for (uint32_t i = 0ull; i < 4ull; i++) {
+        // TO_VERIFY: 每一圈测厚一次
+        bool conditionRes = [this](bool &clear, float _xValue, int ch) -> bool {
+            static std::array<float, 16> _lastRecordXValue = {};
+            auto                        &lastRecordXValue  = _lastRecordXValue[ch];
+            if (clear) {
+                _lastRecordXValue = {};
+                clear             = false;
+                return true;
+            }
+            auto [res, xValue] = std::make_pair(true, _xValue);
+            if (res && std::abs(xValue - lastRecordXValue) >= mSystemConfig.stepDistance) {
+                lastRecordXValue = xValue;
+                return true;
+            }
+            return false;
+        }(mClearMTXValue, mAxisXValue.load(), i);
+
+        static std::array<std::vector<float>, 4> mThicknessRecord = {};
+        if (!conditionRes && mMaxGateAmpUtils.mScanGateInfo[(size_t)HDBridge::CHANNEL_NUMBER + i].width > 0.0001f) {
+            mThicknessRecord[i].push_back(mMaxGateAmpUtils.mThickness[i]);
+        } else if (conditionRes && mMaxGateAmpUtils.mScanGateInfo[(size_t)HDBridge::CHANNEL_NUMBER + i].width > 0.0001f) {
+            auto   mesh         = m_OpenGL_CSCAN.getMesh<MeshGroupCScan *>((size_t)HDBridge::CHANNEL_NUMBER + i);
+            double baseTickness = _wtof(mDetectInfo.thickness.c_str());
+            if (baseTickness != 0.0f && baseTickness != -HUGE_VAL && baseTickness != HUGE_VAL) {
+                auto averageThickness = std::accumulate(mThicknessRecord[i].begin(), mThicknessRecord[i].end(), 0.0f) / (float)mThicknessRecord[i].size();
+                mThicknessRecord[i].clear();
+                auto relative_error = (averageThickness - baseTickness) / baseTickness;
+                if (relative_error > RELATIVE_ERROR_MAX) {
+                    relative_error = RELATIVE_ERROR_MAX;
+                } else if (relative_error < -RELATIVE_ERROR_MAX) {
+                    relative_error = -RELATIVE_ERROR_MAX;
+                }
+                glm::vec4 color = {};
+                if (relative_error > RELATIVE_ERROR_THRESHOLD) {
+                    color = {.0f, 0.f, 1.f, 1.0f};
+                } else if (relative_error < -RELATIVE_ERROR_THRESHOLD) {
+                    color = {1.0f, 0.f, 0.f, 1.0f};
+                } else {
+                    color = {.0f, 1.f, 0.f, 1.0f};
+                }
+                uint8_t value = (((uint8_t)std::round((double)RELATIVE_ERROR_BASE * std::abs(relative_error / RELATIVE_ERROR_MAX))) &
+                                 RELATIVE_ERROR_BASE);
+                if (relative_error >= 0) {
+                    value += RELATIVE_ERROR_BASE;
+                } else {
+                    value = RELATIVE_ERROR_BASE - value;
+                }
+                mesh->AppendDot(value, color);
+            }
+        }
+    }
+    SaveScanData();
+}
+
 void MainFrameWnd::ThreadCScan(void) {
     while (1) {
         std::unique_lock lock(mCScanMutex);
@@ -1480,12 +1650,12 @@ void MainFrameWnd::ThreadCScan(void) {
         m_OpenGL_CSCAN.getModel<ModelGroupCScan *>()->SetAxisRange(r_min, mAxisXValue.load());
 
         // 更新C扫
-        std::array<std::shared_ptr<HDBridge::NM_DATA>, HDBridge::CHANNEL_NUMBER> scanData = mUtils->mScanOrm.mScanData;
+        std::array<std::shared_ptr<HDBridge::NM_DATA>, HDBridge::CHANNEL_NUMBER> scanData = mMaxGateAmpUtils.mScanData;
         for (auto &it : scanData) {
             if (it != nullptr && it->pAscan.size() > 0) {
                 auto mesh = m_OpenGL_CSCAN.getMesh<MeshGroupCScan *>(it->iChannel);
-                if (mUtils->getCache().scanGateInfo[it->iChannel].width != 0.0f) {
-                    auto     &sacnGateInfo = mUtils->getCache().scanGateInfo[it->iChannel];
+                if (mMaxGateAmpUtils.mScanGateInfo[it->iChannel].width != 0.0f) {
+                    auto     &sacnGateInfo = mMaxGateAmpUtils.mScanGateInfo[it->iChannel];
                     auto      start        = (double)sacnGateInfo.pos;
                     auto      end          = (double)sacnGateInfo.pos + (double)sacnGateInfo.width;
                     auto      left         = std::begin(it->pAscan) + static_cast<size_t>(start * (double)it->pAscan.size());
@@ -1510,25 +1680,26 @@ void MainFrameWnd::ThreadCScan(void) {
         // 测厚
         for (uint32_t i = 0ull; i < 4ull; i++) {
             // TO_VERIFY: 每一圈测厚一次
-            bool conditionRes = [this](bool &clear, float _xValue) -> bool {
-                static float lastRecordXValue = 0.0f;
+            bool conditionRes = [this](bool &clear, float _xValue, int ch) -> bool {
+                static std::array<float, 16> _lastRecordXValue = {};
+                auto                        &lastRecordXValue  = _lastRecordXValue[ch];
                 if (clear) {
-                    lastRecordXValue = 0.0f;
-                    clear            = false;
+                    _lastRecordXValue = {};
+                    clear             = false;
                     return true;
                 }
                 auto [res, xValue] = std::make_pair(true, _xValue);
-                if (res && (xValue - lastRecordXValue) >= mSystemConfig.stepDistance) {
+                if (res && std::abs(xValue - lastRecordXValue) >= mSystemConfig.stepDistance) {
                     lastRecordXValue = xValue;
                     return true;
                 }
                 return false;
-            }(mClearMTXValue, mAxisXValue.load());
+            }(mClearMTXValue, mAxisXValue.load(), i);
 
             static std::array<std::vector<float>, 4> mThicknessRecord = {};
-            if (!conditionRes && mUtils->getCache().scanGateInfo[(size_t)HDBridge::CHANNEL_NUMBER + i].width > 0.0001f) {
-                mThicknessRecord[i].push_back(mUtils->mScanOrm.mThickness[i]);
-            } else if (conditionRes && mUtils->getCache().scanGateInfo[(size_t)HDBridge::CHANNEL_NUMBER + i].width > 0.0001f) {
+            if (!conditionRes && mMaxGateAmpUtils.mScanGateInfo[(size_t)HDBridge::CHANNEL_NUMBER + i].width > 0.0001f) {
+                mThicknessRecord[i].push_back(mMaxGateAmpUtils.mThickness[i]);
+            } else if (conditionRes && mMaxGateAmpUtils.mScanGateInfo[(size_t)HDBridge::CHANNEL_NUMBER + i].width > 0.0001f) {
                 auto   mesh         = m_OpenGL_CSCAN.getMesh<MeshGroupCScan *>((size_t)HDBridge::CHANNEL_NUMBER + i);
                 double baseTickness = _wtof(mDetectInfo.thickness.c_str());
                 if (baseTickness != 0.0f && baseTickness != -HUGE_VAL && baseTickness != HUGE_VAL) {
@@ -1575,18 +1746,23 @@ void MainFrameWnd::ThreadPLC(void) {
             if (clear) {
                 lastRecordXValue = 0.0f;
                 clear            = false;
+                spdlog::debug("conditionRes return true.");
                 return true;
             }
             auto [res, xValue] = std::make_pair(true, _xValue);
-            if (res && (xValue - lastRecordXValue) >= mSystemConfig.stepDistance) {
+            if (res && (std::abs(xValue - lastRecordXValue) >= mSystemConfig.stepDistance)) {
                 lastRecordXValue = xValue;
+                spdlog::debug("conditionRes return true.");
                 return true;
             }
             return false;
         }(mClearSSRValue, mAxisXValue.load());
         if (conditionRes) {
             // 通知保存和更新C扫
-            mCScanNotify.notify_one();
+            if (mScanningFlag == true) {
+                // nmCScanNotify.notify_one();
+                spdlog::debug("mCScanNotify.notify_one");
+            }
         }
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
@@ -1740,8 +1916,6 @@ void MainFrameWnd::SaveScanData() {
     for (int i = 0; i < res.size(); i++) {
         if (res[i] == DetectionStateMachine::DetectionStatus::Rasing) {
             SaveDefectStartID(i);
-            // 插入一个新的缺陷信息
-            mDefectInfo.push_back({});
             // TO_VERIFY: 判断缺陷类型并报警
             // 检测时的缺陷深度
             float thicknessOnTesting = 0.0f;
@@ -1754,8 +1928,13 @@ void MainFrameWnd::SaveScanData() {
                 const auto  sz   = mReviewData.back().mScanOrm.mThickness.size();
                 averageThickness = std::accumulate(beg, end, 0.0) / sz;
             } else {
-                // 如果为开启测厚功能，则工件厚度由用户输入
-                averageThickness = std::stof(mDetectInfo.thickness);
+                // 如果未开启测厚功能，则工件厚度由用户输入
+                try {
+                    averageThickness = std::stof(mDetectInfo.thickness);
+                } catch (std::exception &e) {
+                    spdlog::warn(e.what());
+                    averageThickness = 0.0f;
+                }
             }
             if (i < 4 && mSystemConfig.enableMeasureThickness) {
                 // 如果是1-4通道，且开启测厚功能, 缺陷深度是测厚通道(13-16)C波门与A波门最高波位置的差值
@@ -1768,46 +1947,6 @@ void MainFrameWnd::SaveScanData() {
             PLCAlaram(averageThickness > thicknessOnTesting);
         } else if (res[i] == DetectionStateMachine::DetectionStatus::Falling) {
             SaveDefectEndID(i);
-            // 扫查记录
-            const auto &scanRecord = mScanRecordCache.at(mIDDefectRecord[i]);
-            const auto  startID    = scanRecord.startID;
-            const auto  endID      = scanRecord.endID;
-            const auto &data       = mReviewData.end();
-            VEC_Utils   vec_utils;
-            if (mReviewData.size() >= (scanRecord.endID - scanRecord.startID + 1)) {
-                // 扫查记录完全在缓存中
-                const auto &_it = mReviewData.begin() + (mReviewData.size() - (scanRecord.endID - scanRecord.startID + 1));
-                for (auto it = _it; it != mReviewData.end(); it++) {
-                    vec_utils.emplace_back(*it);
-                }
-            } else if (mReviewData.size() == 0) {
-                // 扫查记录完全在数据库中
-                for (auto id = startID; id <= endID; id++) {
-                    vec_utils.emplace_back(HD_Utils::storage(mSavePath).get<HD_Utils>(id));
-                }
-            } else if ((scanRecord.endID - scanRecord.startID + 1) > mReviewData.size()) {
-                // 一部分在缓存中，一部分在数据库中
-                for (auto id = startID; id <= endID - mReviewData.size(); id++) {
-                    vec_utils.emplace_back(HD_Utils::storage(mSavePath).get<HD_Utils>(1));
-                }
-                vec_utils.insert(vec_utils.end(), mReviewData.begin(), mReviewData.end());
-            }
-            // TODO: 保存缺陷信息到`mDefectInfo`中
-            // 缺陷信息
-            std::wstringstream ss;
-            ss.precision(2);
-            ss.setf(std::ios::fixed);
-            auto &defectInfo       = mDefectInfo.back();
-            defectInfo.product     = L"";
-            defectInfo.description = L"";
-            defectInfo.flawno      = L"";
-            defectInfo.dac         = L"";
-            defectInfo.type        = L"";
-            defectInfo.location    = (ss.clear(), ss << scanRecord.xAxisLoc, ss.str());
-            defectInfo.length      = (ss.clear(), ss << mAxisXValue.load() - scanRecord.xAxisLoc, ss.str());
-            defectInfo.depth       = L"";
-            defectInfo.width       = L"";
-            defectInfo.result      = L"";
         }
     }
 }
@@ -1916,7 +2055,7 @@ void MainFrameWnd::SelectMeasureThickness(bool enableMeasure) {
     }
 }
 
-void MainFrameWnd::StartScan(bool changeFlag) {
+void MainFrameWnd::StartScan(bool changeFlag, std::optional<uint32_t> time) {
     if (mWidgetMode != WidgetMode::MODE_SCAN) {
         return;
     }
@@ -1954,25 +2093,29 @@ void MainFrameWnd::StartScan(bool changeFlag) {
             mSavePath = path;
             // 创建表
             try {
+                auto tick = GetTickCount64();
                 HD_Utils::storage(path).sync_schema();
                 // 探伤信息
                 ORM_Model::DetectInfo::storage(path).sync_schema();
                 ORM_Model::DetectInfo::storage(path).insert(mDetectInfo);
-                ORM_Model::DetectInfo::storage(path).vacuum();
                 // 用户信息
                 ORM_Model::User::storage(path).sync_schema();
                 ORM_Model::User user;
                 user.name = GetSystemConfig().userName;
                 ORM_Model::User::storage(path).insert(user);
-                ORM_Model::User::storage(path).vacuum();
                 // 班组信息
                 ORM_Model::JobGroup::storage(path).sync_schema();
+                spdlog::debug("speed time: {}", GetTickCount64() - tick);
                 ORM_Model::JobGroup jobgroup = {};
                 jobgroup.groupName           = GetSystemConfig().groupName;
                 ORM_Model::JobGroup::storage(path).insert(jobgroup);
-                ORM_Model::JobGroup::storage(path).vacuum();
                 // 扫查数据
                 ORM_Model::ScanRecord::storage(path).sync_schema();
+                if (time.has_value()) {
+                    while (GetTickCount64() - tick < time.value()) {
+                        Sleep(10);
+                    }
+                }
                 mReviewData.clear();
                 mRecordCount = 0;
                 mScanRecordCache.clear();
@@ -1981,6 +2124,7 @@ void MainFrameWnd::StartScan(bool changeFlag) {
                 mClearMTXValue = true; ///< 清除测厚的X轴计数
                 mClearSSRValue = true;
                 m_OpenGL_CSCAN.getModel<ModelGroupCScan *>()->SetAxisRange(mAxisXValue.load(), mAxisXValue.load());
+                spdlog::debug("speed time: {}", GetTickCount64() - tick);
             } catch (std::exception &e) {
                 spdlog::warn(GB2312ToUtf8(e.what()));
                 DMessageBox(L"请勿快速点击扫查按钮");
@@ -2010,16 +2154,18 @@ void MainFrameWnd::StopScan(bool changeFlag) {
             meshCScan->RemoveDot();
         }
         mDefectJudgmentValue.fill(0);
+        auto tick = GetTickCount64();
         // 保存缺陷记录
-        ORM_Model::ScanRecord::storage(mSavePath).insert_range(mScanRecordCache.begin(), mScanRecordCache.end());
-        ORM_Model::ScanRecord::storage(mSavePath).vacuum();
-        // 保存扫查数据
-        HD_Utils::storage(mSavePath).insert_range(mReviewData.begin(), mReviewData.end());
-        HD_Utils::storage(mSavePath).vacuum();
-        // 保存缺陷数据
-        ORM_Model::DefectInfo::storage(mSavePath).sync_schema();
-        ORM_Model::DefectInfo::storage(mSavePath).insert_range(mDefectInfo.begin(), mDefectInfo.end());
-        ORM_Model::DefectInfo::storage(mSavePath).vacuum();
+        try {
+            ORM_Model::ScanRecord::storage(mSavePath).insert_range(mScanRecordCache.begin(), mScanRecordCache.end());
+        } catch (std::exception &e) {
+            spdlog::error(e.what());
+        }
+        try {
+            HD_Utils::storage(mSavePath).insert_range(mReviewData.begin(), mReviewData.end());
+        } catch (std::exception &e) {
+            spdlog::error(e.what());
+        }
         // 清除扫查数据
         mDefectInfo.clear();
         mReviewData.clear();
@@ -2033,12 +2179,9 @@ void MainFrameWnd::PLCAlaram(bool isInternal) {
         const auto     light    = isInternal ? "Q1.0" : "Q1.1";
         constexpr auto beepName = "Q0.7";
         AbsPLCIntf::setVariable(light, true);
+        AbsPLCIntf::setVariable(beepName, true);
         bool beep = true;
-        for (auto i = 0; i < 12; i++) {
-            AbsPLCIntf::setVariable(beepName, beep);
-            beep = !beep;
-            Sleep(1000);
-        }
+        Sleep(1500);
         AbsPLCIntf::setVariable(beepName, false);
         AbsPLCIntf::setVariable(light, false);
     };

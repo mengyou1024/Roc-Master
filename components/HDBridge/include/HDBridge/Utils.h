@@ -28,6 +28,7 @@ struct HD_ScanORM {
     HD_ScanORM& copy(const HD_ScanORM& other, int index) {
         this->mThickness                                       = other.mThickness;
         this->mCScanLimits                                     = other.mCScanLimits;
+        this->mXAxisLoc                                        = other.mXAxisLoc;
         this->mScanGateInfo[index % HDBridge::CHANNEL_NUMBER]  = other.mScanGateInfo[index % HDBridge::CHANNEL_NUMBER];
         this->mScanGateAInfo[index % HDBridge::CHANNEL_NUMBER] = other.mScanGateAInfo[index % HDBridge::CHANNEL_NUMBER];
         this->mScanGateBInfo[index % HDBridge::CHANNEL_NUMBER] = other.mScanGateBInfo[index % HDBridge::CHANNEL_NUMBER];

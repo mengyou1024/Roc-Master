@@ -37,7 +37,7 @@ void DefectsListWnd::Notify(TNotifyUI& msg) {
                 return;
             }
             auto pLine = static_cast<CListTextElementUI*>(pList->GetItemAt(pList->GetCurSel()));
-            mResult    = std::make_tuple<bool, int, int>(true, _wtol(pLine->GetText(2)), _wtol(pLine->GetText(1)));
+            mResult    = std::make_tuple<bool, int, int>(true, _wtol(pLine->GetText(2)), _wtol(pLine->GetText(1)) - 1);
             Close();
         }
     }
@@ -63,7 +63,7 @@ void DefectsListWnd::LoadDefectsList(std::string time) {
             pLine->SetTag(it.id);
             pList->Add(pLine);
             pLine->SetText(0, std::to_wstring(it.id).data());
-            pLine->SetText(1, std::to_wstring(it.channel).data());
+            pLine->SetText(1, std::to_wstring(it.channel + 1).data());
             pLine->SetText(2, std::to_wstring(it.startID).data());
             pLine->SetText(3, std::to_wstring(it.endID).data());
             std::wstringstream buf;

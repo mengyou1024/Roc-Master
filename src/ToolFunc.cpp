@@ -421,6 +421,163 @@ bool WordTemplateRender(std::wstring templateName, std::wstring fileName, std::m
     return true;
 }
 
+bool WordTemplateRender(std::wstring templateName, std::wstring fileName, std::map<string, string> var, std::vector<ORM_Model::DefectInfo> _def_info) {
+    // 拷贝模板
+    std::wregex  reg(LR"(^(.+)[/\\])");
+    std::wsmatch match;
+    if (std::regex_search(fileName, match, reg)) {
+        std::wstring str = match[1].str();
+        std::replace(str.begin(), str.end(), L'/', L'\\');
+        CreateMultipleDirectory(str.data());
+    }
+    if (CopyFile(templateName.data(), fileName.data(), false) == 0) {
+        return false;
+    }
+
+    void*       buf = NULL;
+    size_t      bufsize;
+    std::string file_str;
+    zip_t*      zip = zip_open(StringFromWString(fileName).c_str(), ZIP_DEFAULT_COMPRESSION_LEVEL, 'r');
+    zip_entry_open(zip, "word/document.xml");
+    zip_entry_read(zip, &buf, &bufsize);
+    zip_entry_close(zip);
+    zip_close(zip);
+    file_str = std::string(static_cast<char*>(buf), bufsize);
+    {
+        // 0. 去除分字符
+        std::regex  reg(R"(\$\{.+?\})");
+        std::smatch match;
+        std::string search_str = file_str;
+        while (std::regex_search(search_str, match, reg)) {
+            std::regex  sub_reg(R"(<.+?>)");
+            std::smatch sub_match;
+            std::string _sub_str = match[0].str();
+            if (std::regex_search(_sub_str, sub_match, sub_reg) && sub_match.size() > 0) {
+                _sub_str = std::regex_replace(_sub_str, sub_reg, "");
+                spdlog::debug("replace {: ^24} ---> {: ^24}", match[0].str(), _sub_str);
+                file_str = file_str.replace(file_str.find(match[0].str()), match[0].str().length(), _sub_str);
+            }
+            search_str = match.suffix().str();
+        }
+    }
+
+    // 数据处理
+    {
+        // 1. 替换模板中的变量
+        std::regex  reg(R"(\$\{(.+?)\})");
+        std::smatch match;
+        std::string search_str = file_str;
+        while (std::regex_search(search_str, match, reg)) {
+            for (auto i = 1; i < match.size(); i++) {
+                std::regex _reg(std::string(R"(\$\{)") + match[i].str() + std::string(R"(\})"));
+                file_str = std::regex_replace(file_str, _reg, var[(match[i].str())]);
+                spdlog::debug("replace {: ^24} ---> {: ^24}", match[i].str(), var[match[i].str()]);
+            }
+            search_str = match.suffix().str();
+        }
+    }
+    {
+        // 2. 替换表格中的变量
+        std::regex  reg(R"(<w:tr.+?>.+?</w:tr>)");
+        std::smatch match;
+        std::string search_str = file_str;
+        std::string str_to_replace;
+        while (std::regex_search(search_str, match, reg)) {
+            std::regex  sub_reg(R"(\$\{defect\[\]\..+?\})");
+            std::smatch sub_match;
+            std::string _sub_str = match[0].str();
+            if (std::regex_search(_sub_str, sub_match, sub_reg) && sub_match.size() > 0) {
+                str_to_replace += match[0].str();
+            }
+            search_str = match.suffix().str();
+        }
+
+        std::string string_result;
+        int _number = 0;
+        for (const auto& _def_info_item : _def_info) {
+            std::string       __match_str = str_to_replace;
+            std::stringstream ss;
+            ss.precision(2);
+            ss.setf(std::ios::fixed);
+            ss.str("");
+            ss << ++_number;
+            __match_str = __match_str.replace(__match_str.find("${defect[].num}"), strlen("${defect[].num}"), ss.str());
+            ss.str("");
+            ss << StringFromWString(_def_info_item.channel);
+            __match_str = __match_str.replace(__match_str.find("${defect[].channel}"), strlen("${defect[].channel}"), ss.str());
+            ss.str("");
+            ss << StringFromWString(_def_info_item.location);
+            __match_str = __match_str.replace(__match_str.find("${defect[].location}"), strlen("${defect[].location}"), ss.str());
+            ss.str("");
+            ss << StringFromWString(_def_info_item.length);
+            __match_str = __match_str.replace(__match_str.find("${defect[].length}"), strlen("${defect[].length}"), ss.str());
+            ss.str("");
+            ss << StringFromWString(_def_info_item.depth);
+            __match_str = __match_str.replace(__match_str.find("${defect[].depth}"), strlen("${defect[].depth}"), ss.str());
+            ss.str("");
+            ss << StringFromWString(_def_info_item.maxAmp);
+            __match_str = __match_str.replace(__match_str.find("${defect[].maxAmp}"), strlen("${defect[].maxAmp}"), ss.str());
+            ss.str("");
+            ss << StringFromWString(L"");
+            __match_str = __match_str.replace(__match_str.find("${defect[].result}"), strlen("${defect[].result}"), ss.str());
+            string_result += __match_str;
+        }
+
+        file_str = file_str.replace(file_str.find(str_to_replace), str_to_replace.length(), string_result);
+    }
+    free(buf);
+    {
+        // 3. 保存文件
+        std::string original_file = StringFromWString(fileName);
+        std::string temp_file     = StringFromWString(fileName) + ".tmp";
+
+        // Create the new file
+        zip_t* new_zip = zip_open(temp_file.c_str(), ZIP_DEFAULT_COMPRESSION_LEVEL, 'w');
+
+        // Write out document.xml
+        zip_entry_open(new_zip, "word/document.xml");
+
+        zip_entry_write(new_zip, file_str.c_str(), file_str.length());
+        zip_entry_close(new_zip);
+
+        // Open the original zip and copy all files which are not replaced by duckX
+        zip_t* orig_zip =
+            zip_open(original_file.c_str(), ZIP_DEFAULT_COMPRESSION_LEVEL, 'r');
+
+        // Loop & copy each relevant entry in the original zip
+        int orig_zip_entry_ct = (int)zip_entries_total(orig_zip);
+        for (int i = 0; i < orig_zip_entry_ct; i++) {
+            zip_entry_openbyindex(orig_zip, i);
+            const char* name = zip_entry_name(orig_zip);
+
+            // Skip copying the original file
+            if (std::string(name) != std::string("word/document.xml")) {
+                // Read the old content
+                void*  entry_buf;
+                size_t entry_buf_size;
+                zip_entry_read(orig_zip, &entry_buf, &entry_buf_size);
+
+                // Write into new zip
+                zip_entry_open(new_zip, name);
+                zip_entry_write(new_zip, entry_buf, entry_buf_size);
+                zip_entry_close(new_zip);
+
+                free(entry_buf);
+            }
+
+            zip_entry_close(orig_zip);
+        }
+
+        // Close both zips
+        zip_close(orig_zip);
+        zip_close(new_zip);
+
+        // Remove original zip, rename new to correct name
+        remove(original_file.c_str());
+        rename(temp_file.c_str(), original_file.c_str());
+    }
+}
+
 ORM_Model::SystemConfig GetSystemConfig() {
     try {
         return ORM_Model::SystemConfig::storage().get<ORM_Model::SystemConfig>(1);

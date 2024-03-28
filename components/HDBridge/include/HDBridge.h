@@ -516,12 +516,15 @@ public:
             if (std::abs(start - 1.0) < 0.00001) {
                 return std::make_tuple(0.0f, 0, false);
             }
-            if (info.pos < 0.0) {
+            if (info.pos < 0.0 || info.pos >1.0) {
                 return std::make_tuple(0.0f, 0, false);
             }
             double end = (double)(info.pos + info.width);
             if (end > 1.0) {
                 end = 1.0;
+            }
+            if (info.pos + info.width >= 1.0) {
+                return std::make_tuple(0.0f, 0, false);
             }
             auto left  = data.begin() + static_cast<int64_t>((double)data.size() * (double)info.pos);
             auto right = data.begin() + static_cast<int64_t>((double)data.size() * (double)(info.pos + info.width));

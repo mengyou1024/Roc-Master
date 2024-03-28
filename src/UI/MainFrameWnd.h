@@ -80,7 +80,7 @@ private: /* 类型 */
 
 private: /* 常量 */
     // 扫查数据记录缓冲最大数量
-    constexpr static int  SCAN_RECORD_CACHE_MAX_ITEMS = 1000;
+    constexpr static int  SCAN_RECORD_CACHE_MAX_ITEMS = 512;
     constexpr static auto BTN_SELECT_GROUP_MAX        = 4; ///< 按钮选择分组的最大值(分层、横向、纵向、测厚)
 
     // 测厚相对误差配置
@@ -256,6 +256,8 @@ private:
         return ret;
     }
 
+    void UpdateCScan(void);
+
     /**
      * @brief C扫线程
      */
@@ -385,7 +387,7 @@ private:
      * @brief 开始扫查
      * @param changeFlag 是否改变标志位
      */
-    void StartScan(bool changeFlag = true);
+    void StartScan(bool changeFlag = true, std::optional<uint32_t> time = std::nullopt);
 
     /**
      * @brief 停止扫查
