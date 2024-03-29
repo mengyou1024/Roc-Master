@@ -576,6 +576,7 @@ bool WordTemplateRender(std::wstring templateName, std::wstring fileName, std::m
         remove(original_file.c_str());
         rename(temp_file.c_str(), original_file.c_str());
     }
+    return true;
 }
 
 ORM_Model::SystemConfig GetSystemConfig() {
