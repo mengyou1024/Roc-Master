@@ -51,7 +51,7 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 [Files]
 Source: "@CMAKE_SOURCE_DIR@/output/@PROJECT_NAME@-@APP_VERSION@/*"; DestDir: "{app}"; Flags: comparetimestamp
 Source: "@CMAKE_SOURCE_DIR@/output/@PROJECT_NAME@-@APP_VERSION@/template/*"; DestDir: "{app}/template"; Flags: comparetimestamp
-Source: "@CMAKE_SOURCE_DIR@/vc_redist/VC_redist.x64.exe"; DestDir: "{app}"; Flags: deleteafterinstall
+Source: "@CMAKE_SOURCE_DIR@/vc_redist/VC_redist.x64.exe"; DestDir: "{app}"; Flags: comparetimestamp
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Registry]
@@ -67,6 +67,9 @@ Type: files; Name: "{app}/data.db"
 Type: filesandordirs; Name: "{app}/log"
 Type: filesandordirs; Name: "{app}/Data"
 Type: filesandordirs; Name: "{app}/newVersion.exe"
+
+[UninstallRun]
+Filename: "{app}\vc_redist.x64.exe"; Parameters: /uninstall /passive 
 
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
