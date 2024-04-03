@@ -100,9 +100,9 @@ add_custom_target(
     git reset --hard" > nul
     COMMAND echo "{\
 \"APP_VERSION\":\"${APP_VERSION}\",\
-\"GIT_REPOSITORY_URL\": \"${GIT_REPOSITORY_URL}\",\
-\"GIT_USER_NAME\": \"${GIT_USER_NAME}\",\
-\"GIT_USER_EMAIL\": \"${GIT_USER_EMAIL}\"\
+\"GIT_REPOSITORY_URL\": \"-\",\
+\"GIT_USER_NAME\": \"-\",\
+\"GIT_USER_EMAIL\": \"-\"\
 }" > ${CMAKE_SOURCE_DIR}/output/archive/archive.json
     COMMAND ${CMAKE_COMMAND} -E rm -rf ${CMAKE_SOURCE_DIR}/output/archive/.git ${CMAKE_SOURCE_DIR}/output/archive/.github
     COMMAND 7z a -tZip ${CMAKE_SOURCE_DIR}/output/${PROJECT_NAME}-${APP_VERSION}-archive.zip ${CMAKE_SOURCE_DIR}/output/archive/* -bso0
