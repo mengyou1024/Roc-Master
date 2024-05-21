@@ -247,9 +247,13 @@ void MeshAscan::SetGateData(const std::pair<float, float>& data, int index) {
         CString str;
         str.Format(L"%c深度:%.1fmm, %c波幅:%.1f%%", 'A' + index, data.first + m_fScanMin, 'A' + index, data.second);
         m_sGateDataShow[index] = str;
-    } else {
+    } else if (index == 3) {
         CString str;
-        str.Format(L"A-C深度:%.1fmm", data.second - data.first);
+        str.Format(L"缺陷深度:%.1fmm", data.second - data.first);
+        m_sGateDataShow[index] = str;
+    } else if (index == 4) {
+        CString str;
+        str.Format(L"A-B厚度:%.1fmm", data.second - data.first);
         m_sGateDataShow[index] = str;
     }
 }
@@ -259,9 +263,13 @@ void MeshAscan::SetGateData(int index) {
         CString str;
         str.Format(L"%c深度:无, %c波幅:无", 'A' + index, 'A' + index);
         m_sGateDataShow[index] = str;
-    } else {
+    } else if (index == 3) {
         CString str;
-        str.Format(L"A-C深度:无");
+        str.Format(L"缺陷深度:无");
+        m_sGateDataShow[index] = str;
+    } else if(index== 4) {
+        CString str;
+        str.Format(L"A-C厚度:无");
         m_sGateDataShow[index] = str;
     }
 }
